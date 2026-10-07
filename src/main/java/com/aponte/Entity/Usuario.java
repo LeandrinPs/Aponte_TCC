@@ -1,5 +1,6 @@
 package com.aponte.Entity;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -9,11 +10,13 @@ import lombok.Data;
 
 @Entity 
 @Table (name = "usuario")
-@Data 
+@Data
 public class Usuario {
     /* id_user é o identificador da entity usuario */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id_user;
+
+    @Column
 }
  
