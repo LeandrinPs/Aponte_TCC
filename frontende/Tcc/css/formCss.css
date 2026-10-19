@@ -1,0 +1,202 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Poppins', sans-serif;
+}
+
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: #6366f1;
+}
+
+/* BOTÃO*/
+
+.btn-default {
+    background-color: #6366f1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    color: #fff;
+    cursor: pointer;
+    gap: 8px;
+    height: fit-content;
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.2);
+    transition: background-color 0.3s ease;
+}
+
+.btn-default:hover {
+    background-color: #4f46e5;
+}
+
+/*CONTAINER PRINCIPAL*/
+
+#form_container {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+
+    width: 100%;
+    max-width: 500px;
+
+    background-color: #f6f8ff;
+
+    padding: 32px;
+
+    border-radius: 12px;
+
+    box-shadow: 0px 10px 15px -3px rgba(0, 0, 0, 0.25);
+}
+
+/* HEADER*/
+
+#form_header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+#form_title {
+    font-weight: 600;
+    color: #272727;
+    position: relative;
+}
+
+#form_title::after {
+    content: '';
+    position: absolute;
+
+    width: 50%;
+    height: 3px;
+
+    background-color: #6366f1;
+
+    bottom: -5px;
+    left: 0;
+
+    border-radius: 3px;
+}
+
+/*FORM*/
+
+#form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+#input_container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 24px;
+}
+
+
+.input-box {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.form-label {
+    font-size: 12px;
+    color: #404044;
+    font-weight: 500;
+}
+
+/*CAMPO*/
+
+.input-field {
+    display: flex;
+    align-items: center;
+
+    background-color: #fff;
+
+    border-radius: 8px;
+
+    box-shadow: 0px 4px 10px -3px rgba(0, 0, 0, 0.15);
+
+    transition: outline 0.2s ease;
+}
+
+.input-field:focus-within {
+    outline: 2px solid #6366f1;
+}
+
+.input-field i {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    width: 40px;
+    height: 20px;
+
+    color: #404044;
+}
+
+.form-control {
+    padding: 10px;
+
+    width: 100%;
+
+    border: none;
+
+    border-radius: 8px;
+
+    color: #272727;
+
+    background-color: transparent;
+}
+
+.form-control:focus {
+    outline: none;
+}
+
+/*SENHA*/
+
+.passwordIcon {
+    cursor: pointer;
+    color: #404044;
+    transition: color 0.2s ease;
+}
+
+.passwordIcon:hover {
+    color: #6366f1;
+}
+
+
+input:-webkit-autofill {
+    -webkit-box-shadow: 0 0 0 100px white inset !important;
+    -webkit-text-fill-color: #272727 !important;
+}
+
+
+
+.radio-container {
+    grid-column: span 2;
+}
+
+
+@media screen and (max-width: 600px) {
+
+    #form_container {
+        width: 90%;
+        padding: 24px;
+    }
+
+    #input_container {
+        grid-template-columns: 1fr;
+    }
+
+    .radio-container {
+        grid-column: span 1;
+    }
+}

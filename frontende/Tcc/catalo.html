@@ -1,0 +1,169 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aponte</title>
+     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-sRIl4kxILFvY47J16cr9ZwB07vP4J8+LH7qKQnuqkuIAvNWLzeN8tE5YBujZqJLB" crossorigin="anonymous">
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+      <link rel="stylesheet" href="css/cataloCss.css">
+      <link rel="stylesheet" href="css/footerCss.css">
+</head>
+<body  class="d-flex flex-column min-vh-100">
+    <!--Cabeçalho-->
+     <nav class="navbar bg-body-tertiary">
+        <div class="container-fluid">
+            <div class="row align-items-center w-100 g-3 mx-0">
+    
+                <!-- Logo -->
+                <div class="col-md-3 d-flex align-items-center mt-2">
+                    <a href="index.html">
+                    <img src="img/logo1.png" class="logo" alt="Logo Aponte">
+                    </a>
+                    <h5 class="mt-4 mx-3 ms-5"><a href="index.html" class="link-opacity-10-hover text-decoration-none link-secondary nav-link">Inicio</a></h5>
+                    <h5 class="mt-4 mx-3"><a href="favoritos.html" class="link-opacity-10-hover text-decoration-none link-secondary nav-link">Favoritos</a></h5>
+                    <h5 class="mt-4 mx-3"><a href="catalo.html" class="link-opacity-10-hover text-decoration-none link-secondary nav-link ativo ">Catálogos</a></h5>
+                </div>
+    
+                <!-- Barra de pesquisa -->
+                <div class="col-md-3 ">
+                    <form class="barra-pesquisa">
+                        <div class="input-group shadow-sm rounded-2 overflow-hidden">
+                            <input type="text" class="form-control"
+                                   placeholder="Pesquisar">
+    
+                            <button class="btn btn-danger" type="button">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                    </form>
+                </div>
+          
+    <!--Botões-->
+         <div class="col-md-6 d-flex justify-content-end align-items-center gap-2">
+                    <a href="#" class="text-decoration-none link-danger me-1">
+                        Login
+                    </a>
+                    <button class="btn btn-danger rounded-8 p-2">
+                        Cadastrar
+                    </button>
+                </div>
+    
+            </div>
+        </div>
+    </nav>
+
+    <!-- Banner -->
+<header class="banner-categorias">
+    <div class="container">
+        <span class="subtitulo-banner">CATEGORIAS</span>
+
+        <h1>Explore por categoria</h1>
+
+        <p>Encontre restaurantes de acordo com sua preferência.</p>
+    </div>
+</header>
+
+<!-- Categorias -->
+<main class="container py-5">
+
+    <div class="row g-4">
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="restaurantes.html?categoria=pizzarias"
+               class="categoria-card">
+                  <i class="bi bi-pie-chart-fill"></i>
+                <div class="categoria-info">
+                    <h2>Pizzarias</h2>
+                    <i class="bi bi-arrow-right ms-auto"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="restaurantes.html?categoria=hamburguerias"
+               class="categoria-card">
+  <i class="bi bi-egg-fried"></i>
+                <div class="categoria-info">
+
+                    <h2>Hamburguerias</h2>
+                    <i class="bi bi-arrow-right ms-auto"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="restaurantes.html?categoria=cafeterias"
+               class="categoria-card">
+              <i class="bi bi-cup-hot-fill"></i>
+                <div class="categoria-info">
+                    <h2>Cafeterias</h2>
+                    <i class="bi bi-arrow-right ms-auto"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="restaurantes.html?categoria=japonesa"
+               class="categoria-card">
+                      <i class="bi bi-shop"></i>
+                <div class="categoria-info">
+                    <h2>Japoneses</h2>
+                    <i class="bi bi-arrow-right ms-auto"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="restaurantes.html?categoria=churrascarias"
+               class="categoria-card">
+              <i class="bi bi-fire"></i>
+                <div class="categoria-info">
+                    <h2>Churrascarias</h2>
+                    <i class="bi bi-arrow-right ms-auto"></i>
+                </div>
+            </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+            <a href="restaurantes.html?categoria=brasileira"
+               class="categoria-card">
+              <i class="bi bi-fork-knife"></i>
+                <div class="categoria-info">
+                    <h2>Comida brasileira</h2>
+                    <i class="bi bi-arrow-right ms-auto"></i>
+                </div>
+            </a>
+        </div>
+    </div>
+</main>
+
+
+     <!--Parte de baixo final (footer)-->
+<footer class="footer-aponte mt-auto">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+<h5>Sobre</h5>
+<ul class="list-unstyled">
+    <li> <a href="sobre.html">Sobre o Aponte</a></li>
+    <li><a href="#">Política de privacidade</a></li>
+    <li><a href="#">Termos de uso</a></li>
+</ul>
+            </div>
+
+             <div class="row">
+            <div class="col-12">
+                <p class="copyright mb-0">
+                    © 2026 Aponte - Todos os Direitos Reservados
+                </p>
+            </div>
+        </div>
+
+        </div>
+    </div>
+  </footer>
+
+</body>
+</html>

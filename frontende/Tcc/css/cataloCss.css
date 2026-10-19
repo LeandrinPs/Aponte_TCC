@@ -1,0 +1,194 @@
+/*Card principal e o header*/
+.hero-aponte {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.75),
+            rgba(0, 0, 0, 0.15)
+        ),
+        url("../img/imagem.jpeg") center/cover no-repeat;
+
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    color: white;
+    padding: 60px 0;
+}
+
+.hero-aponte h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    max-width: 650px;
+}
+
+.hero-aponte p {
+    font-size: 1.1rem;
+    max-width: 520px;
+    margin: 20px 0;
+}
+
+.hero-aponte .btn {
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 600;
+}
+
+
+/*Logo*/
+.logo {
+    width: 180px;
+    max-height: 60px;
+    object-fit: contain;
+}
+
+
+
+/*Barra de pesquisa*/
+
+.barra-pesquisa {
+    position: relative;
+    left: 500px;
+    width: 290px;
+}
+
+
+/*Links inicial*/
+
+.nav-link {
+    color: #555;
+    text-decoration: none;
+    position: relative;
+}
+
+.nav-link.ativo {
+    color: #dc3545;
+}
+
+.nav-link.ativo::after {
+    content: "";
+    position: absolute;
+    bottom: -5px;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background-color: #dc3545;
+    border-radius: 2px;
+}
+
+
+.nav-link:not(.ativo):hover {
+    color: #dc3545;
+}
+
+
+.secao-mapa {
+    max-width: 1200px;
+}
+
+/* Card principal */
+.card-mapa {
+    background-color: #f8f6f4;
+    border-radius: 16px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.06);
+}
+
+body {
+    background: #fff;
+    color: #212529;
+}
+
+/* Banner */
+.banner-categorias {
+    background:
+        linear-gradient(90deg,
+            rgba(0, 0, 0, .85),
+            rgba(0, 0, 0, .25)),
+        url("../img/imagem.jpeg") center/cover no-repeat;
+
+    color: white;
+    padding: 55px 0;
+    border-radius: 0 0 16px 16px;
+}
+
+.subtitulo-banner {
+    color: #ff3348;
+    font-weight: 700;
+    letter-spacing: 2px;
+}
+
+.banner-categorias h1 {
+    font-size: clamp(30px, 4vw, 48px);
+    font-weight: 700;
+    margin-top: 12px;
+}
+
+.banner-categorias p {
+    font-size: 18px;
+    margin-bottom: 0;
+}
+
+/* Cards */
+
+/* Card de categoria */
+.categoria-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    height: 180px;
+    padding: 20px;
+    border: 1px solid #eeeeee;
+    border-radius: 14px;
+    background-color: #fffafa;
+
+    color: #212529;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+/* Ícone centralizado */
+.categoria-card > i:first-child {
+    font-size: 40px;
+    color: #dc3545;
+    margin-bottom: 12px;
+}
+
+/* Nome e seta */
+.categoria-info {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+
+.categoria-info h2 {
+    font-size: 17px;
+    margin: 0;
+}
+
+/* Efeito ao passar o mouse */
+.categoria-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.1);
+}
+
+.footer-aponte {
+    background: #202328;
+    color: white;
+}
+
+
+
+    .categoria-info > i:first-child {
+        width: 35px;
+        height: 35px;
+        font-size: 18px;
+    }
+
+    .categoria-info h2 {
+        font-size: 13px;
+    }
+

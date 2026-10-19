@@ -1,0 +1,36 @@
+
+.navbar {
+    height: 100px;
+    position: relative;
+    padding-top: 0;
+    padding-bottom: 0;
+    align-items: flex-start;
+}
+
+.navbar .container-fluid {
+      margin-top: 30px;
+      display: flex;
+      align-items: center;
+}
+
+.titulo {
+    position: absolute;
+    left: 50%;
+    bottom: 15px;
+    transform: translateX(-50%);
+    width: 100%;
+    text-align: center;
+    top: 70px;
+}
+
+.titulo h1 {
+    margin: 0;
+    font-size: 40px;
+}
+
+.logo {
+    width: 180px;
+    max-height: 60px;
+    object-fit: contain;
+}
+
