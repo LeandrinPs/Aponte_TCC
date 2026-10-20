@@ -1,5 +1,19 @@
 package com.aponte.Entity;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import lombok.Data;
+
 public class Horario {
     //ID "id_horario" é o identificador da entity horario
     @Id
@@ -13,7 +27,7 @@ public class Horario {
 
     @Enumerated(EnumType.STRING)
     @Column(name = "dia_semana", nullable = false, length = 20)
-    private DayOfweek dia_semana;
+    private DayOfWeek dia_semana;
 
     @Column(name = "hora_abertura")
     private LocalTime hora_abertura;
