@@ -1,31 +1,35 @@
+.hero-aponte {
+    background:
+        linear-gradient(
+            90deg,
+            rgba(0, 0, 0, 0.75),
+            rgba(0, 0, 0, 0.15)
+        ),
+        url("../img/imagem.jpeg") center/cover no-repeat;
 
-.navbar {
-    height: 100px;
-    position: relative;
-    padding-top: 0;
-    padding-bottom: 0;
-    align-items: flex-start;
+    min-height: 360px;
+    display: flex;
+    align-items: center;
+    color: white;
+    padding: 60px 0;
 }
 
-.navbar .container-fluid {
-      margin-top: 30px;
-      display: flex;
-      align-items: center;
+.hero-aponte h1 {
+    font-size: clamp(2rem, 4vw, 3.2rem);
+    font-weight: 700;
+    max-width: 650px;
 }
 
-.titulo {
-    position: absolute;
-    left: 50%;
-    bottom: 15px;
-    transform: translateX(-50%);
-    width: 100%;
-    text-align: center;
-    top: 70px;
+.hero-aponte p {
+    font-size: 1.1rem;
+    max-width: 520px;
+    margin: 20px 0;
 }
 
-.titulo h1 {
-    margin: 0;
-    font-size: 40px;
+.hero-aponte .btn {
+    padding: 12px 24px;
+    border-radius: 30px;
+    font-weight: 600;
 }
 
 .logo {
