@@ -7,6 +7,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+
 
 @Entity 
 @Table (name = "usuario")
@@ -14,9 +18,17 @@ import lombok.Data;
 public class Usuario {
     /* id_user é o identificador da entity usuario */
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+    @Column(name = "id_user", unique = true, nullable = false)
     private Long id_user;
 
-    @Column
+    @Column(name = "nome", nullable = false, length = 50)
+    private String nome;
+
+    @Column(name = "email", nullable = false, length = 50)
+    private String email;
+
+    @Column(name = "senha", nullable = false, length = 50)
+    private String senha;
 }
  
