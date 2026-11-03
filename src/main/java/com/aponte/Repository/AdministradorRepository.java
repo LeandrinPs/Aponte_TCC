@@ -8,5 +8,5 @@ public interface AdministradorRepository extends JpaRepository<Administrador, Lo
 
     
 
-    optional
+    
 }

@@ -2,16 +2,17 @@ package com.aponte.Repository;
 
 import java.util.List;
 import java.util.Optional;
-
+import java.util.List;
+import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.aponte.Entity.Favoritos;
 
 public interface FavoritosRepository extends JpaRepository<Favoritos, Long> {
     
-     List<Favorito> findByUsuario_Id(Long usuarioId);
+     List<Favoritos> findByUsuario_Id(Long usuarioId);
 
-    Optional<Favorito>
+    Optional<Favoritos>
         findByUsuario_IdAndEstabelecimento_Id(
             Long usuarioId,
             Long estabelecimentoId

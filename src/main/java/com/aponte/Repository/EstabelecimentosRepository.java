@@ -1,5 +1,7 @@
 package com.aponte.Repository;
 
+import java.util.List;
+import java.util.Optional;
 import com.aponte.Entity.Estabelecimentos;
 import org.springframework.data.jpa.repository.JpaRepository;
 

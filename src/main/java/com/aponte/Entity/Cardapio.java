@@ -40,6 +40,5 @@ public class Cardapio {
     private String descricao;
 
     @Column(name = "preco", nullable = false, precision = 10, scale = 2)
-    @Positive (message = "O preço deve ser um valor positivo.")
     private BigDecimal preco;
 }
