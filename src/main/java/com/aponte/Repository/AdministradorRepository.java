@@ -6,7 +6,7 @@ import com.aponte.Entity.Administrador;
 
 public interface AdministradorRepository extends JpaRepository<Administrador, Long> {
 
-
+    
 
     optional
 }

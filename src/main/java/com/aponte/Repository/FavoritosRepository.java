@@ -9,12 +9,21 @@ import com.aponte.Entity.Favoritos;
 
 public interface FavoritosRepository extends JpaRepository<Favoritos, Long> {
     
-    List<Favoritos> findByAtivotrue ();
+     List<Favorito> findByUsuario_Id(Long usuarioId);
 
+    Optional<Favorito>
+        findByUsuario_IdAndEstabelecimento_Id(
+            Long usuarioId,
+            Long estabelecimentoId
+        );
 
-    Optional<Favoritos> findByIdandAtivoTrue(Long id);
+    boolean existsByUsuario_IdAndEstabelecimento_Id(
+        Long usuarioId,
+        Long estabelecimentoId
+    );
 
-    List<Favoritos> findByNomeContainingIgnoreCaseAndAtivoTrue(String nome);
-
-    List<Favoritos>findById_CategoriaAndAtivoTrue(Long id_categoria);
+    void deleteByUsuario_IdAndEstabelecimento_Id(
+        Long usuarioId,
+        Long estabelecimentoId
+    );
 }
