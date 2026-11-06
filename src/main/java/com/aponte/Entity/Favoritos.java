@@ -17,7 +17,7 @@ public class Favoritos {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     @Column(name = "id_favorito", unique = true, nullable = false)
-    private Long id_favorito;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)

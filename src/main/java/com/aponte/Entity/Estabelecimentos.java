@@ -17,7 +17,7 @@ public class Estabelecimentos {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     @Column(name = "id_estabelecimento", unique = true, nullable = false)
-    private Long id_estabelecimento;
+    private Long id;
 
     @Column(name = "nome", nullable = false, length = 50)
     private String nome;

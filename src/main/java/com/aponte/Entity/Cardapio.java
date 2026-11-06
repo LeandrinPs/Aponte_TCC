@@ -27,7 +27,7 @@ public class Cardapio {
    @Id
    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
    @Column(name = "id_cardapio", unique = true, nullable = false)
-   private Long id_cardapio; 
+   private Long id; 
 
    @ManyToOne
    @JoinColumn(name = "id_estabelecimento", nullable = false)

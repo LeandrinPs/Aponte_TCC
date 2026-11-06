@@ -17,7 +17,7 @@ public class Avaliacao {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     @Column(name = "id_avaliacao", unique = true, nullable = false)
-    private Long id_avaliacao;
+    private Long id;
 
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)
@@ -25,7 +25,7 @@ public class Avaliacao {
 
     @ManyToOne
     @JoinColumn(name = "id_estabelecimento", nullable = false)
-    private Estabelecimentos estabelecimentos;
+    private Estabelecimentos estabelecimento;
 
     @Column(name = "nota", nullable = false)
     private Integer nota;

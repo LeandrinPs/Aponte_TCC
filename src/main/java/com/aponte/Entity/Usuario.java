@@ -18,7 +18,7 @@ public class Usuario {
     @Id
     @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
     @Column(name = "id_user", unique = true, nullable = false)
-    private Long id_user;
+    private Long id;
 
     @Column(name = "nome", nullable = false, length = 50)
     private String nome;
