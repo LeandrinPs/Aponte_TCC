@@ -5,6 +5,7 @@ import static org.assertj.core.api.Assertions.*;
 import com.aponte.Entity.*;
 import com.aponte.Repository.*;
 import jakarta.persistence.EntityManager;
+import java.math.BigDecimal;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.data.jpa.test.autoconfigure.DataJpaTest;
@@ -19,6 +20,7 @@ class RepositoryValidationTest {
   @Autowired AvaliacaoRepository reviews;
   @Autowired FavoritosRepository favorites;
   @Autowired AdministradorRepository admins;
+  @Autowired CardapioRepository menus;
 
   Usuario user() {
     Usuario u = new Usuario();
@@ -96,6 +98,43 @@ class RepositoryValidationTest {
     assertThat(favorites.existsByUsuario_IdAndEstabelecimento_Id(u.getId(), e.getId())).isFalse();
     assertThat(users.findById(u.getId())).isPresent();
     assertThat(places.findById(e.getId())).isPresent();
+  }
+
+  @Test
+  void cardapioPersistenceAndFiltering() {
+    Estabelecimentos first = place();
+    Estabelecimentos second = place();
+    Cardapio item =
+        Cardapio.builder()
+            .estabelecimento(first)
+            .nome("Prato do dia")
+            .descricao("Prato de teste")
+            .preco(new BigDecimal("24.90"))
+            .build();
+    item = menus.saveAndFlush(item);
+    Long itemId = item.getId();
+    assertThat(itemId).isNotNull();
+    Cardapio other =
+        Cardapio.builder()
+            .estabelecimento(second)
+            .nome("Outro prato")
+            .descricao("Outro estabelecimento")
+            .preco(new BigDecimal("19.50"))
+            .build();
+    other = menus.saveAndFlush(other);
+    Long otherId = other.getId();
+    em.clear();
+
+    Cardapio saved = menus.findById(itemId).orElseThrow();
+    assertThat(saved.getEstabelecimento().getId()).isEqualTo(first.getId());
+    assertThat(saved.getPreco()).isEqualByComparingTo("24.90");
+    assertThat(menus.findByEstabelecimento_Id(first.getId()))
+        .extracting(Cardapio::getId)
+        .containsExactly(itemId);
+    assertThat(menus.findByEstabelecimento_Id(second.getId()))
+        .extracting(Cardapio::getId)
+        .containsExactly(otherId);
+    assertThat(menus.findByEstabelecimento_Id(-1L)).isEmpty();
   }
 
   @Test
