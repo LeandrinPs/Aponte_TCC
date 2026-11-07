@@ -8,6 +8,8 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 @Entity
 @Table(name = "favoritos")
@@ -19,12 +21,16 @@ public class Favoritos {
     @Column(name = "id_favorito", unique = true, nullable = false)
     private Long id;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "id_user", nullable = false)
     private Usuario usuario;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToOne
     @JoinColumn(name = "id_estabelecimento", nullable = false)
-    private Estabelecimentos estabelecimentos;
+    private Estabelecimentos estabelecimento;
     
 }

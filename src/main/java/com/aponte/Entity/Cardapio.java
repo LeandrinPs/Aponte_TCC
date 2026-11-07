@@ -12,6 +12,8 @@ import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.NoArgsConstructor;
 
 
@@ -29,9 +31,11 @@ public class Cardapio {
    @Column(name = "id_cardapio", unique = true, nullable = false)
    private Long id; 
 
+   @EqualsAndHashCode.Exclude
+   @ToString.Exclude
    @ManyToOne
    @JoinColumn(name = "id_estabelecimento", nullable = false)
-   private Estabelecimentos estabelecimentos;
+   private Estabelecimentos estabelecimento;
 
    @Column(name = "nome", nullable = false, length = 50)
    private String nome;
