@@ -1,28 +1,27 @@
 package com.aponte.Repository;
 
+import com.aponte.Entity.Avaliacao;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
-
-import com.aponte.Entity.Avaliacao;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
-    
-    List<Avaliacao> findByEstabelecimento_Id(Long estabelecimentoId);
+  boolean existsByEstabelecimento_Id(Long estabelecimentoId);
 
-    List<Avaliacao>
-        findByUsuario_Id(Long usuarioId);
+  long countByEstabelecimento_Id(Long estabelecimentoId);
 
-    Optional<Avaliacao>
-        findByUsuario_IdAndEstabelecimento_Id(
-            Long usuarioId,
-            Long estabelecimentoId
-        );
+  void deleteByUsuario_Id(Long usuarioId);
 
-    boolean existsByUsuario_IdAndEstabelecimento_Id(
-        Long usuarioId,
-        Long estabelecimentoId
-    );
+  @Query("select avg(a.nota) from Avaliacao a where a.estabelecimento.id = :id")
+  Double calcularMediaPorEstabelecimento(@Param("id") Long estabelecimentoId);
+
+  List<Avaliacao> findByEstabelecimento_Id(Long estabelecimentoId);
+
+  List<Avaliacao> findByUsuario_Id(Long usuarioId);
+
+  Optional<Avaliacao> findByUsuario_IdAndEstabelecimento_Id(Long usuarioId, Long estabelecimentoId);
+
+  boolean existsByUsuario_IdAndEstabelecimento_Id(Long usuarioId, Long estabelecimentoId);
 }
-

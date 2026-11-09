@@ -12,25 +12,29 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
-@Table(name = "favoritos")
+@Table(
+    name = "favoritos",
+    uniqueConstraints =
+        @jakarta.persistence.UniqueConstraint(
+            name = "uk_favorito_usuario_estabelecimento",
+            columnNames = {"id_user", "id_estabelecimento"}))
 @Data
 public class Favoritos {
-    //ID "id_favorito" é o identificador da entity favoritos
-    @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    @Column(name = "id_favorito", unique = true, nullable = false)
-    private Long id;
+  // ID "id_favorito" é o identificador da entity favoritos
+  @Id
+  @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+  @Column(name = "id_favorito", unique = true, nullable = false)
+  private Long id;
 
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @ManyToOne
-    @JoinColumn(name = "id_user", nullable = false)
-    private Usuario usuario;
+  @EqualsAndHashCode.Exclude
+  @ToString.Exclude
+  @ManyToOne
+  @JoinColumn(name = "id_user", nullable = false)
+  private Usuario usuario;
 
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @ManyToOne
-    @JoinColumn(name = "id_estabelecimento", nullable = false)
-    private Estabelecimentos estabelecimento;
-    
+  @EqualsAndHashCode.Exclude
+  @ToString.Exclude
+  @ManyToOne
+  @JoinColumn(name = "id_estabelecimento", nullable = false)
+  private Estabelecimentos estabelecimento;
 }
