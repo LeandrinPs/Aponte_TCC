@@ -7,11 +7,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Aponte - Estabelecimentos</title>
+
+    <!-- Bootstrap 5.3.8 -->
     <link
-      <link href="https://cdn.jsdelivr.net/npm/bootstrap@6.0.0-alpha.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-B/GM4XqrwHnWXNOWMbloTmrYXZg10cakYGmpfsR/bbzQ6JAJI4ihuyADKLnBgrCe" crossorigin="anonymous">
+        href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css"
+        rel="stylesheet">
+
+    <!-- Bootstrap Icons -->
     <link
         rel="stylesheet"
         href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
+    <!-- CSS -->
     <link rel="stylesheet" href="css/map.css">
     <link rel="stylesheet" href="css/painel.css">
 
@@ -27,128 +34,290 @@
         <!-- Painel lateral -->
         <aside id="painel-restaurante">
 
-            <ul class="nav nav-link" id="pills-tab" role="tablist">
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link active" id="pills-home-tab" data-bs-toggle="tab" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Informações</button>
-                </li>
-                <li class="nav-item" role="presentation">
-                  <button class="nav-link" id="pills-profile-tab" data-bs-toggle="tab" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Cardapio</button>
-                </li>
-                <li class="nav-item " role="presentation">
-                  <button class="nav-link"  id="pills-contact-tab" data-bs-toggle="tab" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Sobre</button>
-                </li>
-              </ul>
+            <!-- Fotografia do estabelecimento -->
+            <div id="area-foto">
+
+                <img
+                    id="foto-restaurante"
+                    alt="Foto do estabelecimento">
+
+                <div id="creditos-foto"></div>
+
             </div>
-              <div class="tab-content" id="pills-tabContent">
-                <div class="tab-pane show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
-                    <div class="painel-conteudo">
-                    <div class="info-item">
-                        <i class="bi bi-geo-alt-fill"></i>
-        
-                        <p id="endereco-restaurante">
-                            Rua Exemplo, 123 - Centro
-                        </p>
-                    </div>
-        
-                    <!-- Telefone -->
-                    <div class="info-item">
-                        <i class="bi bi-telephone-fill"></i>
-        
-                        <a id="telefone-restaurante" href="tel:17999999999">
-                            (17) 99999-9999
-                        </a>
-                    </div>
-        
-                    <!-- Site -->
-                    <div class="info-item">
-                        <i class="bi bi-globe"></i>
-        
-                        <a id="site-restaurante"
-                           href="https://example.com"
-                           target="_blank">
-                            Site oficial
-                        </a>
-                    </div>
-        
-                    <!-- Horários -->
-                    <div class="info-item horarios-toggle"
-                         data-bs-toggle="collapse"
-                         data-bs-target="#collapseHorarios">
-        
-                        <i class="bi bi-clock"></i>
-        
-                        <span>Ver horários</span>
-        
-                    </div>
-        
-                    <div class="collapse" id="collapseHorarios">
-        
-                        <div class="card card-body border-0">
-        
-                            <ul id="horarios-restaurante">
-                                <strong>                  
-                                <ol>Segunda: 08h às 18h</ol>
-                                <ol>Terça: 08h às 18h</ol>
-                                <ol>Quarta: 08h às 18h</ol>
-                                <ol>Quinta: 08h às 18h</ol>
-                                <ol>Sexta: 08h às 22h</ol>
-                                <ol>Sábado: 08h às 22h</ol>
-                                <ol>Domingo: Fechado</ol>
-                            </strong>
-                            </ul>
-        
+
+            <!-- Cabeçalho -->
+            <div class="painel-header">
+
+                <h2 id="nome-restaurante"></h2>
+
+                <button
+                    id="fechar-painel"
+                    type="button"
+                    aria-label="Fechar painel">
+
+                    &times;
+
+                </button>
+
+            </div>
+
+            <!-- Navegação das abas -->
+            <ul class="nav" id="pills-tab" role="tablist">
+
+                <li class="nav-item" role="presentation">
+
+                    <button
+                        class="nav-link active"
+                        id="pills-home-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#pills-home"
+                        type="button"
+                        role="tab"
+                        aria-controls="pills-home"
+                        aria-selected="true">
+
+                        Informações
+
+                    </button>
+
+                </li>
+
+                <li class="nav-item" role="presentation">
+
+                    <button
+                        class="nav-link"
+                        id="pills-profile-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#pills-profile"
+                        type="button"
+                        role="tab"
+                        aria-controls="pills-profile"
+                        aria-selected="false">
+
+                        Cardápio
+
+                    </button>
+
+                </li>
+
+                <li class="nav-item" role="presentation">
+
+                    <button
+                        class="nav-link"
+                        id="pills-contact-tab"
+                        data-bs-toggle="pill"
+                        data-bs-target="#pills-contact"
+                        type="button"
+                        role="tab"
+                        aria-controls="pills-contact"
+                        aria-selected="false">
+
+                        Sobre
+
+                    </button>
+
+                </li>
+
+            </ul>
+
+
+            <!-- Conteúdo das abas -->
+            <div class="tab-content" id="pills-tabContent">
+
+
+                <!-- ABA INFORMAÇÕES -->
+                <div
+                    class="tab-pane fade show active"
+                    id="pills-home"
+                    role="tabpanel"
+                    aria-labelledby="pills-home-tab"
+                    tabindex="0">
+
+                    <div class="painel-card">
+
+                        <h3>Informações do estabelecimento</h3>
+
+                        <!-- Endereço -->
+                        <div class="info-item">
+
+                            <i class="bi bi-geo-alt-fill"></i>
+
+                            <p id="endereco-restaurante">
+                                Endereço do estabelecimento
+                            </p>
+
                         </div>
-                    </div>
-                    <h3>Avaliação do Google</h3>
-    
-                    <p id="avaliacao-restaurante">
-                        ⭐ 4,7 (250 avaliações)
-                    </p>
-        
-                    </div>
-                </div>
-                <div class="tab-pane" id="pills-profile" role="tabpanel" aria-labelledby="pills-profile-tab" tabindex="0">
-                    <p> <h3>Cardápio</h3>
-    
-                        <p>
-                            <a id="cardapio-restaurante"
-                               href="#"
-                               target="_blank">
-                                Ver cardápio
+
+
+                        <!-- Telefone -->
+                        <div class="info-item">
+
+                            <i class="bi bi-telephone-fill"></i>
+
+                            <a
+                                id="telefone-restaurante"
+                                href="#">
+
+                                Telefone
+
                             </a>
+
+                        </div>
+
+
+                        <!-- Site oficial -->
+                        <div class="info-item">
+
+                            <i class="bi bi-globe"></i>
+
+                            <a
+                                class="linkmap"
+                                id="site-restaurante"
+                                href="#"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                hidden>
+
+                                Site oficial
+
+                            </a>
+
+                        </div>
+
+
+                        <!-- Horários -->
+                        <div class="horarios-container">
+
+                            <button
+                                class="info-item horarios-toggle"
+                                type="button"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#collapseHorarios"
+                                aria-expanded="false"
+                                aria-controls="collapseHorarios">
+
+                                <i class="bi bi-clock"></i>
+
+                                <span>Ver horários</span>
+
+                                <i class="bi bi-chevron-down ms-auto"></i>
+
+                            </button>
+
+
+                            <div
+                                class="collapse"
+                                id="collapseHorarios">
+
+                                <div class="card card-body border-0">
+
+                                    <ul id="horarios-restaurante"></ul>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <hr>
+
+
+                        <!-- Avaliação do Google -->
+                        <h3>Avaliação do Google</h3>
+
+                        <p id="avaliacao-restaurante"></p>
+
+
+                    </div>
+
+                </div>
+
+
+                <!-- ABA CARDÁPIO -->
+                <div
+                    class="tab-pane fade"
+                    id="pills-profile"
+                    role="tabpanel"
+                    aria-labelledby="pills-profile-tab"
+                    tabindex="0">
+
+                    <div class="painel-card">
+
+                        <h3>Cardápio</h3>
+
+                        <p>
+                            Consulte o cardápio deste estabelecimento.
                         </p>
-                    </p>
-                 
+
+                        <a
+                            id="cardapio-restaurante"
+                            href="#"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            hidden>
+
+                            <i class="bi bi-book"></i>
+                            Ver cardápio
+
+                        </a>
+
+                    </div>
+
                 </div>
-                <div class="tab-pane" id="pills-contact" role="tabpanel" aria-labelledby="pills-contact-tab" tabindex="0">
-                    <h3>Tipo de estabelecimento</h3>
-    
-                    <p id="tipo-restaurante">
-                        Restaurante
-                    </p>
+
+
+                <!-- ABA SOBRE -->
+                <div
+                    class="tab-pane fade"
+                    id="pills-contact"
+                    role="tabpanel"
+                    aria-labelledby="pills-contact-tab"
+                    tabindex="0">
+
+                    <div class="painel-card">
+
+                        <h3>Sobre o estabelecimento</h3>
+
+                        <div class="info-item">
+
+                            <i class="bi bi-shop"></i>
+
+                            <div>
+
+                                <strong>Tipo de estabelecimento</strong>
+
+                                <p id="tipo-restaurante">
+                                    Restaurante
+                                </p>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
                 </div>
-              </div>
-      
-     
-         
-                <hr>
+
+
             </div>
-    
+
         </aside>
 
     </div>
 
+
     <!-- Bootstrap JavaScript -->
     <script
-        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"
-        crossorigin="anonymous">
+        src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js">
     </script>
 
-    <!-- JavaScript do mapa-->
+
+    <!-- JavaScript do mapa -->
     <script src="js/map.js"></script>
 
-    <!-- Google Maps API-->
-    
+
+    <!-- Google Maps API -->
     <script
         async
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCIbUuA5yc4OD8XNYapIK7LkepHBUWw3C8&loading=async&callback=initMap">
@@ -157,4 +326,3 @@
 </body>
 
 </html>
-

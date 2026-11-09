@@ -257,3 +257,39 @@ html, body {
     display: block;
     flex: 1;
 }
+
+
+/* Card das informações */
+.painel-card {
+    background: white;
+    margin: 15px;
+    padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.08);
+}
+
+/* Título do card */
+.painel-card h3 {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 18px;
+}
+
+/* Horários */
+.horarios-toggle {
+    width: 100%;
+    border: none;
+    background: transparent;
+    text-align: left;
+}
+
+/* Conteúdo dos horários */
+#horarios-restaurante {
+    padding-left: 20px;
+    margin: 0;
+}
+
+#horarios-restaurante li {
+    font-size: 14px;
+    padding: 5px 0;
+}
