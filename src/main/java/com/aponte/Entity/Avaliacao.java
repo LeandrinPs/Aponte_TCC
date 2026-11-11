@@ -12,28 +12,35 @@ import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 @Entity
-@Table(name = "avaliacao")
+@Table(
+    name = "avaliacao",
+    uniqueConstraints =
+        @jakarta.persistence.UniqueConstraint(
+            name = "uk_avaliacao_usuario_estabelecimento",
+            columnNames = {"id_user", "id_estabelecimento"}))
 @Data
 public class Avaliacao {
-    //ID "id_avaliacao" é o identificador da entity avaliacao
-    @Id
-    @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
-    @Column(name = "id_avaliacao", unique = true, nullable = false)
-    private Long id;
+  // ID "id_avaliacao" é o identificador da entity avaliacao
+  @Id
+  @GeneratedValue(strategy = jakarta.persistence.GenerationType.IDENTITY)
+  @Column(name = "id_avaliacao", unique = true, nullable = false)
+  private Long id;
 
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @ManyToOne
-    @JoinColumn(name = "id_user", nullable = false)
-    private Usuario usuario;
+  @EqualsAndHashCode.Exclude
+  @ToString.Exclude
+  @ManyToOne
+  @JoinColumn(name = "id_user", nullable = false)
+  private Usuario usuario;
 
-    @EqualsAndHashCode.Exclude
-    @ToString.Exclude
-    @ManyToOne
-    @JoinColumn(name = "id_estabelecimento", nullable = false)
-    private Estabelecimentos estabelecimento;
+  @EqualsAndHashCode.Exclude
+  @ToString.Exclude
+  @ManyToOne
+  @JoinColumn(name = "id_estabelecimento", nullable = false)
+  private Estabelecimentos estabelecimento;
 
-    @Column(name = "nota", nullable = false)
-    private Integer nota;
-    
+  @Column(name = "nota", nullable = false)
+  private Integer nota;
+
+  @Column(name = "comentario", length = 1000)
+  private String comentario;
 }
