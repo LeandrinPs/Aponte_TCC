@@ -45,17 +45,41 @@
     
 
         </div>
-        <ul class="nav nav-link" id="pills-tab" role="tablist">
+        <ul class="nav" id="pills-tab" role="tablist">
+
             <li class="nav-item" role="presentation">
-              <button class="nav-link active" id="pills-home-tab" data-bs-toggle="tab" data-bs-target="#pills-home" type="button" role="tab" aria-controls="pills-home" aria-selected="true">Informações</button>
+                <button class="nav-link active" id="pills-home-tab" data-bs-toggle="pill" data-bs-target="#pills-home" type="button"
+ role="tab">
+                    Informações
+                </button>
             </li>
+        
             <li class="nav-item" role="presentation">
-              <button class="nav-link" id="pills-profile-tab" data-bs-toggle="tab" data-bs-target="#pills-profile" type="button" role="tab" aria-controls="pills-profile" aria-selected="false">Cardapio</button>
+                <button class="nav-link" id="pills-profile-tab"  data-bs-toggle="pill" data-bs-target="#pills-profile" type="button" role="tab">
+                    Cardápio
+                </button>
             </li>
-            <li class="nav-item " role="presentation">
-              <button class="nav-link"  id="pills-contact-tab" data-bs-toggle="tab" data-bs-target="#pills-contact" type="button" role="tab" aria-controls="pills-contact" aria-selected="false">Sobre</button>
+        
+            <li class="nav-item" role="presentation">
+                <button
+                    class="nav-link"
+                    id="pills-contact-tab"
+                    data-bs-toggle="pill"
+                    data-bs-target="#pills-contact"
+                    type="button"
+                    role="tab">
+                    Sobre
+                </button>
             </li>
-          </ul>
+        
+            <li class="nav-item" role="presentation">
+                <button  class="nav-link" id="pills-rotas-tab" data-bs-toggle="pill" data-bs-target="#pills-rotas"type="button"
+                    role="tab">
+                    Rotas
+                </button>
+            </li>
+        
+        </ul>
         </div>
           <div class="tab-content" id="pills-tabContent">
             <div class="tab-pane show active" id="pills-home" role="tabpanel" aria-labelledby="pills-home-tab" tabindex="0">
@@ -150,6 +174,103 @@
  
      
             <hr>
+
+
+<!-- ABA ROTAS -->
+<div
+class="tab-pane fade"
+id="pills-rotas"
+role="tabpanel"
+aria-labelledby="pills-rotas-tab">
+
+<div class="painel-card">
+
+    <h3>
+        <i class="bi bi-sign-turn-right-fill"></i>
+        Como chegar?
+    </h3>
+
+    <div class="rotas-opcoes">
+
+        <button class="rota-opcao active"
+            onclick="calcularRota('DRIVING', this)">
+            <i class="bi bi-car-front-fill"></i>
+            <span>Carro</span>
+        </button>
+
+        <button class="rota-opcao"
+            onclick="calcularRota('BICYCLING', this)">
+            <i class="bi bi-bicycle"></i>
+            <span>Bicicleta</span>
+        </button>
+
+        <button class="rota-opcao"
+            onclick="calcularRota('WALKING', this)">
+            <i class="bi bi-person-walking"></i>
+            <span>A pé</span>
+        </button>
+
+        <button class="rota-opcao"
+            onclick="calcularRota('TRANSIT', this)">
+            <i class="bi bi-bus-front-fill"></i>
+            <span>Ônibus</span>
+        </button>
+
+        <button class="rota-opcao"
+            onclick="calcularRota('TWO_WHEELER', this)">
+            <i class="bi bi-bus-front-fill"></i>
+            <span>Ônibus</span>
+        </button>
+    </div>
+
+
+    <div id="resultado-rota">
+
+        <div class="rota-resumo">
+
+            <i class="bi bi-car-front-fill"
+                id="icone-transporte"></i>
+
+            <div class="rota-dados">
+                <strong id="tempo-rota">--</strong>
+                <span id="distancia-rota">--</span>
+            </div>
+
+            <div class="rota-recomendada">
+                <i class="bi bi-check-circle-fill"></i>
+                <span>Trajeto recomendado</span>
+            </div>
+
+        </div>
+
+    </div>
+
+    <!-- Instruções -->
+    <div class="instrucoes-container">
+
+        <h5>Trajeto</h5>
+
+        <div id="instrucoes-rota">
+            <p>Selecione um meio de transporte para calcular a rota.</p>
+        </div>
+
+    </div>
+
+    <!-- Limpar rota -->
+    <button
+        type="button"
+        id="limpar-rota"
+        class="btn-limpar-rota">
+
+        <i class="bi bi-trash"></i>
+        Limpar rota
+
+    </button>
+
+</div>
+
+</div>
+
         </div>
 
     </aside>
