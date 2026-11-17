@@ -1,0 +1,220 @@
+.conteudo-pagina {
+  padding-top: 115px;
+  padding-bottom: 48px;
+  min-height: 85vh;
+}
+body {
+  min-height: 100vh;
+}
+.navbar-layout {
+  gap: 12px;
+}
+.navbar-left {
+  flex-wrap: wrap;
+}
+.navbar-right {
+  gap: 10px;
+  display: flex;
+  align-items: center;
+}
+.navbar-right form {
+  margin: 0;
+}
+.navbar-right button {
+  white-space: nowrap;
+}
+.navbar .logo {
+  width: 72px;
+  height: auto;
+}
+.foto-card {
+  height: 210px;
+  object-fit: cover;
+}
+.foto-preview {
+  width: 220px;
+  max-height: 180px;
+  object-fit: cover;
+}
+.admin-pagina h1 {
+  margin-bottom: 24px;
+}
+.admin-pagina h2 {
+  font-size: 1.5rem;
+}
+.admin-pagina h3 {
+  font-size: 1.2rem;
+}
+.admin-pagina .nav-link {
+  color: #c72c3d;
+}
+.acao-linha {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+.indicador {
+  border: 1px solid #eee;
+  border-top: 4px solid #dc3545;
+  border-radius: 12px;
+  padding: 24px;
+  height: 100%;
+}
+.indicador strong {
+  font-size: 2rem;
+  display: block;
+}
+.mensagem-erro {
+  color: #a71928;
+}
+.mensagem-sucesso {
+  color: #146c43;
+}
+.pagina-mapa #map-container {
+  height: calc(100vh - 110px);
+  margin-top: 100px;
+}
+.pagina-mapa #painel-restaurante {
+  margin-top: 0;
+}
+.pagina-mapa #area-foto img {
+  width: 100%;
+  height: 190px;
+  object-fit: cover;
+}
+#creditos-foto {
+  font-size: 0.75rem;
+  padding: 4px 10px;
+}
+.aviso-mapa {
+  margin: 0;
+  padding: 6px 12px;
+  background: #fff3cd;
+  position: relative;
+  z-index: 2;
+}
+.aviso-mapa:empty {
+  display: none;
+}
+.avaliacao-item {
+  border-bottom: 1px solid #eee;
+  padding: 12px 0;
+}
+.avaliacao-item p {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+#mapa-cadastro {
+  height: 330px;
+  border: 1px solid #ddd;
+  background: #f6f6f6;
+}
+#form_container {
+  max-width: 520px;
+  width: calc(100% - 32px);
+}
+[hidden] {
+  display: none !important;
+}
+.card-body {
+  overflow-wrap: anywhere;
+}
+.btn {
+  min-height: 38px;
+}
+@media (max-width: 760px) {
+  .navbar-layout {
+    justify-content: center;
+  }
+  .navbar-left {
+    justify-content: center;
+    gap: 10px;
+  }
+  .navbar-search {
+    order: 3;
+    width: 100%;
+  }
+  .navbar .logo {
+    width: 48px;
+  }
+  .conteudo-pagina {
+    padding-top: 175px;
+  }
+  .pagina-mapa #map-container {
+    margin-top: 160px;
+    height: auto;
+    min-height: 68vh;
+  }
+  .pagina-mapa #map {
+    min-height: 45vh;
+  }
+  .pagina-mapa #painel-restaurante.aberto {
+    height: 55vh;
+    width: 100%;
+  }
+  .pagina-mapa #map-container {
+    flex-direction: column;
+  }
+  #sessao-nav {
+    font-size: 0.85rem;
+  }
+  .navbar-left .nav-link {
+    font-size: 0.9rem;
+  }
+}
+.google-atribuicao {
+  width: 105px;
+  height: auto;
+  display: inline-block;
+  margin: 6px 8px 6px 0;
+  vertical-align: middle;
+}
+.navbar-right .small {
+  max-width: 180px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.aviso-mapa {
+  position: fixed;
+  top: 100px;
+  left: 0;
+  right: 0;
+  z-index: 100;
+}
+@media (max-width: 760px) {
+  .aviso-mapa {
+    top: 160px;
+  }
+}
+.conteudo-pagina {
+  padding-top: calc(var(--altura-nav, 90px) + 24px);
+}
+.hero-aponte {
+  margin-top: var(--altura-nav, 90px);
+}
+.pagina-mapa #map-container {
+  margin-top: var(--altura-nav, 90px);
+  height: calc(100vh - var(--altura-nav, 90px) - 40px);
+}
+.aviso-mapa {
+  position: relative;
+  top: auto;
+  margin-top: var(--altura-nav, 90px);
+  color: #664d03;
+}
+.aviso-mapa:not(:empty) + #map-container {
+  margin-top: 0;
+}
+#painel-restaurante {
+  scroll-margin-top: var(--altura-nav, 90px);
+}
+@media (max-width: 760px) {
+  .pagina-mapa #map-container {
+    height: auto;
+    min-height: 70vh;
+  }
+  .conteudo-pagina {
+    padding-top: calc(var(--altura-nav, 150px) + 24px);
+  }
+}

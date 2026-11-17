@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aponte</title>
+    <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/vendor/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/css/cataloCss.css" />
+    <link rel="stylesheet" href="/css/footerCss.css" />
+    <link rel="stylesheet" href="/css/integracao.css" />
+    <link rel="icon" type="image/png" href="/img/logo1.png" />
+  </head>
+  <body class="d-flex flex-column min-vh-100">
+    <!--Cabeçalho-->
+    <div th:replace="~{fragmentos :: cabecalho(false)}"></div>
+
+    <!-- Banner -->
+    <header class="banner-categorias">
+      <div class="container">
+        <span class="subtitulo-banner">CATEGORIAS</span>
+
+        <h1>Explore por categoria</h1>
+
+        <p>Encontre restaurantes de acordo com sua preferência.</p>
+      </div>
+    </header>
+
+    <!-- Categorias -->
+    <main class="container py-5">
+      <div class="row g-4">
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a href="/map.html?categoria=pizzarias" class="categoria-card">
+            <i class="bi bi-pie-chart-fill"></i>
+            <div class="categoria-info">
+              <h2>Pizzarias</h2>
+              <i class="bi bi-arrow-right ms-auto"></i>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a href="/map.html?categoria=hamburguerias" class="categoria-card">
+            <i class="bi bi-egg-fried"></i>
+            <div class="categoria-info">
+              <h2>Hamburguerias</h2>
+              <i class="bi bi-arrow-right ms-auto"></i>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a href="/map.html?categoria=cafeterias" class="categoria-card">
+            <i class="bi bi-cup-hot-fill"></i>
+            <div class="categoria-info">
+              <h2>Cafeterias</h2>
+              <i class="bi bi-arrow-right ms-auto"></i>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a href="/map.html?categoria=japoneses" class="categoria-card">
+            <i class="bi bi-shop"></i>
+            <div class="categoria-info">
+              <h2>Japoneses</h2>
+              <i class="bi bi-arrow-right ms-auto"></i>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a href="/map.html?categoria=churrascarias" class="categoria-card">
+            <i class="bi bi-fire"></i>
+            <div class="categoria-info">
+              <h2>Churrascarias</h2>
+              <i class="bi bi-arrow-right ms-auto"></i>
+            </div>
+          </a>
+        </div>
+
+        <div class="col-12 col-sm-6 col-lg-3">
+          <a href="/map.html?categoria=brasileira" class="categoria-card">
+            <i class="bi bi-fork-knife"></i>
+            <div class="categoria-info">
+              <h2>Comida brasileira</h2>
+              <i class="bi bi-arrow-right ms-auto"></i>
+            </div>
+          </a>
+        </div>
+      </div>
+    </main>
+
+    <!--Parte de baixo final (footer)-->
+    <div th:replace="~{fragmentos :: rodape}"></div>
+
+    <script src="/js/app.js"></script>
+    <script src="/js/vendor/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

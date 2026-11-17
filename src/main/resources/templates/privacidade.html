@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/vendor/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/css/indexCss.css" />
+    <link rel="stylesheet" href="/css/footerCss.css" />
+    <link rel="stylesheet" href="/css/integracao.css" />
+    <title>Privacidade — Aponte</title>
+    <link rel="icon" type="image/png" href="/img/logo1.png" />
+  </head>
+  <body>
+    <div th:replace="~{fragmentos :: cabecalho(false)}"></div>
+    <main class="container conteudo-pagina">
+      <h1>Privacidade</h1>
+      <p>
+        O Aponte armazena nome, e-mail e hash de senha da conta, além dos
+        favoritos e avaliações associados. A localização é solicitada pelo
+        navegador para pesquisar nas proximidades. Fotografias e detalhes do
+        Google são carregados diretamente da plataforma Google; consulte também
+        as políticas de privacidade desse fornecedor. A administração pode
+        excluir contas conforme as regras do projeto.
+      </p>
+      <a href="/index.html">Voltar ao início</a>
+    </main>
+    <div th:replace="~{fragmentos :: rodape}"></div>
+    <script src="/js/app.js"></script>
+    <script src="/js/vendor/bootstrap.bundle.min.js"></script>
+  </body>
+</html>

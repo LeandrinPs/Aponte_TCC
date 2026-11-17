@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <body>
+    <nav
+      th:fragment="cabecalho(busca)"
+      class="navbar bg-body-tertiary navbar-aponte fixed-top border-bottom"
+    >
+      <div class="container-fluid navbar-layout">
+        <div class="navbar-left">
+          <a href="/index.html"
+            ><img src="/img/logo1.png" class="logo" alt="Aponte"
+          /></a>
+          <a href="/index.html" class="nav-link">Início</a
+          ><a href="/map.html" class="nav-link">Mapa</a>
+          <a href="/favoritos.html" class="nav-link">Favoritos</a
+          ><a href="/catalo.html" class="nav-link">Categorias</a>
+        </div>
+        <div th:if="${busca}" class="navbar-search">
+          <div class="autocomplete-grupo">
+            <div id="autocomplete-container" class="autocomplete-container">
+              <input
+                id="pesquisa-local"
+                class="form-control border-0"
+                type="search"
+                placeholder="Pesquisar cadastros do Aponte"
+                aria-label="Pesquisar cadastros do Aponte"
+              />
+            </div>
+            <button
+              type="button"
+              id="btn-foco-autocomplete"
+              class="btn-autocomplete"
+              aria-label="Pesquisar"
+            >
+              <i class="bi bi-search"></i>
+            </button>
+          </div>
+        </div>
+        <div id="sessao-nav" class="navbar-right">
+          <a href="/entra.html" class="link-danger">Entrar</a
+          ><a href="/forma.html" class="btn btn-danger">Cadastrar</a>
+        </div>
+      </div>
+    </nav>
+    <footer th:fragment="rodape" class="footer-aponte mt-auto">
+      <div class="container">
+        <a href="/sobre.html">Sobre o Aponte</a> ·
+        <a href="/privacidade.html">Privacidade</a> ·
+        <a href="/termos.html">Termos de uso</a>
+        <p>© 2026 Aponte — Projeto acadêmico</p>
+      </div>
+    </footer>
+  </body>
+</html>

@@ -1,5 +1,109 @@
 package com.aponte.Controller;
 
+import com.aponte.DTO.*;
+import com.aponte.Service.*;
+import jakarta.validation.Valid;
+import java.util.List;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+@RestController
+@RequestMapping("/api/admin")
+@RequiredArgsConstructor
 public class AdministradorController {
-    
+  private final AdministradorService admin;
+  private final EstabelecimentosService estabelecimentos;
+  private final CardapioService cardapios;
+
+  @GetMapping("/resumo")
+  public PainelResumoDTO resumo() {
+    return admin.resumo();
+  }
+
+  @GetMapping("/usuarios")
+  public List<UsuarioDTO> usuarios() {
+    return admin.listarUsuarios();
+  }
+
+  @GetMapping("/usuarios/{id}")
+  public UsuarioDTO usuario(@PathVariable Long id) {
+    return admin.buscarUsuario(id);
+  }
+
+  @PutMapping("/usuarios/{id}")
+  public UsuarioDTO atualizarUsuario(
+      @PathVariable Long id, @Valid @RequestBody UsuarioAtualizacaoDTO dados) {
+    return admin.atualizarUsuario(id, dados);
+  }
+
+  @DeleteMapping("/usuarios/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void excluirUsuario(@PathVariable Long id) {
+    admin.excluirUsuario(id);
+  }
+
+  @GetMapping("/estabelecimentos")
+  public List<EstabelecimentoDTO> estabelecimentos() {
+    return admin.listarEstabelecimentos();
+  }
+
+  @GetMapping("/estabelecimentos/{id}")
+  public EstabelecimentoDTO estabelecimento(@PathVariable Long id) {
+    return admin.buscarEstabelecimento(id);
+  }
+
+  @PostMapping("/estabelecimentos")
+  @ResponseStatus(HttpStatus.CREATED)
+  public EstabelecimentoDTO cadastrar(@Valid @RequestBody DadosEstabelecimentoDTO dados) {
+    return admin.cadastrarEstabelecimento(dados);
+  }
+
+  @PutMapping("/estabelecimentos/{id}")
+  public EstabelecimentoDTO atualizar(
+      @PathVariable Long id, @Valid @RequestBody DadosEstabelecimentoDTO dados) {
+    return admin.atualizarEstabelecimento(id, dados);
+  }
+
+  @DeleteMapping("/estabelecimentos/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void excluir(@PathVariable Long id) {
+    admin.excluirEstabelecimento(id);
+  }
+
+  @PostMapping(value = "/estabelecimentos/{id}/foto", consumes = "multipart/form-data")
+  public EstabelecimentoDTO foto(@PathVariable Long id, @RequestParam MultipartFile arquivo) {
+    return estabelecimentos.definirFoto(id, arquivo);
+  }
+
+  @DeleteMapping("/estabelecimentos/{id}/foto")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void removerFoto(@PathVariable Long id) {
+    estabelecimentos.removerFoto(id);
+  }
+
+  @PostMapping("/cardapios")
+  @ResponseStatus(HttpStatus.CREATED)
+  public CardapioDTO cadastrarItem(@Valid @RequestBody CardapioRequisicaoDTO body) {
+    return cardapios.cadastrar(body.referencia(), body.dados());
+  }
+
+  @PutMapping("/cardapios/{id}")
+  public CardapioDTO atualizarItem(
+      @PathVariable Long id, @Valid @RequestBody CardapioDadosDTO dados) {
+    return cardapios.atualizar(id, dados);
+  }
+
+  @DeleteMapping("/cardapios/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void excluirItem(@PathVariable Long id) {
+    cardapios.excluir(id);
+  }
+
+  @DeleteMapping("/avaliacoes/{id}")
+  @ResponseStatus(HttpStatus.NO_CONTENT)
+  public void moderar(@PathVariable Long id) {
+    admin.removerAvaliacao(id);
+  }
 }

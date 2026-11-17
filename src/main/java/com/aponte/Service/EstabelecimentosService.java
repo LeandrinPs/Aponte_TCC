@@ -13,6 +13,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
+import org.springframework.web.multipart.MultipartFile;
 
 @Service
 @Validated
@@ -24,6 +25,38 @@ public class EstabelecimentosService {
   private final AvaliacaoRepository avaliacoes;
   private final CardapioRepository cardapios;
   private final AcessoAtual acesso;
+  private final ImagensService imagens;
+
+  public List<EstabelecimentoDTO> listarProprios() {
+    return estabelecimentos.findByGooglePlaceIdIsNull().stream()
+        .map(EstabelecimentoDTO::de)
+        .toList();
+  }
+
+  @Transactional
+  public EstabelecimentoDTO definirFoto(
+      @NotNull @Positive Long id, @NotNull MultipartFile arquivo) {
+    acesso.exigirAdministrador();
+    Estabelecimentos entidade = exigirProprio(id);
+    String nova = imagens.salvar(arquivo);
+    imagens.removerSeRollback(nova);
+    String antiga = entidade.getFotoPrincipal();
+    entidade.setFotoPrincipal(nova);
+    var resultado =
+        EstabelecimentoDTO.de(Persistencia.gravar(() -> estabelecimentos.saveAndFlush(entidade)));
+    imagens.removerAposConfirmacao(antiga);
+    return resultado;
+  }
+
+  @Transactional
+  public void removerFoto(@NotNull @Positive Long id) {
+    acesso.exigirAdministrador();
+    Estabelecimentos entidade = exigirProprio(id);
+    String antiga = entidade.getFotoPrincipal();
+    entidade.setFotoPrincipal(null);
+    Persistencia.gravar(() -> estabelecimentos.saveAndFlush(entidade));
+    imagens.removerAposConfirmacao(antiga);
+  }
 
   public List<EstabelecimentoDTO> listar() {
     return estabelecimentos.findAll().stream().map(EstabelecimentoDTO::de).toList();
@@ -88,6 +121,7 @@ public class EstabelecimentosService {
           estabelecimentos.delete(entidade);
           estabelecimentos.flush();
         });
+    imagens.removerAposConfirmacao(entidade.getFotoPrincipal());
   }
 
   // Acesso interno aos demais Services; não devolve entidades aos Controllers.
@@ -121,7 +155,10 @@ public class EstabelecimentosService {
   }
 
   private Estabelecimentos exigirProprio(Long id) {
-    Estabelecimentos entidade = exigirExistente(id);
+    Estabelecimentos entidade =
+        estabelecimentos
+            .buscarParaAtualizar(id)
+            .orElseThrow(() -> new RecursoNaoEncontradoException("Estabelecimento não encontrado"));
     if (entidade.getGooglePlaceId() != null) {
       throw new ConflitoException(
           "Somente cadastros próprios do Aponte podem ser alterados ou excluídos");
