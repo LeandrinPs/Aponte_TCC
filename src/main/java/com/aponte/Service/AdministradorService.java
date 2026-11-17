@@ -1,12 +1,14 @@
 package com.aponte.Service;
 
 import com.aponte.DTO.*;
+import com.aponte.Repository.*;
 import com.aponte.Security.AcessoAtual;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.*;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.annotation.Validated;
 
 /** Fachada do painel; as regras e transações permanecem nos Services responsáveis. */
@@ -18,6 +20,22 @@ public class AdministradorService {
   private final EstabelecimentosService estabelecimentos;
   private final AvaliacaoService avaliacoes;
   private final AcessoAtual acesso;
+  private final UsuarioRepository usuarioRepo;
+  private final EstabelecimentosRepository estabelecimentoRepo;
+  private final FavoritosRepository favoritoRepo;
+  private final AvaliacaoRepository avaliacaoRepo;
+
+  @Transactional(readOnly = true)
+  public PainelResumoDTO resumo() {
+    acesso.exigirAdministrador();
+    return new PainelResumoDTO(
+        usuarioRepo.count(),
+        estabelecimentoRepo.count(),
+        estabelecimentoRepo.countByGooglePlaceIdIsNull(),
+        estabelecimentoRepo.countByGooglePlaceIdIsNotNull(),
+        favoritoRepo.count(),
+        avaliacaoRepo.count());
+  }
 
   public List<UsuarioDTO> listarUsuarios() {
     acesso.exigirAdministrador();

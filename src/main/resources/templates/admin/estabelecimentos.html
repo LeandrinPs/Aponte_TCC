@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/vendor/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/css/indexCss.css" />
+    <link rel="stylesheet" href="/css/footerCss.css" />
+    <link rel="stylesheet" href="/css/integracao.css" />
+    <title>Gerenciar estabelecimentos — Aponte</title>
+    <link rel="icon" type="image/png" href="/img/logo1.png" />
+  </head>
+  <body>
+    <div th:replace="~{fragmentos :: cabecalho(false)}"></div>
+    <main class="container conteudo-pagina admin-pagina">
+      <span class="text-danger">ADMINISTRAÇÃO</span>
+      <h1>Gerenciar estabelecimentos</h1>
+      <nav class="nav nav-pills gap-2 mb-4">
+        <a class="nav-link" href="/admin">Visão geral</a
+        ><a class="nav-link" href="/admin/usuarios">Usuários</a
+        ><a class="nav-link" href="/admin/estabelecimentos"
+          >Estabelecimentos e interações</a
+        >
+      </nav>
+      <p id="admin-status" role="status" aria-live="polite"></p>
+      <a href="/admin/estabelecimentos/novo" class="btn btn-danger mb-3"
+        >Cadastrar estabelecimento próprio</a
+      >
+      <div class="table-responsive">
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Nome ou referência</th>
+              <th>Origem</th>
+              <th>Ações</th>
+            </tr>
+          </thead>
+          <tbody id="tabela-estabelecimentos"></tbody>
+        </table>
+      </div>
+      <section id="manutencao" hidden class="card card-body mt-4">
+        <h2 id="manutencao-titulo"></h2>
+        <h3>Cardápio do Aponte</h3>
+        <div id="admin-cardapios"></div>
+        <form id="item-form" class="row g-2 my-3">
+          <div class="col-md-3">
+            <input
+              name="nome"
+              placeholder="Nome do item"
+              aria-label="Nome do item"
+              class="form-control"
+              maxlength="50"
+              required
+            />
+          </div>
+          <div class="col-md-4">
+            <input
+              name="descricao"
+              placeholder="Descrição"
+              aria-label="Descrição do item"
+              class="form-control"
+              maxlength="500"
+              required
+            />
+          </div>
+          <div class="col-md-2">
+            <input
+              name="preco"
+              type="number"
+              min="0"
+              max="99999999.99"
+              step="0.01"
+              placeholder="Preço"
+              aria-label="Preço"
+              class="form-control"
+              required
+            />
+          </div>
+          <div class="col-md-3">
+            <button class="btn btn-danger">Salvar item</button
+            ><button
+              type="button"
+              id="cancelar-item"
+              class="btn btn-outline-secondary"
+            >
+              Novo item
+            </button>
+          </div>
+        </form>
+        <h3>Moderar avaliações do Aponte</h3>
+        <div id="admin-avaliacoes"></div>
+      </section>
+    </main>
+    <script src="/js/app.js"></script>
+    <script src="/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="/js/admin.js"></script>
+  </body>
+</html>

@@ -21,6 +21,9 @@ public class Estabelecimentos {
   @Column(name = "google_place_id", length = 255, unique = true)
   private String googlePlaceId;
 
+  @Column(name = "foto_principal", length = 100)
+  private String fotoPrincipal;
+
   @Column(name = "nome", length = 50)
   private String nome;
 

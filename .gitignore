@@ -31,3 +31,7 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Fotografias próprias persistem fora do JAR e não entram no Git.
+/uploads/
+.env

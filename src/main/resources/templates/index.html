@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aponte</title>
+    <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="/css/vendor/bootstrap-icons.min.css" />
+    <link rel="stylesheet" href="/css/indexCss.css" />
+    <link rel="stylesheet" href="/css/footerCss.css" />
+    <link rel="stylesheet" href="/css/map.css" />
+    <link rel="stylesheet" href="/css/integracao.css" />
+    <link rel="icon" type="image/png" href="/img/logo1.png" />
+  </head>
+  <body class="d-flex flex-column">
+    <!--Cabeçalho-->
+    <div th:replace="~{fragmentos :: cabecalho(true)}"></div>
+    <section class="hero-aponte">
+      <div class="container">
+        <h1>Descubra restaurantes perto de você!</h1>
+
+        <p>Explore novos sabores e encontre seu próximo restaurante.</p>
+
+        <a href="/map.html" class="btn btn-danger">
+          <i class="bi bi-geo-alt-fill me-2"></i>
+          Encontre seu próximo restaurante
+        </a>
+      </div>
+    </section>
+
+    <!--Parte do Meio (Vai redirecionar para o mapa)-->
+
+    <section class="container secao-mapa my-5">
+      <div class="card card card-mapa border-0 overflow-hidden">
+        <div class="row g-0 align-items-stretch">
+          <div class="col-md-5">
+            <div class="card-body mapa-conteudo">
+              <h5 class="card-title">
+                <i class="bi bi-geo-alt"></i>Veja no mapa
+              </h5>
+              <p class="card-text">
+                Explore os restaurantes próximos ao seu redor e encontre o lugar
+                ideia para sua próxima refeição.
+              </p>
+
+              <a href="/map.html">
+                <button class="btn btn-secondary rounded-7 botao-mapa">
+                  <i class="bi bi-map me-2"></i>Abrir Mapa
+                </button>
+              </a>
+            </div>
+          </div>
+
+          <div class="col-md-7">
+            <a href="/map.html" aria-label="Abrir mapa de restaurantes">
+              <img
+                src="/img/mapa1.png"
+                class="imagem-mapa"
+                alt="Mapa ilustrativo com localização de restaurantes"
+              />
+            </a>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="container my-5">
+      <h2>Estabelecimentos do Aponte</h2>
+      <p>Cadastros próprios. Explore também os resultados do Google no mapa.</p>
+      <div
+        id="estabelecimentos-inicio"
+        class="row g-4"
+        aria-live="polite"
+      ></div>
+    </section>
+    <div th:replace="~{fragmentos :: rodape}"></div>
+
+    <!-- Bootstrap -->
+
+    <!-- Autocomplete da página inicial -->
+
+    <!-- Google Maps API -->
+
+    <script src="/js/app.js"></script>
+    <script src="/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="/js/pesquisa.js"></script>
+    <script
+      th:if="${!#strings.isEmpty(mapsKey)}"
+      async
+      th:src="@{https://maps.googleapis.com/maps/api/js(key=${mapsKey},loading='async',callback='initAutocompleteInicio',language='pt-BR',region='BR')}"
+    ></script>
+  </body>
+</html>

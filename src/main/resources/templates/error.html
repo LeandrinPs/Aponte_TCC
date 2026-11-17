@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Aponte — Página indisponível</title>
+    <link rel="stylesheet" href="/css/vendor/bootstrap.min.css" />
+    <link rel="stylesheet" href="/css/indexCss.css" />
+    <link rel="stylesheet" href="/css/integracao.css" />
+  </head>
+  <body>
+    <div th:replace="~{fragmentos :: cabecalho(false)}"></div>
+    <main class="container conteudo-pagina">
+      <h1
+        th:text="${status == 403 ? 'Acesso restrito' : 'Página indisponível'}"
+      >
+        Página indisponível
+      </h1>
+      <p th:if="${status == 403}">
+        Sua conta não tem permissão para acessar esta página.
+      </p>
+      <p th:unless="${status == 403}">
+        Não foi possível abrir esta página. Volte ao início ou tente novamente
+        mais tarde.
+      </p>
+      <a class="btn btn-danger" href="/index.html">Voltar ao início</a>
+    </main>
+    <script src="/js/app.js"></script>
+  </body>
+</html>

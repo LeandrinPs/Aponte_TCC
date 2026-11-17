@@ -1,0 +1,1 @@
+{"name":"aponte-testes-navegador","private":true,"scripts":{"test":"node fluxo.cjs","test:mapa":"node mapa-simulado.cjs"},"devDependencies":{"playwright":"1.62.1"}}
