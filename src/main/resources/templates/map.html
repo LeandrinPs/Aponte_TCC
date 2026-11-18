@@ -8,12 +8,11 @@
 
     <!-- Bootstrap 5.3.8 -->
     <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
-
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="/css/vendor/bootstrap-icons.min.css" />
-
     <!-- CSS -->
     <link rel="stylesheet" href="/css/map.css" />
+    <link rel="stylesheet" href="/css/rotas.css" />
     <link rel="stylesheet" href="/css/painel.css" />
     <link rel="stylesheet" href="/css/indexCss.css" />
 
@@ -57,7 +56,7 @@
         </div>
 
         <!-- Navegação das abas -->
-        <ul class="nav" id="pills-tab" role="tablist">
+        <ul class="nav abas-estabelecimento" id="pills-tab" role="tablist">
           <li class="nav-item" role="presentation">
             <button
               class="nav-link active"
@@ -242,18 +241,85 @@
             </div>
           </div>
 
-          <div class="tab-pane fade" id="pills-rotas" role="tabpanel">
-            <section class="painel-card">
-              <h3>Rotas</h3>
-              <a
-                id="rota-restaurante"
-                class="btn btn-outline-danger"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Traçar rota no Google Maps</a
-              >
-            </section>
-          </div>
+       <div
+    class="tab-pane fade"
+    id="pills-rotas"
+    role="tabpanel"
+    aria-labelledby="pills-rotas-tab">
+
+    <div class="painel-card rotas-card">
+
+        <h3 class="titulo-rotas">
+            <i class="bi bi-send-fill"></i>
+            Como chegar?
+        </h3>
+
+        <!-- Botões de transporte -->
+        <div class="rotas-opcoes">
+
+            <button class="rota-opcao active" type="button" data-modo="DRIVING">
+                <i class="bi bi-car-front-fill"></i>
+                <span>Carro</span>
+            </button>
+
+            <button class="rota-opcao" type="button" data-modo="BICYCLING">
+                <i class="bi bi-bicycle"></i>
+                <span>Bicicleta</span>
+            </button>
+
+            <button class="rota-opcao" type="button" data-modo="WALKING">
+                <i class="bi bi-person-walking"></i>
+                <span>A pé</span>
+            </button>
+
+            <button class="rota-opcao" type="button" data-modo="TRANSIT">
+                <i class="bi bi-bus-front-fill"></i>
+                <span>Ônibus</span>
+            </button>
+
+            <button class="rota-opcao" type="button" data-modo="TWO_WHEELER">
+                <i class="bi bi-bicycle"></i>
+                <span>Moto</span>
+            </button>
+
+        </div>
+
+        <!-- Resumo da rota -->
+        <div class="rota-resumo" id="resultado-rota">
+
+            <div class="rota-tempo">
+
+                <i id="icone-transporte" class="bi bi-car-front-fill"></i>
+
+                <div>
+                    <strong id="tempo-rota">--</strong>
+                    <span id="distancia-rota">--</span>
+                </div>
+
+            </div>
+
+            <div class="rota-divisor"></div>
+
+            <div class="rota-status">
+                <i class="bi bi-check-circle-fill"></i>
+                <span id="status-rota">Aguardando cálculo da rota</span>
+            </div>
+
+        </div>
+
+        <!-- Instruções do trajeto -->
+        <div class="rota-instrucoes-container">
+
+            <h4>Instruções do trajeto</h4>
+
+            <ol id="instrucoes-rota" class="lista-instrucoes">
+            </ol>
+
+        </div>
+
+    </div>
+
+</div>
         </div>
         <section class="painel-card">
           <h3>Avaliações do Aponte</h3>
@@ -294,12 +360,8 @@
     <!-- Google Maps API -->
 
     <script src="/js/app.js"></script>
+    <script src="/js/rotas.js"></script>
     <script src="/js/vendor/bootstrap.bundle.min.js"></script>
-    <section id="lista-proprios" class="container py-3">
-      <h2>Estabelecimentos próprios</h2>
-      <p>Também disponíveis no mapa quando o Google Maps está carregado.</p>
-      <div id="cards-proprios" class="row g-3"></div>
-    </section>
     <script src="/js/map.js"></script>
     <script
       th:if="${!#strings.isEmpty(mapsKey)}"

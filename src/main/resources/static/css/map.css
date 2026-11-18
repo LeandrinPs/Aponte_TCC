@@ -1,34 +1,41 @@
-   html, body {
-            height: 100%;
-            margin: 0;
-            padding: 0;
-        }
-
-      #map-container {
-    display: flex;
-   width: auto;
+html, body {
+    margin: 0;
+    padding: 0;
     height: 100%;
-       flex-direction: row-reverse;
+    overflow: hidden;
+}
+
+#map-container {
+    display: flex;
+    width: 100%;
+    height: 100vh;
 }
 
 #map {
     flex: 1;
-    min-width: 0;
-    width: auto;
     height: 100%;
 }
 
+/* PAINEL LATERAL */
 #painel-restaurante {
     display: none;
-    width: 350px;
+    flex: 0 0 750px;
+    width: 750px;
+    max-width: 90vw;
+    height: 100%;
+    max-height: none;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     flex-shrink: 0;
     background: white;
     box-shadow: -3px 0 12px #0002;
     overflow-y: auto;
     font-family: Arial, sans-serif;
-    margin-top: 65px;
 }
 
+/* QUANDO ABRIR O PAINEL */
 #painel-restaurante.aberto {
     display: block;
 }
