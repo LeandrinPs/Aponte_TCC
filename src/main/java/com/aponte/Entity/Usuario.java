@@ -23,6 +23,12 @@ public class Usuario {
   @Column(name = "email", nullable = false, length = 50, unique = true)
   private String email;
 
+  @Column (name = "endereco", nullable = false, length = 50, unique = true)
+  private String endereco;
+
+  @Column (name = "estado", nullable = false, length = 2, unique = true)
+  private String estado;
+
   @lombok.ToString.Exclude
   @lombok.EqualsAndHashCode.Exclude
   @com.fasterxml.jackson.annotation.JsonIgnore
