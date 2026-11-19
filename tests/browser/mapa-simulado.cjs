@@ -275,7 +275,7 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
       .locator("#comentario")
       .fill("Aponte separado da nota pública do Google");
     await page.locator("#avaliacao-form button[type=submit]").click();
-    await expect(page.locator("#resumo-avaliacoes")).toContainText("4.0/5");
+    await expect(page.locator("#media-aponte")).toHaveText("4,0");
     await expect(page.locator("#media-google")).toHaveText("4,2");
     const ref = await page.evaluate(
       async (id) =>
@@ -292,10 +292,37 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
       await page.locator("#rota-restaurante").getAttribute("href"),
     ).toContain("destination_place_id=" + fixture.id);
     expect(await page.evaluate(() => window.__fotos)).toBeGreaterThan(0);
-    expect(await page.evaluate(nome=>window.__marcadores.find(m=>m.map && m.title===nome).content.textContent,fixture.proprio)).toBe("☕");
-    await page.evaluate(()=>Aponte.galeria(document.getElementById("area-foto"),[{getURI:()=>"/img/lasai.jpg",authorAttributions:[{displayName:"Autor único"}]}],true));
-    await expect(page.locator("[data-proxima]")).toBeHidden();await expect(page.locator("[data-anterior]")).toBeHidden();await expect(page.locator("#creditos-foto")).toContainText("Autor único");
-    await page.evaluate(()=>Aponte.galeria(document.getElementById("area-foto"),[],false));await expect(page.locator("#foto-restaurante")).toHaveAttribute("src","/img/imagem.jpeg");await expect(page.locator("[data-proxima]")).toBeHidden();
+    expect(
+      await page.evaluate(
+        (nome) =>
+          window.__marcadores.find((m) => m.map && m.title === nome).content
+            .textContent,
+        fixture.proprio,
+      ),
+    ).toBe("☕");
+    await page.evaluate(() =>
+      Aponte.galeria(
+        document.getElementById("area-foto"),
+        [
+          {
+            getURI: () => "/img/lasai.jpg",
+            authorAttributions: [{ displayName: "Autor único" }],
+          },
+        ],
+        true,
+      ),
+    );
+    await expect(page.locator("[data-proxima]")).toBeHidden();
+    await expect(page.locator("[data-anterior]")).toBeHidden();
+    await expect(page.locator("#creditos-foto")).toContainText("Autor único");
+    await page.evaluate(() =>
+      Aponte.galeria(document.getElementById("area-foto"), [], false),
+    );
+    await expect(page.locator("#foto-restaurante")).toHaveAttribute(
+      "src",
+      "/img/imagem.jpeg",
+    );
+    await expect(page.locator("[data-proxima]")).toBeHidden();
     await ir("/favoritos.html");
     await expect(page.locator("#lista-favoritos")).toContainText(fixture.nome);
     await expect(page.locator("#lista-favoritos .creditos")).toContainText(

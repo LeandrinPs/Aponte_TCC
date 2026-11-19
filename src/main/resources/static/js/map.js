@@ -622,7 +622,9 @@ async function abrirPainel(restaurante) {
           : "—";
       document.getElementById("avaliacao-restaurante").textContent =
         p.rating != null
-          ? `${p.userRatingCount || 0} avaliações no Google`
+          ? p.userRatingCount != null
+            ? `${p.userRatingCount} avaliações no Google`
+            : "Quantidade não informada"
           : "Sem avaliações disponíveis no Google";
       document.getElementById("tipo-restaurante").textContent =
         Aponte.classificar(p).nome;
@@ -685,7 +687,7 @@ async function carregarInteracoes(ref, seq) {
         })
       : "—";
     document.getElementById("resumo-avaliacoes").textContent = resumo.quantidade
-      ? `${Number(resumo.media).toFixed(1)}/5 — ${resumo.quantidade} avaliação(ões) do Aponte`
+      ? `${resumo.quantidade} ${resumo.quantidade === 1 ? "avaliação" : "avaliações"} no Aponte`
       : "Ainda não avaliado no Aponte";
     const n = document.getElementById("lista-avaliacoes");
     n.replaceChildren();
