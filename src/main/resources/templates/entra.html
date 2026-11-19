@@ -3,67 +3,114 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="/css/vendor/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="/css/indexCss.css" />
-    <link rel="stylesheet" href="/css/footerCss.css" />
-    <link rel="stylesheet" href="/css/integracao.css" />
-    <link rel="stylesheet" href="/css/formCss.css" />
     <title>Entrar na sua conta — Aponte</title>
-    <link rel="icon" type="image/png" href="/img/favcon.png" />
+    <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/vendor/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="/css/formCss.css" rel="stylesheet" />
+    <link rel="icon" href="/img/favcon.png" />
   </head>
-  <body>
+  <body class="pagina-acesso">
+    <a href="/index.html" class="marca-acesso" aria-label="Aponte — início"
+      ><img src="/img/favcon.png" alt="" /><span>APONTE</span></a
+    >
     <main id="form_container">
       <div id="form_header">
         <h1 id="form_title">Entrar na sua conta</h1>
-        <a href="/index.html" class="link-danger" aria-label="Voltar ao início"
-          >Voltar</a
-        >
+        <a
+          href="/index.html"
+          class="btn-default-exit"
+          aria-label="Voltar à página inicial"
+          title="Voltar ao início"
+          ><i class="bi bi-box-arrow-in-right" aria-hidden="true"></i
+        ></a>
       </div>
+      <p class="introducao-form">Seu próximo lugar favorito começa aqui.</p>
       <p th:if="${param.cadastrado}" class="alert alert-success">
         Conta criada. Entre para continuar.
       </p>
       <p th:if="${param.erro}" class="alert alert-danger">
         Login ou senha incorretos.
       </p>
+      <p
+        th:if="${param.google != null and param.google[0] == 'conta_existente'}"
+        class="alert alert-warning"
+      >
+        Este e-mail já possui conta local. Entre com sua senha e vincule o
+        Google nas configurações do perfil.
+      </p>
+      <p
+        th:if="${param.google != null and param.google[0] != 'conta_existente'}"
+        class="alert alert-danger"
+      >
+        Não foi possível entrar com o Google. Tente novamente ou use o login
+        local.
+      </p>
       <p id="mensagem-form" role="status" aria-live="polite"></p>
-      <form action="/login" method="post" th:action="@{/login}">
-        <div id="input_container" class="d-flex flex-column gap-3">
-          <label for="email">E-mail ou admin:nome</label
-          ><input
-            class="form-control"
-            type="text"
-            id="email"
-            name="username"
-            autocomplete="username"
-            required
-            maxlength="100"
-          />
-          <label for="password">Senha</label>
-          <div class="input-group">
-            <input
-              class="form-control"
-              type="password"
-              id="password"
-              name="password"
-              autocomplete="current-password"
-              required
-            /><button
-              type="button"
-              class="btn btn-outline-secondary"
-              id="mostrar-senha"
-              aria-label="Mostrar senha"
+      <form id="login-form" method="post" th:action="@{/login}" action="/login">
+        <div id="input_container">
+          <div class="input-box">
+            <label for="email" class="visually-hidden"
+              >E-mail ou admin:nome</label
             >
-              Mostrar
-            </button>
+            <div class="input-field">
+              <input
+                type="text"
+                name="username"
+                id="email"
+                class="form-control"
+                placeholder="E-mail ou admin:nome"
+                required
+                maxlength="50"
+                autocomplete="username"
+              /><i class="bi bi-envelope" aria-hidden="true"></i>
+            </div>
           </div>
-          <button class="btn btn-danger" type="submit">Entrar</button
-          ><a href="/forma.html">Criar uma conta</a>
+          <div class="input-box">
+            <label for="password" class="visually-hidden">Senha</label>
+            <div class="input-field">
+              <input
+                type="password"
+                name="password"
+                id="password"
+                class="form-control"
+                placeholder="Digite uma senha"
+                required
+                autocomplete="current-password"
+              /><button
+                type="button"
+                id="mostrar-senha"
+                class="passwordIcon"
+                aria-label="Mostrar senha"
+                aria-pressed="false"
+              >
+                <i class="bi bi-eye" aria-hidden="true"></i>
+              </button>
+            </div>
+          </div>
         </div>
+        <button type="submit" class="btn btn-entrar">Entrar</button>
       </form>
+      <div class="separador-form">
+        <hr />
+        <span>Ou</span>
+        <hr />
+      </div>
+      <a
+        th:if="${googleOAuthHabilitado}"
+        href="/oauth2/authorization/google"
+        class="google-btn"
+        ><span class="google-letra" aria-hidden="true">G</span
+        ><span>Continuar com o Google</span></a
+      >
+      <div th:unless="${googleOAuthHabilitado}" class="google-indisponivel">
+        <span class="google-letra" aria-hidden="true">G</span
+        ><span>Login Google indisponível neste ambiente</span>
+      </div>
+      <p class="alternar-acesso">
+        Ainda não tem uma conta? <a href="/forma.html">Cadastre-se</a>
+      </p>
     </main>
     <script src="/js/app.js"></script>
-    <script src="/js/vendor/bootstrap.bundle.min.js"></script>
     <script src="/js/formJs.js"></script>
   </body>
 </html>

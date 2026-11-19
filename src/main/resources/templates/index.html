@@ -8,46 +8,70 @@
     <link rel="stylesheet" href="/css/vendor/bootstrap-icons.min.css" />
     <link rel="stylesheet" href="/css/indexCss.css" />
     <link rel="stylesheet" href="/css/footerCss.css" />
-    <link rel="stylesheet" href="/css/map.css" />
     <link rel="stylesheet" href="/css/integracao.css" />
     <link rel="icon" type="image/png" href="/img/favcon.png" />
   </head>
-  <body class="d-flex flex-column">
+  <body class="d-flex flex-column pagina-inicio">
     <!--Cabeçalho-->
     <div th:replace="~{fragmentos :: cabecalho(true)}"></div>
     <section class="hero-aponte">
       <div class="container">
-        <h1>Descubra restaurantes perto de você!</h1>
+        <span class="hero-etiqueta">SEU PRÓXIMO LUGAR FAVORITO</span>
+        <h1>Novos sabores.<br />Boas descobertas.</h1>
 
-        <p>Explore novos sabores e encontre seu próximo restaurante.</p>
+        <p>
+          Encontre restaurantes, descubra lugares e compartilhe suas
+          experiências.
+        </p>
 
         <a href="/map.html" class="btn btn-danger">
-          <i class="bi bi-geo-alt-fill me-2"></i>
-          Encontre seu próximo restaurante
+          <i class="bi bi-geo-alt-fill me-2" aria-hidden="true"></i>
+          Explorar o mapa
         </a>
       </div>
+    </section>
+
+    <section
+      class="container secao-comunidade my-5"
+      aria-labelledby="titulo-recentes"
+    >
+      <div class="secao-titulo">
+        <div>
+          <span class="sobretitulo">EXPERIÊNCIAS DA COMUNIDADE</span>
+          <h2 id="titulo-recentes">Avaliações recentes</h2>
+        </div>
+        <a href="/map.html"
+          >Encontre um lugar para avaliar
+          <i class="bi bi-arrow-up-right" aria-hidden="true"></i
+        ></a>
+      </div>
+      <p id="recentes-status" class="text-secondary" role="status"></p>
+      <div
+        id="avaliacoes-recentes"
+        class="row g-4"
+        aria-live="polite"
+        aria-busy="true"
+      ></div>
     </section>
 
     <!--Parte do Meio (Vai redirecionar para o mapa)-->
 
     <section class="container secao-mapa my-5">
-      <div class="card card card-mapa border-0 overflow-hidden">
+      <div class="card card-mapa border-0 overflow-hidden">
         <div class="row g-0 align-items-stretch">
           <div class="col-md-5">
             <div class="card-body mapa-conteudo">
               <h5 class="card-title">
-                <i class="bi bi-geo-alt"></i>Veja no mapa
+                <i class="bi bi-geo-alt" aria-hidden="true"></i>Veja no mapa
               </h5>
               <p class="card-text">
                 Explore os restaurantes próximos ao seu redor e encontre o lugar
-                ideia para sua próxima refeição.
+                ideal para sua próxima refeição.
               </p>
 
-              <a href="/map.html">
-                <button class="btn btn-secondary rounded-7 botao-mapa">
-                  <i class="bi bi-map me-2"></i>Abrir Mapa
-                </button>
-              </a>
+              <a href="/map.html" class="btn btn-danger botao-mapa"
+                ><i class="bi bi-map me-2" aria-hidden="true"></i>Abrir mapa</a
+              >
             </div>
           </div>
 
@@ -84,6 +108,7 @@
     <script src="/js/app.js"></script>
     <script src="/js/vendor/bootstrap.bundle.min.js"></script>
     <script src="/js/pesquisa.js"></script>
+    <script src="/js/comunidade.js"></script>
     <script
       th:if="${!#strings.isEmpty(mapsKey)}"
       async

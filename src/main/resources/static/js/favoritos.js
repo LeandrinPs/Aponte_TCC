@@ -6,7 +6,11 @@ async function atualizarFotosFavoritos() {
   for (const card of document.querySelectorAll("[data-google-place-id]")) {
     if (!window.google?.maps?.importLibrary) break;
     try {
-      const p = await Aponte.place(card.dataset.googlePlaceId);
+      const p = await Aponte.place(card.dataset.googlePlaceId, [
+        "displayName",
+        "formattedAddress",
+        "photos",
+      ]);
       card.querySelector("h2").textContent =
         p.displayName || "Estabelecimento Google";
       card.querySelector(".endereco").textContent = p.formattedAddress || "";
@@ -25,9 +29,13 @@ async function atualizarFotosFavoritos() {
 window.atualizarFotosFavoritos = atualizarFotosFavoritos;
 async function carregarFavoritos() {
   const lista = document.getElementById("lista-favoritos");
+  Aponte.skeleton(lista);
   try {
     const itens = await Aponte.api("/api/me/favoritos");
     lista.replaceChildren();
+    document.dispatchEvent(
+      new CustomEvent("favoritos-carregados", { detail: itens.length }),
+    );
     document.getElementById("favoritos-status").textContent = itens.length
       ? `${itens.length} estabelecimento(s) favorito(s)`
       : "Você ainda não tem favoritos. Escolha um estabelecimento no mapa.";
@@ -80,7 +88,10 @@ async function carregarFavoritos() {
     }
     await atualizarFotosFavoritos();
   } catch (e) {
+    lista.replaceChildren();
     Aponte.aviso(e.message, true, "favoritos-status");
+  } finally {
+    Aponte.pronto(lista);
   }
 }
 carregarFavoritos();

@@ -1,16 +1,33 @@
 "use strict";
-const senha = document.getElementById("password");
+const senha = document.getElementById("password"),
+  confirmacao = document.getElementById("confirmacao-senha");
 document.getElementById("mostrar-senha")?.addEventListener("click", (e) => {
-  senha.type = senha.type === "password" ? "text" : "password";
-  e.currentTarget.textContent =
-    senha.type === "password" ? "Mostrar" : "Ocultar";
+  const visivel = senha.type === "password";
+  senha.type = visivel ? "text" : "password";
+  e.currentTarget.setAttribute("aria-pressed", String(visivel));
+  e.currentTarget.setAttribute(
+    "aria-label",
+    visivel ? "Ocultar senha" : "Mostrar senha",
+  );
+  e.currentTarget.querySelector("i").className = visivel
+    ? "bi bi-eye-slash"
+    : "bi bi-eye";
 });
+function confirmar() {
+  confirmacao?.setCustomValidity(
+    confirmacao.value !== senha.value ? "As senhas devem ser iguais" : "",
+  );
+}
+senha?.addEventListener("input", confirmar);
+confirmacao?.addEventListener("input", confirmar);
 document
   .getElementById("cadastro-form")
   ?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    confirmar();
+    if (!e.target.reportValidity()) return;
     const botao = e.target.querySelector("button[type=submit]");
-    botao.disabled = true;
+    Aponte.ocupado(botao, true, "Criando conta…");
     try {
       await Aponte.api("/api/usuarios", {
         method: "POST",
@@ -19,6 +36,14 @@ document
       location.href = "/entra.html?cadastrado";
     } catch (erro) {
       Aponte.aviso(erro.message, true, "mensagem-form");
-      botao.disabled = false;
+      Aponte.ocupado(botao, false);
     }
   });
+document.getElementById("login-form")?.addEventListener("submit", (e) => {
+  if (e.target.checkValidity())
+    Aponte.ocupado(
+      e.target.querySelector("button[type=submit]"),
+      true,
+      "Entrando…",
+    );
+});

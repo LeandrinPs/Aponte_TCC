@@ -4,6 +4,8 @@ window.Aponte = (() => {
   const el = (tag, classe, texto) => {
     const n = document.createElement(tag);
     if (classe) n.className = classe;
+    if (tag === "i" && classe?.includes("bi"))
+      n.setAttribute("aria-hidden", "true");
     if (texto != null) n.textContent = texto;
     return n;
   };
@@ -95,37 +97,174 @@ window.Aponte = (() => {
       )
     );
   }
-  function fotoGoogle(place, img, creditos) {
+  function creditosGoogle(creditos, foto) {
     creditos.replaceChildren();
     const marca = el("img", "google-atribuicao");
     marca.src = "/img/google-maps-atribuicao.svg";
     marca.alt = "Google Maps";
-    creditos.append(marca, " ");
-    const foto = place.photos?.[0];
-    imagem(img, foto ? foto.getURI({ maxWidth: 900, maxHeight: 600 }) : null);
+    creditos.append(marca);
     for (const autor of foto?.authorAttributions || []) {
-      const texto = el("span", "", autor.displayName || "");
+      let n = el("span", "", autor.displayName || "");
       try {
         const u = new URL(autor.uri);
         if (u.protocol === "https:") {
-          const a = el("a", "", autor.displayName);
-          a.href = u.href;
-          a.target = "_blank";
-          a.rel = "noopener noreferrer";
-          creditos.append(a, " ");
-          continue;
+          n = el("a", "", autor.displayName);
+          n.href = u.href;
+          n.target = "_blank";
+          n.rel = "noopener noreferrer";
         }
       } catch {}
-      creditos.append(texto, " ");
+      creditos.append(n, " ");
     }
   }
-  async function place(id) {
+  function fotoGoogle(place, img, creditos) {
+    const foto = place.photos?.[0];
+    creditosGoogle(creditos, foto);
+    try {
+      imagem(
+        img,
+        foto ? foto.getURI({ maxWidth: 1000, maxHeight: 700 }) : null,
+      );
+    } catch {
+      imagem(img, null);
+    }
+  }
+  function galeria(alvo, itens, googleOrigem = false) {
+    let indice = 0;
+    const fotos = (itens || []).filter(Boolean).slice(0, 3);
+    const img = alvo.querySelector("img.foto-galeria"),
+      creditos = alvo.querySelector(".creditos");
+    const anterior = alvo.querySelector("[data-anterior]"),
+      proxima = alvo.querySelector("[data-proxima]"),
+      contador = alvo.querySelector("[data-contador]");
+    function render() {
+      const f = fotos[indice];
+      if (googleOrigem) creditosGoogle(creditos, f);
+      else {
+        creditos.replaceChildren();
+        if (f)
+          creditos.append(el("span", "", "Fotografia fornecida ao Aponte"));
+      }
+      let url = null;
+      try {
+        url = googleOrigem ? f?.getURI({ maxWidth: 1000, maxHeight: 700 }) : f;
+      } catch {}
+      imagem(img, url);
+      img.onerror = () => {
+        img.onerror = null;
+        img.src = "/img/imagem.jpeg";
+        creditos.append(
+          el("span", "foto-falha", " Fotografia indisponível no momento."),
+        );
+      };
+      img.alt = f
+        ? `Fotografia ${indice + 1} do estabelecimento`
+        : "Fotografia ilustrativa — estabelecimento sem imagem disponível";
+      if (contador) {
+        contador.textContent = `${indice + 1} / ${fotos.length}`;
+        contador.hidden = fotos.length < 2;
+      }
+      anterior.hidden = proxima.hidden = fotos.length < 2;
+    }
+    anterior.onclick = () => {
+      indice = (indice - 1 + fotos.length) % fotos.length;
+      render();
+    };
+    proxima.onclick = () => {
+      indice = (indice + 1) % fotos.length;
+      render();
+    };
+    render();
+  }
+  const categorias = {
+    restaurantes: { nome: "Restaurante", icone: "🍽️" },
+    pizzarias: { nome: "Pizzaria", icone: "🍕" },
+    hamburguerias: { nome: "Hamburgueria", icone: "🍔" },
+    cafeterias: { nome: "Cafeteria", icone: "☕" },
+    japoneses: { nome: "Restaurante japonês", icone: "🍣" },
+    churrascarias: { nome: "Churrascaria", icone: "🥩" },
+    brasileira: { nome: "Comida brasileira", icone: "🍛" },
+  };
+  const tipos = {
+    pizza_restaurant: "pizzarias",
+    hamburger_restaurant: "hamburguerias",
+    cafe: "cafeterias",
+    coffee_shop: "cafeterias",
+    japanese_restaurant: "japoneses",
+    sushi_restaurant: "japoneses",
+    barbecue_restaurant: "churrascarias",
+    steak_house: "churrascarias",
+    brazilian_restaurant: "brasileira",
+  };
+  function classificar(place) {
+    const chave =
+      tipos[place.primaryType] ||
+      (place.types || []).map((t) => tipos[t]).find(Boolean) ||
+      "restaurantes";
+    const conhecido = categorias[chave];
+    return {
+      ...conhecido,
+      chave,
+      nome:
+        chave !== "restaurantes"
+          ? conhecido.nome
+          : place.primaryTypeDisplayName || conhecido.nome,
+    };
+  }
+  function iconeProprio(d) {
+    return (
+      categorias[d.icone && d.icone !== "auto" ? d.icone : d.categoria] ||
+      categorias.restaurantes
+    ).icone;
+  }
+  function correspondeFiltro(d, chave) {
+    return (
+      !categorias[chave] ||
+      chave === "restaurantes" ||
+      d.categoria === chave ||
+      d.tags?.includes(chave)
+    );
+  }
+  function skeleton(container, quantidade = 3) {
+    container.setAttribute("aria-busy", "true");
+    container.replaceChildren();
+    for (let i = 0; i < quantidade; i++) {
+      const c = el("div", "col-md-4");
+      const box = el("div", "skeleton-card");
+      box.setAttribute("aria-hidden", "true");
+      box.append(
+        el("div", "skeleton curto"),
+        el("div", "skeleton foto"),
+        el("div", "skeleton"),
+      );
+      c.append(box);
+      container.append(c);
+    }
+  }
+  function pronto(container) {
+    container.setAttribute("aria-busy", "false");
+  }
+  function ocupado(botao, ativo, texto = "Aguarde…") {
+    if (ativo) {
+      botao.dataset.textoOriginal = botao.innerHTML;
+      botao.disabled = true;
+      const sp = el("span", "spinner-border");
+      sp.setAttribute("aria-hidden", "true");
+      botao.replaceChildren(sp, " ", document.createTextNode(texto));
+      botao.setAttribute("aria-busy", "true");
+    } else {
+      botao.innerHTML = botao.dataset.textoOriginal || botao.innerHTML;
+      botao.disabled = false;
+      botao.removeAttribute("aria-busy");
+    }
+  }
+  async function place(id, campos) {
     if (!window.google?.maps?.importLibrary)
       throw new Error("Detalhes do Google indisponíveis neste momento");
     const { Place } = await google.maps.importLibrary("places");
     const p = new Place({ id });
     await p.fetchFields({
-      fields: [
+      fields: campos || [
         "displayName",
         "formattedAddress",
         "location",
@@ -136,6 +275,8 @@ window.Aponte = (() => {
         "rating",
         "userRatingCount",
         "types",
+        "primaryType",
+        "primaryTypeDisplayName",
       ],
     });
     return p;
@@ -146,33 +287,58 @@ window.Aponte = (() => {
       const s = await sessao;
       const n = document.getElementById("sessao-nav");
       if (!n || !s.autenticado) return;
-      document.querySelectorAll('a[href="/favoritos.html"]').forEach((a) => {
-        a.hidden = s.administrador;
-      });
-      n.replaceChildren(el("span", "small", s.nome));
-      if (s.administrador) {
-        const a = el("a", "btn btn-outline-danger", "Painel");
-        a.href = "/admin";
-        n.append(a);
+      n.replaceChildren();
+      const dropdown = el("div", "dropdown");
+      const b = el("button", "conta-toggle dropdown-toggle");
+      b.type = "button";
+      b.dataset.bsToggle = "dropdown";
+      b.setAttribute("aria-expanded", "false");
+      b.setAttribute("aria-label", "Menu da conta");
+      const avatar = el("img", "avatar-nav");
+      avatar.src = s.fotoUrl || "/img/avatar.svg";
+      avatar.alt = "";
+      b.append(avatar, el("span", "conta-nome", s.nome));
+      const menu = el("ul", "dropdown-menu dropdown-menu-end");
+      for (const [texto, href, icone] of s.administrador
+        ? [["Painel administrativo", "/admin", "grid"]]
+        : [
+            ["Meu perfil", "/perfil.html", "person-circle"],
+            ["Meus favoritos", "/favoritos.html", "bookmark-heart"],
+            ["Minhas avaliações", "/perfil.html#avaliacoes", "star"],
+            ["Configurações", "/perfil.html#configuracoes", "gear"],
+          ]) {
+        const li = el("li"),
+          a = el("a", "dropdown-item");
+        a.href = href;
+        a.append(el("i", `bi bi-${icone} me-2`), texto);
+        li.append(a);
+        menu.append(li);
       }
-      const form = el("form");
+      const li = el("li"),
+        form = el("form");
       form.action = "/logout";
       form.method = "post";
-      const t = await token();
-      const campo = el("input");
+      const t = await token(),
+        campo = el("input");
       campo.type = "hidden";
       campo.name = "_csrf";
       campo.value = t.token;
-      const b = el("button", "btn btn-danger", "Sair");
-      b.type = "submit";
-      form.append(campo, b);
-      n.append(form);
+      const sair = el("button", "dropdown-item");
+      sair.type = "submit";
+      sair.append(el("i", "bi bi-box-arrow-right me-2"), "Sair");
+      form.append(campo, sair);
+      li.append(form);
+      menu.append(li);
+      dropdown.append(b, menu);
+      n.append(dropdown);
     } catch (e) {
       aviso(e.message, true, "sessao-status");
     }
   }
   async function cardsProprios(container) {
+    skeleton(container);
     const itens = await api("/api/estabelecimentos");
+    pronto(container);
     container.replaceChildren();
     if (!itens.length) {
       container.append(
@@ -234,9 +400,9 @@ window.Aponte = (() => {
     navegacao();
     const c = document.getElementById("estabelecimentos-inicio");
     if (c)
-      cardsProprios(c).catch((e) =>
-        aviso(e.message, true, "estabelecimentos-inicio"),
-      );
+      cardsProprios(c)
+        .catch((e) => aviso(e.message, true, "estabelecimentos-inicio"))
+        .finally(() => pronto(c));
   });
   return {
     el,
@@ -248,6 +414,14 @@ window.Aponte = (() => {
     endereco,
     linkMapa,
     fotoGoogle,
+    galeria,
+    categorias,
+    classificar,
+    iconeProprio,
+    correspondeFiltro,
+    skeleton,
+    pronto,
+    ocupado,
     place,
     sessao,
     cardsProprios,
