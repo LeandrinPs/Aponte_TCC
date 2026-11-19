@@ -14,47 +14,105 @@
 
     <!-- CSS -->
     <link rel="stylesheet" href="/css/map.css" />
-    <link rel="stylesheet" href="/css/painel.css" />
     <link rel="stylesheet" href="/css/indexCss.css" />
 
     <link rel="stylesheet" href="/css/integracao.css" />
+    <link rel="stylesheet" href="/css/painel.css" />
     <link rel="icon" type="image/png" href="/img/favcon.png" />
   </head>
 
   <body class="pagina-mapa">
     <div th:replace="~{fragmentos :: cabecalho(true)}"></div>
     <p id="mapa-status" class="aviso-mapa" role="status"></p>
+    <div class="mapa-ferramentas">
+      <label for="selecionar-proprio"
+        ><i class="bi bi-shop" aria-hidden="true"></i> Lugares do Aponte</label
+      ><select id="selecionar-proprio" class="form-select form-select-sm">
+        <option value="">Selecione um cadastro próprio</option></select
+      ><span id="mapa-carregando" class="loading-local" role="status"
+        ><span class="spinner-border" aria-hidden="true"></span> Carregando
+        mapa…</span
+      >
+    </div>
     <div id="map-container" th:attr="data-map-id=${mapId}">
       <!-- Mapa do Google -->
-      <div id="map"></div>
+      <div id="map">
+        <div class="mapa-placeholder">
+          <i class="bi bi-geo-alt" aria-hidden="true"></i>
+          <p>Explore os lugares pelo mapa.</p>
+          <small
+            >O mapa Google está sendo carregado. Os cadastros do Aponte estão
+            disponíveis no seletor acima.</small
+          >
+        </div>
+      </div>
 
       <!-- Painel lateral -->
-      <aside id="painel-restaurante">
-        <!-- Fotografia do estabelecimento -->
-        <div id="area-foto">
-          <img id="foto-restaurante" alt="Foto do estabelecimento" />
-          <div id="creditos-foto"></div>
+      <aside
+        id="painel-restaurante"
+        aria-label="Detalhes do estabelecimento"
+        tabindex="-1"
+      >
+        <!-- A mesma galeria atende fotos próprias e fotos transitórias do Places. -->
+        <div id="area-foto" class="galeria-restaurante">
+          <img
+            id="foto-restaurante"
+            class="foto-galeria"
+            alt="Foto do estabelecimento"
+          />
+          <button
+            data-anterior
+            type="button"
+            aria-label="Fotografia anterior"
+            hidden
+          >
+            <i class="bi bi-chevron-left" aria-hidden="true"></i>
+          </button>
+          <button
+            data-proxima
+            type="button"
+            aria-label="Próxima fotografia"
+            hidden
+          >
+            <i class="bi bi-chevron-right" aria-hidden="true"></i></button
+          ><span data-contador hidden aria-live="polite"></span>
+          <div id="creditos-foto" class="creditos"></div>
         </div>
-
-        <!-- Cabeçalho -->
         <div class="painel-header">
           <div>
             <h2 id="nome-restaurante"></h2>
-            <span id="origem-restaurante" class="badge text-bg-light"></span
-            ><button
-              id="favoritar"
-              class="btn btn-outline-danger mt-2"
-              type="button"
-            >
-              Favoritar
-            </button>
-            <p id="acao-status" role="status" class="small"></p>
+            <p id="tipo-restaurante"></p>
+            <small id="origem-restaurante"></small>
           </div>
-
           <button id="fechar-painel" type="button" aria-label="Fechar painel">
             &times;
           </button>
         </div>
+        <div class="skeleton-detalhes px-3" aria-hidden="true">
+          <div class="skeleton"></div>
+          <div class="skeleton curto"></div>
+        </div>
+        <div class="painel-notas">
+          <div class="nota-plataforma">
+            <span>Google Maps</span><strong id="media-google">—</strong
+            ><small id="avaliacao-restaurante">Carregando…</small>
+          </div>
+          <div class="nota-plataforma nota-aponte">
+            <span>Aponte</span><strong id="media-aponte">—</strong
+            ><small id="resumo-avaliacoes">Carregando…</small>
+          </div>
+        </div>
+        <div class="painel-acoes">
+          <button id="favoritar" class="btn" type="button">♡ Favoritar</button
+          ><a
+            id="rota-restaurante"
+            class="btn"
+            target="_blank"
+            rel="noopener noreferrer"
+            ><i class="bi bi-sign-turn-right" aria-hidden="true"></i> Rotas</a
+          >
+        </div>
+        <p id="acao-status" role="status" class="small px-3"></p>
 
         <!-- Navegação das abas -->
         <ul class="nav" id="pills-tab" role="tablist">
@@ -102,19 +160,6 @@
               Sobre
             </button>
           </li>
-
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="pills-rotas-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-rotas"
-              type="button"
-              role="tab"
-            >
-              Rotas
-            </button>
-          </li>
         </ul>
 
         <div class="tab-content" id="pills-tabContent">
@@ -131,20 +176,20 @@
 
               <!-- Endereço -->
               <div class="info-item">
-                <i class="bi bi-geo-alt-fill"></i>
+                <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
 
                 <p id="endereco-restaurante">Endereço do estabelecimento</p>
               </div>
 
               <!-- Telefone -->
               <div class="info-item">
-                <i class="bi bi-telephone-fill"></i>
+                <i class="bi bi-telephone-fill" aria-hidden="true"></i>
                 <a id="telefone-restaurante" href="#"> Telefone </a>
               </div>
 
               <!-- Site oficial -->
               <div class="info-item">
-                <i class="bi bi-globe"></i>
+                <i class="bi bi-globe" aria-hidden="true"></i>
 
                 <a
                   class="linkmap"
@@ -167,11 +212,11 @@
                   aria-expanded="false"
                   aria-controls="collapseHorarios"
                 >
-                  <i class="bi bi-clock"></i>
+                  <i class="bi bi-clock" aria-hidden="true"></i>
 
                   <span>Ver horários</span>
 
-                  <i class="bi bi-chevron-down ms-auto"></i>
+                  <i class="bi bi-chevron-down ms-auto" aria-hidden="true"></i>
                 </button>
 
                 <div class="collapse" id="collapseHorarios">
@@ -180,13 +225,6 @@
                   </div>
                 </div>
               </div>
-
-              <hr />
-
-              <!-- Avaliação do Google -->
-              <h3>Avaliação do Google</h3>
-
-              <p id="avaliacao-restaurante"></p>
             </div>
           </div>
 
@@ -212,7 +250,7 @@
                 rel="noopener noreferrer"
                 hidden
               >
-                <i class="bi bi-book"></i>
+                <i class="bi bi-book" aria-hidden="true"></i>
                 Ver cardápio
               </a>
             </div>
@@ -230,34 +268,22 @@
               <h3>Sobre o estabelecimento</h3>
 
               <div class="info-item">
-                <i class="bi bi-shop"></i>
+                <i class="bi bi-shop" aria-hidden="true"></i>
 
                 <div>
                   <strong>Tipo de estabelecimento</strong>
 
                   <p id="descricao-propria"></p>
-                  <p id="tipo-restaurante">Restaurante</p>
                 </div>
               </div>
             </div>
           </div>
-
-          <div class="tab-pane fade" id="pills-rotas" role="tabpanel">
-            <section class="painel-card">
-              <h3>Rotas</h3>
-              <a
-                id="rota-restaurante"
-                class="btn btn-outline-danger"
-                target="_blank"
-                rel="noopener noreferrer"
-                >Traçar rota no Google Maps</a
-              >
-            </section>
-          </div>
         </div>
         <section class="painel-card">
           <h3>Avaliações do Aponte</h3>
-          <p id="resumo-avaliacoes"></p>
+          <p class="small">
+            As notas e comentários abaixo pertencem exclusivamente ao Aponte.
+          </p>
           <div id="lista-avaliacoes"></div>
           <p id="avaliacao-acesso"></p>
           <form id="avaliacao-form" hidden>
@@ -295,7 +321,7 @@
 
     <script src="/js/app.js"></script>
     <script src="/js/vendor/bootstrap.bundle.min.js"></script>
-    
+
     <script src="/js/map.js"></script>
     <script
       th:if="${!#strings.isEmpty(mapsKey)}"
