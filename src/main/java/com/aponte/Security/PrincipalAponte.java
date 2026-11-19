@@ -7,7 +7,8 @@ import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.core.userdetails.User;
 
 /** Identidade criada no servidor; IDs de Usuario e Administrador pertencem a domínios separados. */
-public final class PrincipalAponte extends User implements org.springframework.security.oauth2.core.oidc.user.OidcUser {
+public final class PrincipalAponte extends User
+    implements org.springframework.security.oauth2.core.oidc.user.OidcUser {
   private org.springframework.security.oauth2.core.oidc.OidcIdToken idToken;
   private org.springframework.security.oauth2.core.oidc.OidcUserInfo userInfo;
 
@@ -24,24 +25,52 @@ public final class PrincipalAponte extends User implements org.springframework.s
   }
 
   public static PrincipalAponte usuario(Usuario usuario) {
-    return new PrincipalAponte(usuario.getId(), usuario.getEmail(), usuario.getSenha() == null ? "" : usuario.getSenha(), false);
+    return new PrincipalAponte(
+        usuario.getId(),
+        usuario.getEmail(),
+        usuario.getSenha() == null ? "" : usuario.getSenha(),
+        false);
   }
 
-  public static PrincipalAponte google(Usuario usuario, org.springframework.security.oauth2.core.oidc.user.OidcUser origem) {
+  public static PrincipalAponte google(
+      Usuario usuario, org.springframework.security.oauth2.core.oidc.user.OidcUser origem) {
     var p = usuario(usuario);
-    p.idToken = origem.getIdToken(); p.userInfo = origem.getUserInfo();
+    p.idToken = origem.getIdToken();
+    p.userInfo = origem.getUserInfo();
     return p;
   }
-  @Override @JsonIgnore public java.util.Map<String,Object> getClaims() {
-    var claims = new java.util.HashMap<String,Object>();
+
+  @Override
+  @JsonIgnore
+  public java.util.Map<String, Object> getClaims() {
+    var claims = new java.util.HashMap<String, Object>();
     if (idToken != null) claims.putAll(idToken.getClaims());
     if (userInfo != null) claims.putAll(userInfo.getClaims());
     return java.util.Collections.unmodifiableMap(claims);
   }
-  @Override @JsonIgnore public java.util.Map<String,Object> getAttributes() { return getClaims(); }
-  @Override @JsonIgnore public org.springframework.security.oauth2.core.oidc.OidcIdToken getIdToken() { return idToken; }
-  @Override @JsonIgnore public org.springframework.security.oauth2.core.oidc.OidcUserInfo getUserInfo() { return userInfo; }
-  @Override public String getName() { return getUsername(); }
+
+  @Override
+  @JsonIgnore
+  public java.util.Map<String, Object> getAttributes() {
+    return getClaims();
+  }
+
+  @Override
+  @JsonIgnore
+  public org.springframework.security.oauth2.core.oidc.OidcIdToken getIdToken() {
+    return idToken;
+  }
+
+  @Override
+  @JsonIgnore
+  public org.springframework.security.oauth2.core.oidc.OidcUserInfo getUserInfo() {
+    return userInfo;
+  }
+
+  @Override
+  public String getName() {
+    return getUsername();
+  }
 
   public static PrincipalAponte administrador(Administrador administrador) {
     return new PrincipalAponte(

@@ -3,8 +3,15 @@ package com.aponte.DTO;
 import com.aponte.Entity.Estabelecimentos;
 
 public record EstabelecimentoDTO(
-    Long id, String googlePlaceId, DadosEstabelecimentoDTO dadosProprios, String fotoUrl, java.util.List<String> fotos) {
-  private static String url(String nome) { return nome == null ? null : "/imagens/" + nome; }
+    Long id,
+    String googlePlaceId,
+    DadosEstabelecimentoDTO dadosProprios,
+    String fotoUrl,
+    java.util.List<String> fotos) {
+  private static String url(String nome) {
+    return nome == null ? null : "/imagens/" + nome;
+  }
+
   public static EstabelecimentoDTO de(Estabelecimentos e) {
     return new EstabelecimentoDTO(
         e.getId(),

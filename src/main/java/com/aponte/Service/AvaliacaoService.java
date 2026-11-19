@@ -25,8 +25,9 @@ public class AvaliacaoService {
   private final AcessoAtual acesso;
 
   public List<AvaliacaoRecenteDTO> recentes() {
-    return avaliacoes.buscarRecentes(org.springframework.data.domain.PageRequest.of(0, 12))
-        .stream().map(AvaliacaoRecenteDTO::de).toList();
+    return avaliacoes.buscarRecentes(org.springframework.data.domain.PageRequest.of(0, 12)).stream()
+        .map(AvaliacaoRecenteDTO::de)
+        .toList();
   }
 
   @Transactional

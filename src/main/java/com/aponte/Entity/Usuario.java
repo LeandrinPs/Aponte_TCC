@@ -23,11 +23,11 @@ public class Usuario {
   @Column(name = "email", nullable = false, length = 50, unique = true)
   private String email;
 
-@Column(name = "cidade", length = 100)
-private String cidade;
+  @Column(name = "cidade", length = 100)
+  private String cidade;
 
-@Column(name = "estado", length = 2)
-private String estado;
+  @Column(name = "estado", length = 2)
+  private String estado;
 
   @Column(name = "foto_perfil", length = 100)
   private String fotoPerfil;

@@ -9,13 +9,18 @@ import org.springframework.security.web.authentication.*;
 @Configuration
 public class SegurancaConfig {
   @Bean
-  SecurityFilterChain seguranca(HttpSecurity http, GoogleOAuthConfig google, com.aponte.Security.IdentidadeGoogle identidade) throws Exception {
+  SecurityFilterChain seguranca(
+      HttpSecurity http, GoogleOAuthConfig google, com.aponte.Security.IdentidadeGoogle identidade)
+      throws Exception {
     var entrada = new LoginUrlAuthenticationEntryPoint("/entra.html");
     var sucesso = new SavedRequestAwareAuthenticationSuccessHandler();
     sucesso.setDefaultTargetUrl("/map.html");
     var cache = new org.springframework.security.web.savedrequest.HttpSessionRequestCache();
     cache.setRequestMatcher(
-        req -> req.getMethod().equals("GET") && java.util.Set.of("/favoritos.html", "/perfil.html").contains(req.getRequestURI()));
+        req ->
+            req.getMethod().equals("GET")
+                && java.util.Set.of("/favoritos.html", "/perfil.html")
+                    .contains(req.getRequestURI()));
     http.requestCache(c -> c.requestCache(cache))
         .authorizeHttpRequests(
             a ->
@@ -87,15 +92,27 @@ public class SegurancaConfig {
                           else res.sendError(403, "Acesso restrito");
                         }));
     if (google.habilitado()) {
-      http.oauth2Login(o -> o.loginPage("/entra.html")
-          .userInfoEndpoint(u -> u.oidcUserService(identidade))
-          .defaultSuccessUrl("/perfil.html", true)
-          .failureHandler((req,res,e) -> {
-            req.getSession().removeAttribute(com.aponte.Service.ContasGoogle.class.getName() + ".vinculo");
-            String codigo = e instanceof org.springframework.security.oauth2.core.OAuth2AuthenticationException oauth
-                && "conta_existente".equals(oauth.getError().getErrorCode()) ? "conta_existente" : "falha";
-            res.sendRedirect("/entra.html?google=" + codigo);
-          }));
+      http.oauth2Login(
+          o ->
+              o.loginPage("/entra.html")
+                  .userInfoEndpoint(u -> u.oidcUserService(identidade))
+                  .defaultSuccessUrl("/perfil.html", true)
+                  .failureHandler(
+                      (req, res, e) -> {
+                        req.getSession()
+                            .removeAttribute(
+                                com.aponte.Service.ContasGoogle.class.getName() + ".vinculo");
+                        String codigo =
+                            e
+                                        instanceof
+                                        org.springframework.security.oauth2.core
+                                                    .OAuth2AuthenticationException
+                                                oauth
+                                    && "conta_existente".equals(oauth.getError().getErrorCode())
+                                ? "conta_existente"
+                                : "falha";
+                        res.sendRedirect("/entra.html?google=" + codigo);
+                      }));
     }
     // CSRF e proteção da sessão permanecem habilitados; fetch obtém o token em /api/csrf.
     return http.build();

@@ -15,12 +15,36 @@ public record DadosEstabelecimentoDTO(
     @NotBlank @Size(max = 20) String cep,
     @NotBlank @DecimalMin("-90") @DecimalMax("90") @Size(max = 50) String latitude,
     @NotBlank @DecimalMin("-180") @DecimalMax("180") @Size(max = 50) String longitude,
-    @Pattern(regexp = "restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira") String categoria,
-    @Size(max = 7) java.util.List<@NotNull @Pattern(regexp = "restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira") String> tags,
-    @Pattern(regexp = "auto|restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira") String icone) {
-  public DadosEstabelecimentoDTO(String nome, String descricao, String rua, String numero,
-      String bairro, String cidade, String estado, String cep, String latitude, String longitude) {
-    this(nome, descricao, rua, numero, bairro, cidade, estado, cep, latitude, longitude, null, null, null);
+    @Pattern(
+            regexp =
+                "restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira")
+        String categoria,
+    @Size(max = 7)
+        java.util.List<
+                @NotNull
+                @Pattern(
+                    regexp =
+                        "restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira")
+                String>
+            tags,
+    @Pattern(
+            regexp =
+                "auto|restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira")
+        String icone) {
+  public DadosEstabelecimentoDTO(
+      String nome,
+      String descricao,
+      String rua,
+      String numero,
+      String bairro,
+      String cidade,
+      String estado,
+      String cep,
+      String latitude,
+      String longitude) {
+    this(
+        nome, descricao, rua, numero, bairro, cidade, estado, cep, latitude, longitude, null, null,
+        null);
   }
 
   public static DadosEstabelecimentoDTO de(Estabelecimentos e) {
@@ -34,8 +58,11 @@ public record DadosEstabelecimentoDTO(
         e.getEstado(),
         e.getCep(),
         e.getLatitude(),
-        e.getLongitude(), e.getCategoriaPrincipal(),
-        e.getTagsFiltros() == null || e.getTagsFiltros().isBlank() ? java.util.List.of() : java.util.List.of(e.getTagsFiltros().split(",")),
+        e.getLongitude(),
+        e.getCategoriaPrincipal(),
+        e.getTagsFiltros() == null || e.getTagsFiltros().isBlank()
+            ? java.util.List.of()
+            : java.util.List.of(e.getTagsFiltros().split(",")),
         e.getIcone());
   }
 

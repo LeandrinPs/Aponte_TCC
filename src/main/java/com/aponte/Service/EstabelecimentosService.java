@@ -34,12 +34,14 @@ public class EstabelecimentosService {
   }
 
   @Transactional
-  public EstabelecimentoDTO definirFoto(@NotNull @Positive Long id, @NotNull MultipartFile arquivo) {
+  public EstabelecimentoDTO definirFoto(
+      @NotNull @Positive Long id, @NotNull MultipartFile arquivo) {
     return definirFoto(id, 1, arquivo);
   }
 
   @Transactional
-  public EstabelecimentoDTO definirFoto(@NotNull @Positive Long id, @Min(1) @Max(3) int posicao, @NotNull MultipartFile arquivo) {
+  public EstabelecimentoDTO definirFoto(
+      @NotNull @Positive Long id, @Min(1) @Max(3) int posicao, @NotNull MultipartFile arquivo) {
     acesso.exigirAdministrador();
     Estabelecimentos e = exigirProprio(id);
     String nova = imagens.salvar(arquivo);
@@ -47,14 +49,20 @@ public class EstabelecimentosService {
     String antiga = foto(e, posicao);
     foto(e, posicao, nova);
     // A primeira imagem adicionada é sempre a principal.
-    if (e.getFotoPrincipal() == null) { foto(e, 1, nova); foto(e, posicao, null); }
-    var resultado = EstabelecimentoDTO.de(Persistencia.gravar(() -> estabelecimentos.saveAndFlush(e)));
+    if (e.getFotoPrincipal() == null) {
+      foto(e, 1, nova);
+      foto(e, posicao, null);
+    }
+    var resultado =
+        EstabelecimentoDTO.de(Persistencia.gravar(() -> estabelecimentos.saveAndFlush(e)));
     imagens.removerAposConfirmacao(antiga);
     return resultado;
   }
 
   @Transactional
-  public void removerFoto(@NotNull @Positive Long id) { removerFoto(id, 1); }
+  public void removerFoto(@NotNull @Positive Long id) {
+    removerFoto(id, 1);
+  }
 
   @Transactional
   public void removerFoto(@NotNull @Positive Long id, @Min(1) @Max(3) int posicao) {
@@ -63,15 +71,21 @@ public class EstabelecimentosService {
     String antiga = foto(e, posicao);
     foto(e, posicao, null);
     if (posicao == 1) {
-      if (e.getFoto2() != null) { e.setFotoPrincipal(e.getFoto2()); e.setFoto2(null); }
-      else if (e.getFoto3() != null) { e.setFotoPrincipal(e.getFoto3()); e.setFoto3(null); }
+      if (e.getFoto2() != null) {
+        e.setFotoPrincipal(e.getFoto2());
+        e.setFoto2(null);
+      } else if (e.getFoto3() != null) {
+        e.setFotoPrincipal(e.getFoto3());
+        e.setFoto3(null);
+      }
     }
     Persistencia.gravar(() -> estabelecimentos.saveAndFlush(e));
     imagens.removerAposConfirmacao(antiga);
   }
 
   @Transactional
-  public EstabelecimentoDTO tornarPrincipal(@NotNull @Positive Long id, @Min(1) @Max(3) int posicao) {
+  public EstabelecimentoDTO tornarPrincipal(
+      @NotNull @Positive Long id, @Min(1) @Max(3) int posicao) {
     acesso.exigirAdministrador();
     Estabelecimentos e = exigirProprio(id);
     String nova = foto(e, posicao);
@@ -83,10 +97,21 @@ public class EstabelecimentosService {
   }
 
   private static String foto(Estabelecimentos e, int p) {
-    return switch (p) { case 1 -> e.getFotoPrincipal(); case 2 -> e.getFoto2(); case 3 -> e.getFoto3(); default -> throw new IllegalArgumentException("Posição inválida"); };
+    return switch (p) {
+      case 1 -> e.getFotoPrincipal();
+      case 2 -> e.getFoto2();
+      case 3 -> e.getFoto3();
+      default -> throw new IllegalArgumentException("Posição inválida");
+    };
   }
+
   private static void foto(Estabelecimentos e, int p, String valor) {
-    switch (p) { case 1 -> e.setFotoPrincipal(valor); case 2 -> e.setFoto2(valor); case 3 -> e.setFoto3(valor); default -> throw new IllegalArgumentException("Posição inválida"); }
+    switch (p) {
+      case 1 -> e.setFotoPrincipal(valor);
+      case 2 -> e.setFoto2(valor);
+      case 3 -> e.setFoto3(valor);
+      default -> throw new IllegalArgumentException("Posição inválida");
+    }
   }
 
   public List<EstabelecimentoDTO> listar() {

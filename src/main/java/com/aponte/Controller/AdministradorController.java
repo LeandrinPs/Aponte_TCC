@@ -84,16 +84,21 @@ public class AdministradorController {
   }
 
   @PostMapping(value = "/estabelecimentos/{id}/fotos/{posicao}", consumes = "multipart/form-data")
-  public EstabelecimentoDTO fotoPosicao(@PathVariable Long id, @PathVariable int posicao, @RequestParam MultipartFile arquivo) {
+  public EstabelecimentoDTO fotoPosicao(
+      @PathVariable Long id, @PathVariable int posicao, @RequestParam MultipartFile arquivo) {
     return estabelecimentos.definirFoto(id, posicao, arquivo);
   }
 
   @DeleteMapping("/estabelecimentos/{id}/fotos/{posicao}")
   @ResponseStatus(HttpStatus.NO_CONTENT)
-  public void removerFotoPosicao(@PathVariable Long id, @PathVariable int posicao) { estabelecimentos.removerFoto(id, posicao); }
+  public void removerFotoPosicao(@PathVariable Long id, @PathVariable int posicao) {
+    estabelecimentos.removerFoto(id, posicao);
+  }
 
   @PutMapping("/estabelecimentos/{id}/fotos/{posicao}/principal")
-  public EstabelecimentoDTO principal(@PathVariable Long id, @PathVariable int posicao) { return estabelecimentos.tornarPrincipal(id, posicao); }
+  public EstabelecimentoDTO principal(@PathVariable Long id, @PathVariable int posicao) {
+    return estabelecimentos.tornarPrincipal(id, posicao);
+  }
 
   @PostMapping("/cardapios")
   @ResponseStatus(HttpStatus.CREATED)

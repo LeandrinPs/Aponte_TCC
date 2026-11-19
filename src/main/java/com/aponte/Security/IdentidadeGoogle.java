@@ -14,7 +14,15 @@ public class IdentidadeGoogle implements OAuth2UserService<OidcUserRequest, Oidc
   private final ContasGoogle contas;
   private final HttpServletRequest request;
   private final OidcUserService padrao = new OidcUserService();
-  @Override public OidcUser loadUser(OidcUserRequest requisicao) {
-    return contas.autenticar(padrao.loadUser(requisicao), request.getSession(false));
+
+  @Override
+  public OidcUser loadUser(OidcUserRequest requisicao) {
+    try {
+      return contas.autenticar(padrao.loadUser(requisicao), request.getSession(false));
+    } catch (com.aponte.Exception.ConflitoException
+        | com.aponte.Exception.FalhaPersistenciaException e) {
+      throw new org.springframework.security.oauth2.core.OAuth2AuthenticationException(
+          new org.springframework.security.oauth2.core.OAuth2Error("persistencia_indisponivel"), e);
+    }
   }
 }
