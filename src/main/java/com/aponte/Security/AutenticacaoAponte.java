@@ -28,6 +28,7 @@ public class AutenticacaoAponte implements UserDetailsService {
     }
     return usuarios
         .findByEmailIgnoreCase(normalizado.toLowerCase(Locale.ROOT))
+        .filter(u -> u.getSenha() != null)
         .map(PrincipalAponte::usuario)
         .orElseThrow(AutenticacaoAponte::credenciaisInvalidas);
   }

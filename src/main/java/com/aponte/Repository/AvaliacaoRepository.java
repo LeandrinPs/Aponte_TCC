@@ -8,6 +8,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
+  @Query("select a from Avaliacao a join fetch a.usuario join fetch a.estabelecimento "
+      + "order by case when a.criadoEm is null then 1 else 0 end, a.criadoEm desc, a.id desc")
+  List<Avaliacao> buscarRecentes(org.springframework.data.domain.Pageable pagina);
+
   boolean existsByEstabelecimento_Id(Long estabelecimentoId);
 
   long countByEstabelecimento_Id(Long estabelecimentoId);

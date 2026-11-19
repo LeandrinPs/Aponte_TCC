@@ -24,6 +24,21 @@ public class Estabelecimentos {
   @Column(name = "foto_principal", length = 100)
   private String fotoPrincipal;
 
+  @Column(name = "foto_2", length = 100)
+  private String foto2;
+
+  @Column(name = "foto_3", length = 100)
+  private String foto3;
+
+  @Column(name = "categoria_principal", length = 30)
+  private String categoriaPrincipal;
+
+  @Column(name = "tags_filtros", length = 200)
+  private String tagsFiltros;
+
+  @Column(name = "icone", length = 30)
+  private String icone;
+
   @Column(name = "nome", length = 50)
   private String nome;
 

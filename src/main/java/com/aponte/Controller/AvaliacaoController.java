@@ -14,6 +14,9 @@ import org.springframework.web.bind.annotation.*;
 public class AvaliacaoController {
   private final AvaliacaoService service;
 
+  @GetMapping("/avaliacoes/recentes")
+  public List<AvaliacaoRecenteDTO> recentes() { return service.recentes(); }
+
   @GetMapping("/avaliacoes")
   public List<AvaliacaoDTO> listar(
       @RequestParam(required = false) Long id,

@@ -27,6 +27,7 @@ public class UsuarioService {
   private final AvaliacaoRepository avaliacoes;
   private final PasswordEncoder senhas;
   private final AcessoAtual acesso;
+  private final ImagensService imagens;
 
   @Transactional
   public UsuarioDTO cadastrar(@NotNull @Valid UsuarioCadastroDTO dados) {
@@ -84,7 +85,7 @@ public class UsuarioService {
   public void alterarMinhaSenha(
       @NotBlank String senhaAtual, @NotBlank @Size(min = 8, max = 72) String novaSenha) {
     Usuario usuario = exigirExistente(acesso.usuarioId());
-    if (!senhas.matches(senhaAtual, usuario.getSenha())) {
+    if (usuario.getSenha() == null || !senhas.matches(senhaAtual, usuario.getSenha())) {
       throw new AccessDeniedException("Senha atual incorreta");
     }
     validarTamanhoSenha(novaSenha);
@@ -103,6 +104,7 @@ public class UsuarioService {
           usuarios.delete(usuario);
           usuarios.flush();
         });
+    imagens.removerAposConfirmacao(usuario.getFotoPerfil());
   }
 
   private UsuarioDTO atualizar(Usuario usuario, UsuarioAtualizacaoDTO dados) {
@@ -112,7 +114,30 @@ public class UsuarioService {
     }
     usuario.setNome(dados.nome().strip());
     usuario.setEmail(email);
+    if (dados.cidade() != null) usuario.setCidade(dados.cidade().isBlank() ? null : dados.cidade().strip());
+    if (dados.estado() != null) usuario.setEstado(dados.estado().isBlank() ? null : dados.estado().toUpperCase(Locale.ROOT));
     return UsuarioDTO.de(Persistencia.gravar(() -> usuarios.saveAndFlush(usuario)));
+  }
+
+  @Transactional
+  public UsuarioDTO definirFoto(@NotNull org.springframework.web.multipart.MultipartFile arquivo) {
+    Usuario u = usuarios.buscarParaAtualizar(acesso.usuarioId()).orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
+    String nova = imagens.salvar(arquivo);
+    imagens.removerSeRollback(nova);
+    String antiga = u.getFotoPerfil();
+    u.setFotoPerfil(nova);
+    var resultado = UsuarioDTO.de(Persistencia.gravar(() -> usuarios.saveAndFlush(u)));
+    imagens.removerAposConfirmacao(antiga);
+    return resultado;
+  }
+
+  @Transactional
+  public void removerFoto() {
+    Usuario u = usuarios.buscarParaAtualizar(acesso.usuarioId()).orElseThrow(() -> new RecursoNaoEncontradoException("Usuário não encontrado"));
+    String antiga = u.getFotoPerfil();
+    u.setFotoPerfil(null);
+    Persistencia.gravar(() -> usuarios.saveAndFlush(u));
+    imagens.removerAposConfirmacao(antiga);
   }
 
   private Usuario exigirExistente(Long id) {

@@ -9,18 +9,21 @@ import org.springframework.web.bind.annotation.*;
 public class PaginasController {
   private final String mapsKey;
   private final String mapId;
+  private final com.aponte.Config.GoogleOAuthConfig google;
 
   public PaginasController(
       @Value("${aponte.google.maps-key:}") String mapsKey,
-      @Value("${aponte.google.map-id:DEMO_MAP_ID}") String mapId) {
+      @Value("${aponte.google.map-id:DEMO_MAP_ID}") String mapId, com.aponte.Config.GoogleOAuthConfig google) {
     this.mapsKey = mapsKey;
     this.mapId = mapId;
+    this.google = google;
   }
 
   @ModelAttribute
   public void configuracao(Model model) {
     model.addAttribute("mapsKey", mapsKey);
     model.addAttribute("mapId", mapId);
+    model.addAttribute("googleOAuthHabilitado", google.habilitado());
   }
 
   @GetMapping("/favicon.ico")
@@ -52,6 +55,9 @@ public class PaginasController {
   String login() {
     return "entra";
   }
+
+  @GetMapping("/perfil.html")
+  String perfil() { return "perfil"; }
 
   @GetMapping("/favoritos.html")
   String favoritos() {

@@ -149,7 +149,7 @@ class ControllersIntegrationTest {
                 .with(csrf())
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(
-                    "{\"nome\":\"Nova\",\"email\":\"nova@http.test\",\"senha\":\"SenhaTeste123!\"}"))
+                    "{\"nome\":\"Nova\",\"email\":\"nova@http.test\",\"senha\":\"SenhaTeste123!\",\"confirmacaoSenha\":\"SenhaTeste123!\"}"))
         .andExpect(status().isCreated())
         .andExpect(jsonPath("$.senha").doesNotExist());
     var login =
@@ -372,5 +372,50 @@ class ControllersIntegrationTest {
                 .content("{\"referencia\":{\"googlePlaceId\":\"Place\"},\"dados\":{\"nota\":9}}"))
         .andExpect(status().isBadRequest())
         .andExpect(jsonPath("$.trace").doesNotExist());
+  }
+
+  @Test
+  void confirmacaoDeSenhaEObrigatoriaNoServidor() throws Exception {
+    for (String confirmacao : new String[] {"", ",\"confirmacaoSenha\":\"diferente\""}) {
+      mvc.perform(post("/api/usuarios").with(csrf()).contentType(MediaType.APPLICATION_JSON)
+          .content("{\"nome\":\"Nova\",\"email\":\"nova@teste.test\",\"senha\":\"SenhaTeste123!\"" + confirmacao + "}"))
+          .andExpect(status().isBadRequest());
+    }
+  }
+
+  @Test
+  void perfilPermiteCidadeEstadoMasNaoVazamentoDeCredenciais() throws Exception {
+    mvc.perform(put("/api/me").session(usuario).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+        .content("{\"nome\":\"Ana Silva\",\"email\":\"ana@http.test\",\"cidade\":\"Ouroeste\",\"estado\":\"sp\"}"))
+        .andExpect(status().isOk()).andExpect(jsonPath("$.cidade").value("Ouroeste"))
+        .andExpect(jsonPath("$.estado").value("SP"))
+        .andExpect(jsonPath("$.criadoEm").isNotEmpty())
+        .andExpect(jsonPath("$.senha").doesNotExist()).andExpect(jsonPath("$.googleSub").doesNotExist());
+    mvc.perform(get("/api/me")).andExpect(status().isUnauthorized());
+    mvc.perform(get("/api/me").session(admin)).andExpect(status().isForbidden());
+  }
+
+  @Test
+  void feedPublicoNaoExpoeEmailNemIdPessoalECalculaNotaSomenteAponte() throws Exception {
+    long id = criarProprio();
+    mvc.perform(post("/api/me/avaliacoes").session(usuario).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+        .content("{\"referencia\":{\"id\":"+id+"},\"dados\":{\"nota\":5,\"comentario\":\"Ótimo\"}}"))
+        .andExpect(status().isCreated());
+    mvc.perform(get("/api/avaliacoes/recentes")).andExpect(status().isOk())
+        .andExpect(jsonPath("$[0].autor").value("Ana"))
+        .andExpect(jsonPath("$[0].criadoEm").isNotEmpty())
+        .andExpect(jsonPath("$[0].email").doesNotExist()).andExpect(jsonPath("$[0].usuarioId").doesNotExist())
+        .andExpect(jsonPath("$[0].nota").value(5));
+  }
+
+  @Test
+  void categoriaETagsAceitamSomenteOpcoesConhecidas() throws Exception {
+    String dados = proprio.substring(0, proprio.stripTrailing().length()-1);
+    mvc.perform(post("/api/admin/estabelecimentos").session(admin).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+        .content(dados+",\"categoria\":\"pizzarias\",\"tags\":[\"brasileira\"],\"icone\":\"auto\"}"))
+        .andExpect(status().isCreated()).andExpect(jsonPath("$.dadosProprios.categoria").value("pizzarias"));
+    mvc.perform(post("/api/admin/estabelecimentos").session(admin).with(csrf()).contentType(MediaType.APPLICATION_JSON)
+        .content(dados+",\"icone\":\"<script>alert(1)</script>\"}"))
+        .andExpect(status().isBadRequest());
   }
 }
