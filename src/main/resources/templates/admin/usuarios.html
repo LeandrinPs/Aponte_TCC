@@ -8,21 +8,16 @@
     <link rel="stylesheet" href="/css/indexCss.css" />
     <link rel="stylesheet" href="/css/footerCss.css" />
     <link rel="stylesheet" href="/css/integracao.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
     <title>Gerenciar usuários — Aponte</title>
     <link rel="icon" type="image/png" href="/img/logo1.png" />
   </head>
-  <body>
-    <div th:replace="~{fragmentos :: cabecalho(false)}"></div>
-    <main class="container conteudo-pagina admin-pagina">
+  <body class="admin-layout" th:attr="data-area=${adminArea}">
+    <div th:replace="~{fragmentos :: menuAdmin}"></div>
+    <main class="admin-pagina">
       <span class="text-danger">ADMINISTRAÇÃO</span>
       <h1>Gerenciar usuários</h1>
-      <nav class="nav nav-pills gap-2 mb-4">
-        <a class="nav-link" href="/admin">Visão geral</a
-        ><a class="nav-link" href="/admin/usuarios">Usuários</a
-        ><a class="nav-link" href="/admin/estabelecimentos"
-          >Estabelecimentos e interações</a
-        >
-      </nav>
+
       <p id="admin-status" role="status" aria-live="polite"></p>
       <div class="table-responsive">
         <table class="table">

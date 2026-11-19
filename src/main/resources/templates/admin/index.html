@@ -8,23 +8,53 @@
     <link rel="stylesheet" href="/css/indexCss.css" />
     <link rel="stylesheet" href="/css/footerCss.css" />
     <link rel="stylesheet" href="/css/integracao.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
     <title>Painel administrativo — Aponte</title>
     <link rel="icon" type="image/png" href="/img/logo1.png" />
   </head>
-  <body>
-    <div th:replace="~{fragmentos :: cabecalho(false)}"></div>
-    <main class="container conteudo-pagina admin-pagina">
+  <body class="admin-layout" th:attr="data-area=${adminArea}">
+    <div th:replace="~{fragmentos :: menuAdmin}"></div>
+    <main class="admin-pagina">
       <span class="text-danger">ADMINISTRAÇÃO</span>
-      <h1>Painel administrativo</h1>
-      <nav class="nav nav-pills gap-2 mb-4">
-        <a class="nav-link" href="/admin">Visão geral</a
-        ><a class="nav-link" href="/admin/usuarios">Usuários</a
-        ><a class="nav-link" href="/admin/estabelecimentos"
-          >Estabelecimentos e interações</a
-        >
-      </nav>
+      <h1>Visão geral</h1>
+      <p class="admin-introducao">
+        Um olhar sobre a comunidade e os lugares do Aponte.
+      </p>
+
       <p id="admin-status" role="status" aria-live="polite"></p>
-      <div id="indicadores" class="row g-4"></div>
+      <div id="indicadores" class="row g-4" aria-busy="true"></div>
+      <section class="admin-bloco mt-4">
+        <h2>Gerencie o Aponte</h2>
+        <div class="row g-3">
+          <div class="col-md-6">
+            <a class="admin-atalho" href="/admin/estabelecimentos/novo"
+              ><i class="bi bi-shop" aria-hidden="true"></i
+              ><strong>Um novo lugar</strong
+              ><span
+                >Cadastre um estabelecimento próprio, sua localização e
+                fotografias.</span
+              ></a
+            >
+          </div>
+          <div class="col-md-6">
+            <a class="admin-atalho" href="/admin/usuarios"
+              ><i class="bi bi-people" aria-hidden="true"></i
+              ><strong>Sua comunidade</strong
+              ><span
+                >Consulte e gerencie as contas cadastradas com segurança.</span
+              ></a
+            >
+          </div>
+        </div>
+      </section>
+      <section class="admin-bloco mt-4">
+        <h2>Origem dos registros</h2>
+        <p class="text-secondary small">
+          Distribuição atual dos estabelecimentos internos. Referências Google
+          guardam apenas o Place ID.
+        </p>
+        <div id="distribuicao" aria-live="polite"></div>
+      </section>
     </main>
     <script src="/js/app.js"></script>
     <script src="/js/vendor/bootstrap.bundle.min.js"></script>

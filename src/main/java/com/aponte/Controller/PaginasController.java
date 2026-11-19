@@ -13,7 +13,8 @@ public class PaginasController {
 
   public PaginasController(
       @Value("${aponte.google.maps-key:}") String mapsKey,
-      @Value("${aponte.google.map-id:DEMO_MAP_ID}") String mapId, com.aponte.Config.GoogleOAuthConfig google) {
+      @Value("${aponte.google.map-id:DEMO_MAP_ID}") String mapId,
+      com.aponte.Config.GoogleOAuthConfig google) {
     this.mapsKey = mapsKey;
     this.mapId = mapId;
     this.google = google;
@@ -57,7 +58,9 @@ public class PaginasController {
   }
 
   @GetMapping("/perfil.html")
-  String perfil() { return "perfil"; }
+  String perfil() {
+    return "perfil";
+  }
 
   @GetMapping("/favoritos.html")
   String favoritos() {
@@ -96,6 +99,13 @@ public class PaginasController {
 
   @GetMapping("/admin/estabelecimentos")
   String estabelecimentos() {
+    return "admin/estabelecimentos";
+  }
+
+  @GetMapping({"/admin/avaliacoes", "/admin/cardapios"})
+  String conteudos(jakarta.servlet.http.HttpServletRequest request, Model model) {
+    model.addAttribute(
+        "adminArea", request.getRequestURI().endsWith("avaliacoes") ? "avaliacoes" : "cardapios");
     return "admin/estabelecimentos";
   }
 

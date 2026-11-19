@@ -158,6 +158,8 @@ document
   .getElementById("editar-usuario")
   ?.addEventListener("submit", async (e) => {
     e.preventDefault();
+    const b = e.target.querySelector("button");
+    Aponte.ocupado(b, true, "Salvando…");
     try {
       await api("/api/admin/usuarios/" + usuarioEditado, {
         method: "PUT",
@@ -168,6 +170,8 @@ document
       aviso("Usuário atualizado.");
     } catch (err) {
       aviso(err.message, true);
+    } finally {
+      Aponte.ocupado(b, false);
     }
   });
 document.getElementById("cancelar-item")?.addEventListener("click", () => {
@@ -179,6 +183,8 @@ document.getElementById("item-form")?.addEventListener("submit", async (e) => {
   if (!selecionado) return;
   const dados = Object.fromEntries(new FormData(e.target));
   dados.preco = Number(dados.preco);
+  const b = e.target.querySelector("button");
+  Aponte.ocupado(b, true, "Salvando…");
   try {
     await api(
       itemEditado
@@ -195,12 +201,18 @@ document.getElementById("item-form")?.addEventListener("submit", async (e) => {
     aviso("Item salvo.");
   } catch (err) {
     aviso(err.message, true);
+  } finally {
+    Aponte.ocupado(b, false);
   }
 });
 (async () => {
   try {
     if (document.getElementById("indicadores")) {
+      const alvo = document.getElementById("indicadores");
+      Aponte.skeleton(alvo);
       const r = await api("/api/admin/resumo");
+      alvo.replaceChildren();
+      Aponte.pronto(alvo);
       const labels = {
         usuarios: "Usuários",
         estabelecimentos: "Registros internos",
@@ -217,10 +229,43 @@ document.getElementById("item-form")?.addEventListener("submit", async (e) => {
         document.getElementById("indicadores").append(col);
       }
     }
+    const dist = document.getElementById("distribuicao");
+    if (dist) {
+      const r = await api("/api/admin/resumo"),
+        total = r.proprios + r.referenciasGoogle;
+      dist.replaceChildren();
+      if (!total)
+        dist.append(
+          el("p", "vazio", "Nenhum estabelecimento registrado ainda."),
+        );
+      else {
+        const barra = el("div", "barra-origem"),
+          a = el("span"),
+          b = el("span");
+        a.style.width = (100 * r.proprios) / total + "%";
+        b.style.width = (100 * r.referenciasGoogle) / total + "%";
+        barra.setAttribute("aria-hidden", "true");
+        barra.append(a, b);
+        const legenda = el("div", "legenda-origem");
+        legenda.append(
+          el("span", "", `${r.proprios} próprios`),
+          el("span", "", `${r.referenciasGoogle} referências Google`),
+        );
+        dist.append(barra, legenda);
+      }
+    }
     if (document.getElementById("tabela-usuarios")) await usuarios();
     if (document.getElementById("tabela-estabelecimentos"))
       await estabelecimentos();
   } catch (e) {
+    document.querySelectorAll("[aria-busy=true]").forEach((n) => {
+      n.replaceChildren();
+      Aponte.pronto(n);
+    });
     aviso(e.message, true);
   }
 })();
+
+document.querySelectorAll(".admin-sidebar nav>a").forEach((a) => {
+  if (a.pathname === location.pathname) a.classList.add("ativo");
+});
