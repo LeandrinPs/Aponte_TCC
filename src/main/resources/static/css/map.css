@@ -3,32 +3,44 @@
             margin: 0;
             padding: 0;
         }
-
-      #map-container {
+/* CONTÊINER DO MAPA E PAINEL */
+#map-container {
     display: flex;
-   width: auto;
-    height: 100%;
-       flex-direction: row-reverse;
+    flex-direction: row-reverse;
+    width: 100%;
+    height: calc(100vh - 65px);
+    min-height: 0;
+    overflow: hidden;
 }
 
+/* MAPA */
 #map {
-    flex: 1;
+    flex: 1 1 0;
     min-width: 0;
     width: auto;
     height: 100%;
 }
 
+/* PAINEL LATERAL */
 #painel-restaurante {
     display: none;
-    width: 350px;
+    flex: 0 0 450px;
+    width: 650px;
+    max-width: 90vw;
+    height: 100%;
+    max-height: none;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
     flex-shrink: 0;
     background: white;
     box-shadow: -3px 0 12px #0002;
     overflow-y: auto;
     font-family: Arial, sans-serif;
-    margin-top: 65px;
 }
 
+/* QUANDO ABRIR O PAINEL */
 #painel-restaurante.aberto {
     display: block;
 }
@@ -386,4 +398,10 @@
 
 .rota-opcao:active {
     transform: scale(0.97);
+}
+
+
+.abas-estabelecimento {
+    display: flex;
+    gap: 15px;
 }

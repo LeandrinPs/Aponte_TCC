@@ -20,44 +20,43 @@ async function initMap() {
   await configurarPlaceAutocomplete();
   await mostrarMarcadoresProprios();
 
-  // Botão de localização
-  const locationButton = document.createElement("button");
-  locationButton.textContent = "Minha localização";
-  locationButton.classList.add("custom-map-control-button");
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
-  locationButton.addEventListener("click", obterLocalizacao);
-
-  // Clique nos estabelecimentos do mapa base
-  map.addListener("click", async (event) => {
-    if (!event.placeId) return;
-    event.stop();
-    try {
-      const { Place } = await google.maps.importLibrary("places");
-      const restaurante = new Place({
-        id: event.placeId,
-      });
-      await abrirPainel(restaurante);
-    } catch (erro) {
-      console.error("Erro ao carregar estabelecimento:", erro);
-    }
-  });
+  
 
   const params = new URLSearchParams(location.search);
-  if (params.get("placeId")) await abrirPainel({ id: params.get("placeId") });
-  else if (params.get("id")) {
+
+if (params.get("placeId")) {
+    await abrirPainel({ id: params.get("placeId") });
+}
+else if (params.get("id")) {
+
     const e = (await propriosPromise).find(
-      (e) => String(e.id) === params.get("id"),
+        (e) => String(e.id) === params.get("id")
     );
+
     if (e) {
-      if (selecionadoRef?.id !== e.id) await abrirProprio(e);
-      else
-        map.panTo({
-          lat: Number(e.dadosProprios.latitude),
-          lng: Number(e.dadosProprios.longitude),
-        });
-    } else
-      Aponte.aviso("Cadastro próprio não encontrado.", true, "mapa-status");
-  } else await buscarRestaurantes({ lat: -20.2839, lng: -50.2464 });
+        if (selecionadoRef?.id !== e.id) {
+            await abrirProprio(e);
+        } else {
+            map.panTo({
+                lat: Number(e.dadosProprios.latitude),
+                lng: Number(e.dadosProprios.longitude)
+            });
+        }
+    } else {
+        Aponte.aviso(
+            "Cadastro próprio não encontrado.",
+            true,
+            "mapa-status"
+        );
+    }
+
+}
+else {
+
+    // Solicita a localização automaticamente
+    obterLocalizacao();
+
+}
 }
 
 // GOOGLE PLACE AUTOCOMPLETE
@@ -165,64 +164,100 @@ async function configurarPlaceAutocomplete() {
 }
 
 // LOCALIZAÇÃO DO USUÁRIO
-async function obterLocalizacao() {
-  if (!navigator.geolocation) {
-    alert("Seu navegador não suporta geolocalização.");
-    return;
-  }
-  navigator.geolocation.getCurrentPosition(
-    async (position) => {
-      const pos = {
-        lat: position.coords.latitude,
-        lng: position.coords.longitude,
-      };
+   function obterLocalizacao() {
 
-      console.log("Latitude:", pos.lat);
-      console.log("Longitude:", pos.lng);
-      console.log("Precisão:", position.coords.accuracy, "metros");
+    if (!navigator.geolocation) {
 
-      map.setCenter(pos);
-      map.setZoom(17);
+        avisoMapa(
+            "Seu navegador não suporta geolocalização.",
+            true
+        );
 
-      // Biblioteca de marcadores
-      const { AdvancedMarkerElement } =
-        await google.maps.importLibrary("marker");
-      // Cria ou atualiza marcador do usuário
-      if (marcadorUsuario) {
-        marcadorUsuario.position = pos;
-      } else {
-        const pontoAzul = document.createElement("div");
-        pontoAzul.classList.add("marcador-localizacao");
-        marcadorUsuario = new AdvancedMarkerElement({
-          map: map,
-          position: pos,
-          title: "Sua localização",
-          anchorLeft: "-50%",
-          anchorTop: "-50%",
-          zIndex: 1000,
-        });
+        ultimaPosicaoUsuario = CENTRO_INICIAL;
+        buscarRestaurantes(CENTRO_INICIAL);
 
-        marcadorUsuario.append(pontoAzul);
+        return;
+    }
+
+    navigator.geolocation.getCurrentPosition(
+
+      async (position) => {
+
+          const pos = {
+              lat: position.coords.latitude,
+              lng: position.coords.longitude
+          };
+
+          console.log("Localização do usuário:", pos);
+
+          // Centraliza o mapa
+          map.setCenter(pos);
+          map.setZoom(17);
+
+          // Importa marcadores
+          const { AdvancedMarkerElement } =
+              await google.maps.importLibrary("marker");
+
+          // Cria o marcador azul
+          const pontoAzul = document.createElement("div");
+
+          pontoAzul.classList.add("marcador-localizacao");
+
+          if (marcadorUsuario) {
+
+              marcadorUsuario.position = pos;
+
+          } else {
+
+              marcadorUsuario = new AdvancedMarkerElement({
+                  map: map,
+                  position: pos,
+                  title: "Sua localização",
+                  anchorLeft: "-50%",
+                  anchorTop: "-50%",
+                  zIndex: 1000
+              });
+
+              marcadorUsuario.append(pontoAzul);
+          }
+
+          // Busca restaurantes próximos
+          await buscarRestaurantes(pos);
+
+      },
+
+      async (erro) => {
+
+          console.warn("Localização não autorizada:", erro);
+
+          let mensagem = "Não foi possível obter sua localização.";
+
+          if (erro.code === 1) {
+              mensagem = "Permissão de localização negada. Exibindo estabelecimentos da região padrão.";
+          }
+
+          Aponte.aviso(
+              mensagem,
+              false,
+              "mapa-status"
+          );
+
+          // Continua utilizando o mapa normalmente
+          await buscarRestaurantes({
+              lat: -20.2839,
+              lng: -50.2464
+          });
+
+      },
+
+      {
+          enableHighAccuracy: true,
+          timeout: 15000,
+          maximumAge: 0
       }
 
-      // Busca restaurantes próximos
-      await buscarRestaurantes(pos);
-    },
-    (erro) => {
-      console.error("Erro na localização:", erro);
-      alert(
-        "Não foi possível obter sua localização. Verifique a permissão de localização do navegador.",
-      );
-    },
-
-    {
-      enableHighAccuracy: true,
-      timeout: 15000,
-      maximumAge: 0,
-    },
   );
 }
-
 // BUSCAR RESTAURANTES PRÓXIMOS
 async function buscarRestaurantes(pos) {
   try {

@@ -1,0 +1,210 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Aponte - Estabelecimentos</title>
+<link rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.3.1/css/all.min.css">
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="/css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="/css/vendor/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="/css/map.css">
+    <link rel="stylesheet" href="/css/map.css" />
+    <link rel="stylesheet" href="/css/painel.css" />
+    <link rel="stylesheet" href="/css/indexCss.css" />
+</head>
+
+<body>
+
+<header class="container py-4">
+    <h1>Aponte</h1>
+    <p>Descubra restaurantes perto de você!</p>
+</header>
+
+<main class="container py-4">
+
+    <h2 class="mb-4">Estabelecimentos</h2>
+
+    <div class="row g-4" id="lista-estabelecimentos"></div>
+
+</main>
+
+<!-- MODAL DE DETALHES -->
+<div class="modal fade" id="modalRestaurante" tabindex="-1">
+
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
+
+        <div class="modal-content">
+
+            <div class="modal-header">
+                <h5 class="modal-title" id="modal-nome"></h5>
+
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal">
+                </button>
+            </div>
+
+            <div class="modal-body">
+
+                <img id="modal-foto"
+                     class="modal-foto"
+                     src="img/imagem.jpeg"
+                     alt="Foto do estabelecimento">
+
+                <div class="d-flex justify-content-between mt-3">
+
+                    <span id="modal-categoria"></span>
+
+                    <span id="modal-avaliacao"></span>
+
+                </div>
+
+                <ul class="nav nav-tabs mt-4">
+
+                    <li class="nav-item">
+                        <button class="nav-link active"
+                                data-bs-toggle="tab"
+                                data-bs-target="#informacoes">
+                            Informações
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#cardapio">
+                            Cardápio
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#sobre">
+                            Sobre
+                        </button>
+                    </li>
+
+                    <li class="nav-item">
+                        <button class="nav-link"
+                                data-bs-toggle="tab"
+                                data-bs-target="#rotas">
+                            Rotas
+                        </button>
+                    </li>
+
+                </ul>
+
+                <div class="tab-content p-3">
+
+                    <div class="tab-pane fade show active"
+                         id="informacoes">
+
+                        <h5>Informações do estabelecimento</h5>
+
+                        <p id="modal-endereco"></p>
+                        <p id="modal-telefone"></p>
+                        <p id="modal-site"></p>
+
+                        <button class="btn btn-outline-danger"
+                                data-bs-toggle="collapse"
+                                data-bs-target="#horarios">
+                            <i class="bi bi-clock"></i>
+                            Ver horários
+                        </button>
+
+                        <div class="collapse mt-3" id="horarios">
+                            <ul id="modal-horarios"></ul>
+                        </div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="cardapio">
+
+                        <h5>Cardápio</h5>
+
+                        <div id="modal-cardapio"></div>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="sobre">
+
+                        <h5>Sobre o estabelecimento</h5>
+
+                        <p id="modal-descricao"></p>
+
+                    </div>
+
+                    <div class="tab-pane fade" id="rotas">
+
+                        <h5>Rotas</h5>
+
+                        <a id="modal-rota"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="btn btn-danger">
+                            <i class="bi bi-sign-turn-right"></i>
+                            Traçar rota
+                        </a>
+
+                    </div>
+
+                </div>
+
+                <hr>
+
+                <section>
+
+                    <h5>Avaliações do Aponte</h5>
+
+                    <div id="lista-avaliacoes"></div>
+
+                    <form id="form-avaliacao">
+
+                        <label for="nota" class="form-label">
+                            Sua nota
+                        </label>
+
+                        <select id="nota" class="form-select mb-2">
+                            <option value="5">5 - Excelente</option>
+                            <option value="4">4 - Bom</option>
+                            <option value="3">3 - Regular</option>
+                            <option value="2">2 - Ruim</option>
+                            <option value="1">1 - Muito ruim</option>
+                        </select>
+
+                        <label for="comentario" class="form-label">
+                            Comentário
+                        </label>
+
+                        <textarea id="comentario"
+                                  class="form-control mb-2"
+                                  maxlength="1000">
+                        </textarea>
+
+                        <button class="btn btn-danger">
+                            Enviar avaliação
+                        </button>
+
+                    </form>
+
+                </section>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="/js/vendor/bootstrap.bundle.min.js"></script>
+<script src="js/cards.js"></script>
+
+</body>
+</html>

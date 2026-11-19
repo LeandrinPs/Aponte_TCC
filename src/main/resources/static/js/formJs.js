@@ -1,24 +1,41 @@
-"use strict";
-const senha = document.getElementById("password");
-document.getElementById("mostrar-senha")?.addEventListener("click", (e) => {
-  senha.type = senha.type === "password" ? "text" : "password";
-  e.currentTarget.textContent =
-    senha.type === "password" ? "Mostrar" : "Ocultar";
-});
-document
-  .getElementById("cadastro-form")
-  ?.addEventListener("submit", async (e) => {
-    e.preventDefault();
-    const botao = e.target.querySelector("button[type=submit]");
-    botao.disabled = true;
-    try {
-      await Aponte.api("/api/usuarios", {
-        method: "POST",
-        body: Object.fromEntries(new FormData(e.target)),
-      });
-      location.href = "/entra.html?cadastrado";
-    } catch (erro) {
-      Aponte.aviso(erro.message, true, "mensagem-form");
-      botao.disabled = false;
+
+const passwordIcon = document.querySelector('.passwordIcon');
+const passwordInput = document.querySelector('#password');
+passwordIcon.addEventListener('click', function () {
+    if (passwordInput.type === 'password') {
+        passwordInput.type = 'text';
+
+        passwordIcon.classList.add('fa-eye');
+        passwordIcon.classList.remove('fa-eye-slash');
+
+    } else {
+        passwordInput.type = 'password';
+
+        passwordIcon.classList.add('fa-eye-slash');
+        passwordIcon.classList.remove('fa-eye');
     }
+});
+
+/*Função de verificar o dominio do Email */
+
+const inputEmail = document.getElementById("email");
+
+function verificarDominioEmail(email, callback) {
+  const dominio = email.split('@')[1];
+  
+  if (!dominio) {
+    return callback(false);
+  }
+
+  dns.resolveMx(dominio, (err, addresses) => {
+    if (err || !addresses || addresses.length === 0) {
+      // Domínio não tem servidores de e-mail válidos
+      return callback(false);
+    }
+    // Domínio válido com servidores MX configurados
+    return callback(true);
   });
+}
+
+
+

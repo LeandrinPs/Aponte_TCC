@@ -6,9 +6,9 @@
     <title>Aponte</title>
     <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="/css/vendor/bootstrap-icons.min.css" />
-    <link rel="stylesheet" href="/css/cataloCss.css" />
+  <link rel="stylesheet" href="/css/indexCss.css" />
     <link rel="stylesheet" href="/css/footerCss.css" />
-    <link rel="stylesheet" href="/css/integracao.css" />
+    <link rel="stylesheet" href="/css/cataloCss.css" />
     <link rel="icon" type="image/png" href="/img/logo1.png" />
   </head>
   <body class="d-flex flex-column min-vh-100">
@@ -16,7 +16,7 @@
     <div th:replace="~{fragmentos :: cabecalho(false)}"></div>
 
     <!-- Banner -->
-    <header class="banner-categorias">
+    <header class="banner-categorias mt-5">
       <div class="container">
         <span class="subtitulo-banner">CATEGORIAS</span>
 
@@ -92,8 +92,29 @@
     </main>
 
     <!--Parte de baixo final (footer)-->
-    <div th:replace="~{fragmentos :: rodape}"></div>
+<footer class="footer-aponte mt-auto">
+    <div class="container">
+        <div class="row g-4">
+            <div class="col-6 col-md-3">
+<h5>Sobre</h5>
+<ul class="list-unstyled">
+    <li> <a href="sobre.html">Sobre o Aponte</a></li>
+    <li><a href="#">Política de privacidade</a></li>
+    <li><a href="#">Termos de uso</a></li>
+</ul>
+            </div>
 
+             <div class="row">
+            <div class="col-12">
+                <p class="copyright mb-0">
+                    © 2026 Aponte - Todos os Direitos Reservados
+                </p>
+            </div>
+        </div>
+
+        </div>
+    </div>
+  </footer>
     <script src="/js/app.js"></script>
     <script src="/js/vendor/bootstrap.bundle.min.js"></script>
   </body>

@@ -1,0 +1,250 @@
+/* ÁREA DE ROTAS */
+.rotas-card {
+    padding: 15px;
+}
+
+/* TÍTULO */
+.titulo-rotas {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 19px;
+    font-weight: 700;
+    color: #202a38;
+    margin-bottom: 14px;
+}
+
+.titulo-rotas i {
+    color: #008f95;
+    font-size: 21px;
+}
+
+/* BOTÕES DE TRANSPORTE */
+.rotas-opcoes {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 9px;
+    margin-bottom: 12px;
+}
+
+.rota-opcao {
+    min-width: 0;
+    height: 65px;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+
+    background: #fff;
+    color: #263953;
+
+    border: 1.5px solid #e1e5eb;
+    border-radius: 14px;
+
+    cursor: pointer;
+    transition: all .2s ease;
+}
+
+.rota-opcao i {
+    font-size: 23px;
+    line-height: 1;
+}
+
+.rota-opcao span {
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.rota-opcao:hover {
+    border-color: #20b8b3;
+    background: #f1fbfa;
+}
+
+/* BOTÃO SELECIONADO */
+.rota-opcao.active {
+    background: #dff8f6;
+    color: #008f95;
+    border: 1.8px solid #00aaa9;
+}
+
+.rota-opcao:focus-visible {
+    outline: 2px solid #008f95;
+    outline-offset: 2px;
+}
+
+/* RESUMO DA ROTA */
+.rota-resumo {
+    min-height: 64px;
+    padding: 11px 16px;
+
+    display: grid;
+    grid-template-columns: 1fr 1px 1.3fr;
+    align-items: center;
+    gap: 15px;
+
+    background: #def7f5;
+    border-radius: 13px;
+}
+
+.rota-tempo {
+    display: flex;
+    align-items: center;
+    gap: 13px;
+}
+
+.rota-tempo > i {
+    font-size: 26px;
+    color: #008f95;
+}
+
+.rota-tempo div {
+    display: flex;
+    flex-direction: column;
+}
+
+#tempo-rota {
+    font-size: 20px;
+    font-weight: 700;
+    color: #172b45;
+}
+
+#distancia-rota {
+    font-size: 13px;
+    color: #263953;
+}
+
+.rota-divisor {
+    width: 1.5px;
+    height: 38px;
+    background: #00a9ac;
+}
+
+.rota-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-size: 12px;
+    font-weight: 600;
+    color: #243954;
+}
+
+.rota-status i {
+    color: #119d9e;
+    font-size: 16px;
+}
+
+/* INSTRUÇÕES */
+.instrucoes-container {
+    margin-top: 17px;
+}
+
+.lista-instrucoes {
+    list-style: none;
+    padding: 0 0 0 9px;
+    margin: 0;
+}
+
+.lista-instrucoes li {
+    position: relative;
+    padding: 0 0 12px 30px;
+    margin-left: 5px;
+
+    font-size: 13px;
+    line-height: 1.5;
+    color: #4b5870;
+}
+
+/* Linha vertical da trajetória */
+.lista-instrucoes li::before {
+    content: "";
+    position: absolute;
+
+    left: 5px;
+    top: 7px;
+    bottom: -3px;
+
+    width: 2px;
+    background: #b9cbd8;
+}
+
+.lista-instrucoes li:last-child::before {
+    display: none;
+}
+
+/* Bolinhas da trajetória */
+.lista-instrucoes li::after {
+    content: "";
+    position: absolute;
+
+    left: 0;
+    top: 5px;
+
+    width: 11px;
+    height: 11px;
+
+    border: 2px solid #294563;
+    background: #fff;
+    border-radius: 50%;
+}
+
+/* BOTÃO LIMPAR ROTA */
+.btn-limpar-rota {
+    width: 100%;
+    min-height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+
+    margin-top: 7px;
+    padding: 9px;
+
+    border: 1.5px solid #00aaa9;
+    border-radius: 13px;
+
+    background: #fff;
+    color: #009b9b;
+
+    font-size: 14px;
+    font-weight: 700;
+
+    cursor: pointer;
+    transition: .2s;
+}
+
+.btn-limpar-rota:hover {
+    background: #e4f9f7;
+}
+
+.btn-limpar-rota i {
+    font-size: 17px;
+}
+
+/* ESTADO DE CARREGAMENTO */
+.rotas-card.carregando {
+    opacity: .7;
+}
+
+/* RESPONSIVIDADE */
+@media (max-width: 400px) {
+    .rotas-opcoes {
+        gap: 5px;
+    }
+
+    .rota-opcao span {
+        font-size: 11px;
+    }
+
+    .rota-status {
+        font-size: 10px;
+    }
+
+    .rota-resumo {
+        gap: 9px;
+        padding: 10px;
+    }
+}
