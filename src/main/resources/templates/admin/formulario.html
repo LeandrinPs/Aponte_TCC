@@ -8,21 +8,16 @@
     <link rel="stylesheet" href="/css/indexCss.css" />
     <link rel="stylesheet" href="/css/footerCss.css" />
     <link rel="stylesheet" href="/css/integracao.css" />
+    <link rel="stylesheet" href="/css/admin.css" />
     <title>Cadastro próprio — Aponte</title>
     <link rel="icon" type="image/png" href="/img/logo1.png" />
   </head>
-  <body>
-    <div th:replace="~{fragmentos :: cabecalho(false)}"></div>
-    <main class="container conteudo-pagina admin-pagina">
+  <body class="admin-layout" th:attr="data-area=${adminArea}">
+    <div th:replace="~{fragmentos :: menuAdmin}"></div>
+    <main class="admin-pagina">
       <span class="text-danger">ADMINISTRAÇÃO</span>
       <h1>Cadastro próprio</h1>
-      <nav class="nav nav-pills gap-2 mb-4">
-        <a class="nav-link" href="/admin">Visão geral</a
-        ><a class="nav-link" href="/admin/usuarios">Usuários</a
-        ><a class="nav-link" href="/admin/estabelecimentos"
-          >Estabelecimentos e interações</a
-        >
-      </nav>
+
       <p id="admin-status" role="status" aria-live="polite"></p>
       <form id="estabelecimento-form" class="row g-3">
         <div class="col-md-6">
@@ -131,27 +126,119 @@
           <p>Selecione um ponto no mapa ou informe as coordenadas acima.</p>
           <div id="mapa-cadastro" th:attr="data-map-id=${mapId}"></div>
         </div>
-        <div class="col-12">
-          <label for="foto" class="form-label"
-            >Fotografia principal — JPEG ou PNG, até 5 MB</label
-          ><input
-            type="file"
-            id="foto"
-            accept="image/jpeg,image/png"
-            class="form-control"
-          /><img
-            id="foto-preview"
-            src="/img/imagem.jpeg"
-            class="foto-preview mt-2"
-            alt="Fotografia atual"
-          /><button
-            id="remover-foto"
-            type="button"
-            class="btn btn-outline-danger"
-            hidden
+        <div class="col-md-6">
+          <label for="categoria" class="form-label">Categoria principal</label
+          ><select id="categoria" name="categoria" class="form-select"></select>
+          <p class="form-text">Nome apresentado no painel do mapa.</p>
+        </div>
+        <div class="col-md-6">
+          <label for="icone" class="form-label">Ícone do marcador</label
+          ><select id="icone" name="icone" class="form-select">
+            <option value="auto">Automático pela categoria</option></select
+          ><span
+            id="icone-preview"
+            class="icone-preview"
+            aria-label="Prévia do ícone"
+            >🍽️</span
           >
-            Remover fotografia
-          </button>
+        </div>
+        <fieldset class="col-12">
+          <legend class="h6">Tags de filtros</legend>
+          <p class="form-text">
+            Além da categoria principal, escolha os filtros em que este lugar
+            deve aparecer.
+          </p>
+          <div id="tags-opcoes" class="d-flex flex-wrap gap-3"></div>
+        </fieldset>
+        <div class="col-12">
+          <h2 class="h5 mt-3">Fotografias do estabelecimento</h2>
+          <p class="form-text">
+            Até três imagens JPEG ou PNG de 5 MB cada. A posição 1 é a
+            fotografia principal.
+          </p>
+        </div>
+        <div class="col-md-4">
+          <section class="foto-posicao" data-posicao="1">
+            <label for="foto" class="form-label">Principal</label
+            ><img
+              id="foto-preview"
+              src="/img/imagem.jpeg"
+              class="foto-preview"
+              alt="Prévia da fotografia 1"
+            /><input
+              type="file"
+              id="foto"
+              accept="image/jpeg,image/png"
+              class="form-control mt-2"
+            /><button
+              id="remover-foto"
+              type="button"
+              class="btn btn-outline-danger btn-sm mt-2"
+              hidden
+            >
+              Remover fotografia
+            </button>
+          </section>
+        </div>
+        <div class="col-md-4">
+          <section class="foto-posicao" data-posicao="2">
+            <label for="foto-2" class="form-label">Fotografia 2</label
+            ><img
+              id="foto-preview-2"
+              src="/img/imagem.jpeg"
+              class="foto-preview"
+              alt="Prévia da fotografia 2"
+            /><input
+              type="file"
+              id="foto-2"
+              accept="image/jpeg,image/png"
+              class="form-control mt-2"
+            /><button
+              id="remover-foto-2"
+              type="button"
+              class="btn btn-outline-danger btn-sm mt-2"
+              hidden
+            >
+              Remover fotografia</button
+            ><button
+              id="principal-2"
+              type="button"
+              class="btn btn-outline-secondary btn-sm mt-2"
+              hidden
+            >
+              Tornar principal
+            </button>
+          </section>
+        </div>
+        <div class="col-md-4">
+          <section class="foto-posicao" data-posicao="3">
+            <label for="foto-3" class="form-label">Fotografia 3</label
+            ><img
+              id="foto-preview-3"
+              src="/img/imagem.jpeg"
+              class="foto-preview"
+              alt="Prévia da fotografia 3"
+            /><input
+              type="file"
+              id="foto-3"
+              accept="image/jpeg,image/png"
+              class="form-control mt-2"
+            /><button
+              id="remover-foto-3"
+              type="button"
+              class="btn btn-outline-danger btn-sm mt-2"
+              hidden
+            >
+              Remover fotografia</button
+            ><button
+              id="principal-3"
+              type="button"
+              class="btn btn-outline-secondary btn-sm mt-2"
+              hidden
+            >
+              Tornar principal
+            </button>
+          </section>
         </div>
         <div class="col-12">
           <button class="btn btn-danger" id="salvar-estabelecimento">

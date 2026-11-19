@@ -61,7 +61,12 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
         this.listeners = {};
         window.__marcadores.push(this);
       }
-      append() {}
+      append(n) {
+        this.content = n;
+      }
+      replaceChildren(n) {
+        this.content = n;
+      }
       addEventListener(n, f) {
         this.listeners[n] = f;
       }
@@ -76,6 +81,7 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
       constructor(o) {
         this.id = o.id;
         this.displayName = o.nome || f.nome;
+        this.primaryType = "pizza_restaurant";
         this.location = new LatLng({ lat: -20.2839, lng: -50.2464 });
       }
       async fetchFields(o) {
@@ -85,13 +91,18 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
         this.userRatingCount = 123;
         this.types = ["pizza_restaurant"];
         this.photos = [
-          {
-            getURI: () => "/img/lasai.jpg",
-            authorAttributions: [
-              { displayName: "Autor de teste", uri: "https://example.test" },
-            ],
-          },
-        ];
+          "/img/lasai.jpg",
+          "/img/Asador.jpg",
+          "/img/maido.jpeg",
+        ].map((url, i) => ({
+          getURI: () => url,
+          authorAttributions: [
+            {
+              displayName: "Autor de teste " + (i + 1),
+              uri: "https://example.test",
+            },
+          ],
+        }));
       }
       static async searchNearby(o) {
         window.__tipos.push(o.includedTypes[0]);
@@ -153,6 +164,9 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
             cep: "00000-000",
             latitude: "-20.2839",
             longitude: "-50.2464",
+            categoria: "pizzarias",
+            tags: ["brasileira"],
+            icone: "cafeterias",
           },
         }),
       fixture.proprio,
@@ -160,14 +174,18 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
     usuario = await page.evaluate(
       async (dados) =>
         Aponte.api("/api/usuarios", { method: "POST", body: dados }),
-      { nome: "Usuário mapa", email, senha },
+      { nome: "Usuário mapa", email, senha, confirmacaoSenha: senha },
     );
     await page.getByRole("button", { name: "Sair", exact: true }).click();
     await page.waitForURL("**/index.html?saiu");
     await login(email, senha);
     await ir("/map.html?categoria=pizzarias");
     await page.waitForFunction(
-      () => window.initMap && document.querySelector("#cards-proprios button"),
+      () =>
+        window.initMap &&
+        document.querySelector(
+          '#selecionar-proprio option[value]:not([value=""])',
+        ),
     );
     await page.evaluate(() => window.initMap());
     expect(
@@ -189,7 +207,7 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
       await page.evaluate(
         () => window.__marcadores.filter((m) => m.map).length,
       ),
-    ).toBe((await page.evaluate(() => proprios.length)) + 1);
+    ).toBe((await page.evaluate(() => propriosVisiveis().length)) + 1);
     await page.evaluate(() =>
       window.buscarRestaurantes({ lat: -20.2839, lng: -50.2464 }),
     );
@@ -220,6 +238,34 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
     await expect(page.locator("#creditos-foto")).toContainText(
       "Autor de teste",
     );
+    await expect(page.locator("#tipo-restaurante")).toHaveText("Pizzaria");
+    expect(await page.locator("#cards-proprios").count()).toBe(0);
+    expect(
+      await page.evaluate(
+        () =>
+          window.__marcadores.find(
+            (m) => m.title === "Google simulado para teste",
+          ).content.textContent,
+      ),
+    ).toBe("🍕");
+    await page.locator("[data-proxima]").click();
+    await expect(page.locator("#foto-restaurante")).toHaveAttribute(
+      "src",
+      "/img/Asador.jpg",
+    );
+    await expect(page.locator("#creditos-foto")).toContainText(
+      "Autor de teste 2",
+    );
+    await page.locator("[data-proxima]").click();
+    await expect(page.locator("#foto-restaurante")).toHaveAttribute(
+      "src",
+      "/img/maido.jpeg",
+    );
+    await expect(page.locator("#creditos-foto")).toContainText(
+      "Autor de teste 3",
+    );
+    await page.locator("[data-anterior]").click();
+    await page.locator("[data-anterior]").click();
     await page.locator("#favoritar").click();
     await expect(page.locator("#favoritar")).toHaveText(
       "Remover dos favoritos",
@@ -229,8 +275,8 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
       .locator("#comentario")
       .fill("Aponte separado da nota pública do Google");
     await page.locator("#avaliacao-form button[type=submit]").click();
-    await expect(page.locator("#resumo-avaliacoes")).toContainText("4.0/5");
-    await expect(page.locator("#avaliacao-restaurante")).toContainText("4.2/5");
+    await expect(page.locator("#media-aponte")).toHaveText("4,0");
+    await expect(page.locator("#media-google")).toHaveText("4,2");
     const ref = await page.evaluate(
       async (id) =>
         Aponte.api(
@@ -246,6 +292,37 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
       await page.locator("#rota-restaurante").getAttribute("href"),
     ).toContain("destination_place_id=" + fixture.id);
     expect(await page.evaluate(() => window.__fotos)).toBeGreaterThan(0);
+    expect(
+      await page.evaluate(
+        (nome) =>
+          window.__marcadores.find((m) => m.map && m.title === nome).content
+            .textContent,
+        fixture.proprio,
+      ),
+    ).toBe("☕");
+    await page.evaluate(() =>
+      Aponte.galeria(
+        document.getElementById("area-foto"),
+        [
+          {
+            getURI: () => "/img/lasai.jpg",
+            authorAttributions: [{ displayName: "Autor único" }],
+          },
+        ],
+        true,
+      ),
+    );
+    await expect(page.locator("[data-proxima]")).toBeHidden();
+    await expect(page.locator("[data-anterior]")).toBeHidden();
+    await expect(page.locator("#creditos-foto")).toContainText("Autor único");
+    await page.evaluate(() =>
+      Aponte.galeria(document.getElementById("area-foto"), [], false),
+    );
+    await expect(page.locator("#foto-restaurante")).toHaveAttribute(
+      "src",
+      "/img/imagem.jpeg",
+    );
+    await expect(page.locator("[data-proxima]")).toBeHidden();
     await ir("/favoritos.html");
     await expect(page.locator("#lista-favoritos")).toContainText(fixture.nome);
     await expect(page.locator("#lista-favoritos .creditos")).toContainText(

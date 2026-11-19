@@ -41,6 +41,14 @@ public class Avaliacao {
   @Column(name = "nota", nullable = false)
   private Integer nota;
 
+  @Column(name = "criado_em")
+  private java.time.Instant criadoEm;
+
+  @jakarta.persistence.PrePersist
+  void registrarCriacao() {
+    if (criadoEm == null) criadoEm = java.time.Instant.now();
+  }
+
   @Column(name = "comentario", length = 1000)
   private String comentario;
 }

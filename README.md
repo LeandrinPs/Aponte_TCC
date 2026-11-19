@@ -5,7 +5,7 @@ Aplicação Java 17 / Spring Boot 4.1.1 com páginas Thymeleaf, APIs de sessão,
 ## Executar
 
 1. Disponibilize MySQL 8 e um banco próprio para o Aponte.
-2. Para um banco **novo e vazio**, revise e execute manualmente `docs/SCHEMA_NOVO.sql`. Para banco existente, faça backup e confira as migrações em `docs/MIGRACAO_SERVICE.sql` e `docs/MIGRACAO_CONTROLLERS.sql`; não execute o esquema inicial sobre dados existentes. O Hibernate usa `validate`, sem executar migrações.
+2. Para um banco **novo e vazio**, revise e execute manualmente `docs/SCHEMA_NOVO.sql`. Para banco existente, faça backup e confira as migrações em `docs/MIGRACAO_SERVICE.sql` e `docs/MIGRACAO_CONTROLLERS.sql` e `docs/MIGRACAO_MODERNIZACAO.sql`; não execute o esquema inicial sobre dados existentes. O Hibernate usa `validate`, sem executar migrações.
 3. Configure o ambiente (exemplo Bash; os valores de senha devem ser definidos por você):
 
 ```bash
@@ -20,7 +20,9 @@ bash ./mvnw spring-boot:run
 
 No PowerShell, use `$env:NOME_DA_VARIAVEL = 'valor'` e `./mvnw.cmd spring-boot:run`. Não versione credenciais. A pasta de fotografias deve persistir entre reinícios e ser incluída no backup junto ao banco.
 
-Abra <http://localhost:8080>. Cadastre-se em `/forma.html`, entre em `/entra.html` e use `/map.html` ou `/favoritos.html`. A pesquisa Google requer Maps JavaScript API e Places API (New) habilitadas, faturamento e restrições de referenciador adequadas à origem utilizada. Sem a chave/SDK, os cadastros próprios continuam acessíveis, inclusive por pesquisa local; o sistema não inventa resultados Google.
+O login Google é opcional: configure `GOOGLE_CLIENT_ID` e `GOOGLE_CLIENT_SECRET` e autorize o callback `http://localhost:8080/login/oauth2/code/google` no Google Cloud. Contas locais existentes precisam entrar com senha e confirmar a vinculação no perfil; não há associação automática por e-mail. Sem as duas credenciais, o login local funciona e a área Google informa a indisponibilidade.
+
+Abra <http://localhost:8080>. Cadastre-se em `/forma.html`, entre em `/entra.html` e use `/map.html`, `/perfil.html` ou `/favoritos.html`. A pesquisa Google requer Maps JavaScript API e Places API (New) habilitadas, faturamento e restrições de referenciador adequadas à origem utilizada. Sem a chave/SDK, os cadastros próprios continuam acessíveis, inclusive por pesquisa local; o sistema não inventa resultados Google.
 
 ## Administrador inicial
 
@@ -59,8 +61,13 @@ read -r -s -p 'Senha administrativa do ambiente de testes: ' APONTE_E2E_ADMIN_SE
 export APONTE_E2E_ADMIN_SENHA; echo
 npm test
 npm run test:mapa
+npm run test:modernizacao
+# Diagnóstico externo opcional, sem simulação e com TLS verificado:
+npm run test:google
 ```
 
 `npm test` usa o site real e suas APIs. `test:mapa` substitui explicitamente o SDK Google para verificar o contrato do mapa híbrido; não comprova acesso à API Google real. Os testes criam registros próprios e contas temporárias; mantenha o banco separado de dados reais. Os artefatos locais ficam em `tests/browser/artifacts`, ignorados pelo Git. Opcionalmente indique `CHROMIUM_EXECUTABLE_PATH` para um Chromium instalado.
 
-**[Relatório completo de arquitetura, endpoints, páginas, fotos, banco, validação e execução](docs/INTEGRACAO.md)**. O relatório histórico dos Services está em [docs/SERVICES.md](docs/SERVICES.md).
+**[Relatório da modernização, migração, OAuth2 e testes atuais](docs/MODERNIZACAO.md)**.
+
+[Relatório histórico de arquitetura, endpoints, páginas, fotos, banco, validação e execução](docs/INTEGRACAO.md). O relatório histórico dos Services está em [docs/SERVICES.md](docs/SERVICES.md).

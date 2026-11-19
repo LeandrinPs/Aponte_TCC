@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Meu perfil — Aponte</title>
+    <link rel="icon" href="/img/favcon.png" />
+    <link href="/css/vendor/bootstrap.min.css" rel="stylesheet" />
+    <link href="/css/vendor/bootstrap-icons.min.css" rel="stylesheet" />
+    <link href="/css/integracao.css" rel="stylesheet" />
+    <link href="/css/perfil.css" rel="stylesheet" />
+    <link href="/css/footerCss.css" rel="stylesheet" />
+  </head>
+  <body>
+    <div th:replace="~{fragmentos :: cabecalho(true)}"></div>
+    <main class="container conteudo-pagina perfil-layout">
+      <aside class="perfil-lateral">
+        <section class="perfil-cartao">
+          <img
+            id="perfil-avatar"
+            src="/img/avatar.svg"
+            alt="Sua fotografia de perfil"
+          />
+          <h1 id="perfil-nome"><span class="skeleton d-block"> </span></h1>
+          <p id="perfil-local" class="text-secondary"></p>
+          <div class="d-flex justify-content-center gap-3">
+            <a href="#configuracoes"
+              ><i class="bi bi-pencil" aria-hidden="true"></i
+              ><span>Editar perfil</span></a
+            ><label for="foto-perfil"
+              ><i class="bi bi-camera" aria-hidden="true"></i
+              ><span>Adicionar foto</span></label
+            >
+          </div>
+        </section>
+        <nav class="perfil-nav" aria-label="Meu perfil">
+          <a href="#visao-geral" data-aba="visao-geral"
+            ><i class="bi bi-person-circle" aria-hidden="true"></i> Visão
+            geral</a
+          ><a href="#avaliacoes" data-aba="avaliacoes"
+            ><i class="bi bi-star" aria-hidden="true"></i> Minhas avaliações</a
+          ><a href="#favoritos" data-aba="favoritos"
+            ><i class="bi bi-bookmark-heart" aria-hidden="true"></i> Meus
+            favoritos</a
+          ><a href="#configuracoes" data-aba="configuracoes"
+            ><i class="bi bi-gear" aria-hidden="true"></i> Configurações</a
+          >
+        </nav>
+      </aside>
+      <div class="perfil-principal">
+        <p id="perfil-status" role="status" aria-live="polite"></p>
+        <section id="visao-geral" data-painel>
+          <span class="sobretitulo">SEU ESPAÇO NO APONTE</span>
+          <h2>Olá, que bom ter você aqui.</h2>
+          <p class="text-secondary">
+            Seus lugares e experiências, reunidos em um só lugar.
+          </p>
+          <div class="perfil-metricas">
+            <a href="#avaliacoes"
+              ><i class="bi bi-star" aria-hidden="true"></i
+              ><strong id="total-avaliacoes">—</strong
+              ><span>Avaliações</span></a
+            ><a href="#favoritos"
+              ><i class="bi bi-bookmark-heart" aria-hidden="true"></i
+              ><strong id="total-favoritos">—</strong><span>Favoritos</span></a
+            >
+          </div>
+          <h3 class="h4 mt-5">Mais sobre mim</h3>
+          <div class="perfil-sobre">
+            <div>
+              <strong>Localização</strong>
+              <p id="sobre-local">Carregando…</p>
+            </div>
+            <div>
+              <strong>No Aponte desde</strong>
+              <p id="perfil-desde">Carregando…</p>
+            </div>
+          </div>
+          <a class="btn btn-danger mt-4" href="/map.html"
+            >Descobrir meu próximo lugar
+            <i class="bi bi-arrow-up-right ms-2" aria-hidden="true"></i
+          ></a>
+        </section>
+        <section id="avaliacoes" data-painel hidden>
+          <h2>Minhas avaliações</h2>
+          <p class="text-secondary">
+            Experiências que você compartilhou no Aponte.
+          </p>
+          <div id="minhas-avaliacoes" aria-live="polite"></div>
+        </section>
+        <section id="favoritos" data-painel hidden>
+          <h2>Meus favoritos</h2>
+          <p id="favoritos-status" role="status">Carregando seus lugares…</p>
+          <div id="lista-favoritos" class="row g-4"></div>
+        </section>
+        <section id="configuracoes" data-painel hidden>
+          <h2>Configurações</h2>
+          <p class="text-secondary">
+            Atualize suas informações e cuide da sua conta.
+          </p>
+          <form id="perfil-form" class="perfil-form">
+            <h3 class="h5">Informações pessoais</h3>
+            <div class="row g-3">
+              <div class="col-12">
+                <label for="perfil-campo-nome" class="form-label">Nome</label
+                ><input
+                  id="perfil-campo-nome"
+                  name="nome"
+                  class="form-control"
+                  maxlength="50"
+                  required
+                  autocomplete="name"
+                />
+              </div>
+              <div class="col-12">
+                <label for="perfil-email" class="form-label">E-mail</label
+                ><input
+                  id="perfil-email"
+                  name="email"
+                  type="email"
+                  class="form-control"
+                  maxlength="50"
+                  required
+                  autocomplete="email"
+                />
+              </div>
+              <div class="col-8">
+                <label for="perfil-cidade" class="form-label"
+                  >Cidade (opcional)</label
+                ><input
+                  id="perfil-cidade"
+                  name="cidade"
+                  class="form-control"
+                  maxlength="100"
+                  autocomplete="address-level2"
+                />
+              </div>
+              <div class="col-4">
+                <label for="perfil-estado" class="form-label"
+                  >UF (opcional)</label
+                ><input
+                  id="perfil-estado"
+                  name="estado"
+                  class="form-control text-uppercase"
+                  maxlength="2"
+                  pattern="[A-Za-z]{2}|"
+                  autocomplete="address-level1"
+                />
+              </div>
+            </div>
+            <button type="submit" class="btn btn-danger mt-3">
+              Salvar perfil
+            </button>
+          </form>
+          <form id="foto-perfil-form" class="perfil-form">
+            <h3 class="h5">Sua fotografia</h3>
+            <p class="small text-secondary">JPEG ou PNG de até 5 MB.</p>
+            <label for="foto-perfil" class="form-label"
+              >Selecionar fotografia</label
+            ><input
+              type="file"
+              accept="image/jpeg,image/png"
+              id="foto-perfil"
+              class="form-control"
+            /><img
+              id="avatar-preview"
+              class="avatar-preview mt-3"
+              src="/img/avatar.svg"
+              alt="Prévia da foto"
+            />
+            <div class="mt-3 d-flex gap-2">
+              <button type="submit" class="btn btn-danger">Enviar foto</button
+              ><button
+                type="button"
+                id="remover-avatar"
+                class="btn btn-outline-secondary"
+                hidden
+              >
+                Remover foto
+              </button>
+            </div>
+          </form>
+          <form id="senha-perfil-form" class="perfil-form">
+            <h3 class="h5">Alterar senha</h3>
+            <label for="senha-atual" class="form-label">Senha atual</label
+            ><input
+              id="senha-atual"
+              type="password"
+              name="senhaAtual"
+              class="form-control mb-3"
+              required
+              autocomplete="current-password"
+            /><label for="nova-senha" class="form-label">Nova senha</label
+            ><input
+              id="nova-senha"
+              type="password"
+              name="novaSenha"
+              class="form-control"
+              minlength="8"
+              maxlength="72"
+              required
+              autocomplete="new-password"
+            /><button type="submit" class="btn btn-danger mt-3">
+              Alterar senha
+            </button>
+          </form>
+          <div class="perfil-form">
+            <h3 class="h5">Conta Google</h3>
+            <p id="google-perfil-status" class="text-secondary"></p>
+            <form id="google-vinculo-form" th:if="${googleOAuthHabilitado}">
+              <label for="senha-vinculo" class="form-label"
+                >Confirme sua senha local para vincular</label
+              ><input
+                type="password"
+                id="senha-vinculo"
+                name="senhaAtual"
+                class="form-control"
+                required
+                autocomplete="current-password"
+              /><button class="btn btn-outline-danger mt-3" type="submit">
+                Vincular conta Google
+              </button>
+            </form>
+            <p
+              th:unless="${googleOAuthHabilitado}"
+              class="small text-secondary"
+            >
+              Login Google indisponível neste ambiente.
+            </p>
+          </div>
+        </section>
+      </div>
+    </main>
+    <div th:replace="~{fragmentos :: rodape}"></div>
+    <script src="/js/app.js"></script>
+    <script src="/js/vendor/bootstrap.bundle.min.js"></script>
+    <script src="/js/favoritos.js"></script>
+    <script src="/js/perfil.js"></script>
+    <script src="/js/pesquisa.js"></script>
+    <script
+      th:if="${!#strings.isEmpty(mapsKey)}"
+      async
+      th:src="@{https://maps.googleapis.com/maps/api/js(key=${mapsKey},loading='async',callback='initAutocompleteInicio',language='pt-BR',region='BR')}"
+    ></script>
+  </body>
+</html>

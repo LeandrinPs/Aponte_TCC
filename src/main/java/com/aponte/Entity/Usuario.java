@@ -23,15 +23,31 @@ public class Usuario {
   @Column(name = "email", nullable = false, length = 50, unique = true)
   private String email;
 
-@Column(name = "cidade", length = 100)
-private String cidade;
+  @Column(name = "cidade", length = 100)
+  private String cidade;
 
-@Column(name = "estado", length = 2)
-private String estado;
+  @Column(name = "estado", length = 2)
+  private String estado;
+
+  @Column(name = "foto_perfil", length = 100)
+  private String fotoPerfil;
+
+  @Column(name = "criado_em")
+  private java.time.Instant criadoEm;
+
+  @lombok.ToString.Exclude
+  @Column(name = "google_sub", length = 255, unique = true)
+  @com.fasterxml.jackson.annotation.JsonIgnore
+  private String googleSub;
+
+  @jakarta.persistence.PrePersist
+  void registrarCriacao() {
+    if (criadoEm == null) criadoEm = java.time.Instant.now();
+  }
 
   @lombok.ToString.Exclude
   @lombok.EqualsAndHashCode.Exclude
   @com.fasterxml.jackson.annotation.JsonIgnore
-  @Column(name = "senha", nullable = false, length = 100)
+  @Column(name = "senha", length = 100)
   private String senha;
 }

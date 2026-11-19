@@ -5,59 +5,71 @@ let marcadorUsuario = null;
 let autocompleteRestaurantes = null;
 let marcadorPesquisa = null;
 async function initMap() {
-  map = new google.maps.Map(document.getElementById("map"), {
-    center: {
-      lat: -20.2839,
-      lng: -50.2464,
-    },
-    zoom: 15,
-    mapId: document.getElementById("map-container").dataset.mapId,
-    clickableIcons: true,
-  });
-  window.map = map;
-  document.getElementById("mapa-status").textContent = "";
+  try {
+    map = new google.maps.Map(document.getElementById("map"), {
+      center: {
+        lat: -20.2839,
+        lng: -50.2464,
+      },
+      zoom: 15,
+      mapId: document.getElementById("map-container").dataset.mapId,
+      clickableIcons: true,
+    });
+    window.map = map;
+    document.getElementById("mapa-status").textContent = "";
+    document.getElementById("mapa-carregando").hidden = true;
 
-  await configurarPlaceAutocomplete();
-  await mostrarMarcadoresProprios();
+    await configurarPlaceAutocomplete();
+    await mostrarMarcadoresProprios();
 
-  // Botão de localização
-  const locationButton = document.createElement("button");
-  locationButton.textContent = "Minha localização";
-  locationButton.classList.add("custom-map-control-button");
-  map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
-  locationButton.addEventListener("click", obterLocalizacao);
+    // Botão de localização
+    const locationButton = document.createElement("button");
+    locationButton.textContent = "Minha localização";
+    locationButton.classList.add("custom-map-control-button");
+    map.controls[google.maps.ControlPosition.TOP_CENTER].push(locationButton);
+    locationButton.addEventListener("click", obterLocalizacao);
 
-  // Clique nos estabelecimentos do mapa base
-  map.addListener("click", async (event) => {
-    if (!event.placeId) return;
-    event.stop();
-    try {
-      const { Place } = await google.maps.importLibrary("places");
-      const restaurante = new Place({
-        id: event.placeId,
-      });
-      await abrirPainel(restaurante);
-    } catch (erro) {
-      console.error("Erro ao carregar estabelecimento:", erro);
-    }
-  });
-
-  const params = new URLSearchParams(location.search);
-  if (params.get("placeId")) await abrirPainel({ id: params.get("placeId") });
-  else if (params.get("id")) {
-    const e = (await propriosPromise).find(
-      (e) => String(e.id) === params.get("id"),
-    );
-    if (e) {
-      if (selecionadoRef?.id !== e.id) await abrirProprio(e);
-      else
-        map.panTo({
-          lat: Number(e.dadosProprios.latitude),
-          lng: Number(e.dadosProprios.longitude),
+    // Clique nos estabelecimentos do mapa base
+    map.addListener("click", async (event) => {
+      if (!event.placeId) return;
+      event.stop();
+      try {
+        const { Place } = await google.maps.importLibrary("places");
+        const restaurante = new Place({
+          id: event.placeId,
         });
-    } else
-      Aponte.aviso("Cadastro próprio não encontrado.", true, "mapa-status");
-  } else await buscarRestaurantes({ lat: -20.2839, lng: -50.2464 });
+        await abrirPainel(restaurante);
+      } catch (erro) {
+        console.error("Erro ao carregar estabelecimento:", erro);
+      }
+    });
+
+    const params = new URLSearchParams(location.search);
+    if (params.get("placeId")) await abrirPainel({ id: params.get("placeId") });
+    else if (params.get("id")) {
+      const e = (await propriosPromise).find(
+        (e) => String(e.id) === params.get("id"),
+      );
+      if (e) {
+        if (selecionadoRef?.id !== e.id) await abrirProprio(e);
+        else
+          map.panTo({
+            lat: Number(e.dadosProprios.latitude),
+            lng: Number(e.dadosProprios.longitude),
+          });
+      } else
+        Aponte.aviso("Cadastro próprio não encontrado.", true, "mapa-status");
+    } else await buscarRestaurantes({ lat: -20.2839, lng: -50.2464 });
+  } catch (erro) {
+    Aponte.aviso(
+      "Não foi possível inicializar o mapa Google. Os cadastros do Aponte continuam no seletor acima.",
+      true,
+      "mapa-status",
+    );
+    console.warn("Falha ao inicializar o mapa Google:", erro.name);
+  } finally {
+    document.getElementById("mapa-carregando").hidden = true;
+  }
 }
 
 // GOOGLE PLACE AUTOCOMPLETE
@@ -225,27 +237,46 @@ async function obterLocalizacao() {
 
 // BUSCAR RESTAURANTES PRÓXIMOS
 async function buscarRestaurantes(pos) {
+  document.getElementById("mapa-carregando").hidden = false;
   try {
     const { Place, SearchNearbyRankPreference } =
       await google.maps.importLibrary("places");
     const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
     // Busca estabelecimentos em um raio de 2 km
 
-    const { places } = await Place.searchNearby({
-      fields: ["id", "displayName", "location", "formattedAddress"],
+    const campos = [
+      "id",
+      "displayName",
+      "location",
+      "formattedAddress",
+      "primaryType",
+      "primaryTypeDisplayName",
+      "types",
+    ];
+    const busca = new URLSearchParams(location.search).get("busca");
+    const { places } = busca
+      ? await Place.searchByText({
+          textQuery: busca,
+          fields: campos,
+          locationBias: pos,
+          includedType: tipoPesquisa,
+          language: "pt-BR",
+        })
+      : await Place.searchNearby({
+          fields: campos,
 
-      locationRestriction: {
-        center: pos,
+          locationRestriction: {
+            center: pos,
 
-        radius: 2000,
-      },
+            radius: 2000,
+          },
 
-      includedTypes: [tipoPesquisa],
+          includedTypes: [tipoPesquisa],
 
-      maxResultCount: 10,
+          maxResultCount: 10,
 
-      rankPreference: SearchNearbyRankPreference.DISTANCE,
-    });
+          rankPreference: SearchNearbyRankPreference.DISTANCE,
+        });
 
     // Remove marcadores anteriores
 
@@ -274,7 +305,7 @@ async function buscarRestaurantes(pos) {
 
       icone.classList.add("icone-comida");
 
-      icone.textContent = "🍽️";
+      icone.textContent = Aponte.classificar(restaurante).icone;
 
       const marcador = new AdvancedMarkerElement({
         map: map,
@@ -310,10 +341,12 @@ async function buscarRestaurantes(pos) {
     console.error("Erro na Places API:", erro);
 
     Aponte.aviso(
-      "Não foi possível pesquisar no Google agora. Consulte os cadastros próprios abaixo.",
+      "Não foi possível pesquisar no Google agora. Selecione um lugar do Aponte na lista acima.",
       true,
       "mapa-status",
     );
+  } finally {
+    document.getElementById("mapa-carregando").hidden = true;
   }
 }
 
@@ -326,9 +359,8 @@ const tiposPesquisa = {
   churrascarias: "barbecue_restaurant",
   brasileira: "brazilian_restaurant",
 };
-const tipoPesquisa =
-  tiposPesquisa[new URLSearchParams(location.search).get("categoria")] ||
-  "restaurant";
+const filtroCategoria = new URLSearchParams(location.search).get("categoria");
+const tipoPesquisa = tiposPesquisa[filtroCategoria] || "restaurant";
 let proprios = [],
   marcadoresProprios = [],
   sequenciaPainel = 0,
@@ -339,6 +371,7 @@ const propriosPromise = Aponte.api("/api/estabelecimentos")
   .then((itens) => {
     proprios = itens;
     renderizarProprios();
+    preencherSeletorProprios();
     return itens;
   })
   .catch((e) => {
@@ -353,7 +386,7 @@ function normalizarNome(s) {
     .trim();
 }
 function correspondeAProprio(p) {
-  return proprios.some((e) => {
+  return propriosVisiveis().some((e) => {
     const d = e.dadosProprios;
     if (normalizarNome(p.displayName) !== normalizarNome(d.nome)) return false;
     const lat = p.location.lat(),
@@ -365,16 +398,50 @@ function correspondeAProprio(p) {
     return metros < 40;
   });
 }
+function propriosVisiveis() {
+  const busca = new URLSearchParams(location.search).get("busca");
+  return proprios.filter(
+    (e) =>
+      Aponte.correspondeFiltro(e.dadosProprios, filtroCategoria) &&
+      (!busca ||
+        normalizarNome(e.dadosProprios.nome).includes(normalizarNome(busca))),
+  );
+}
+function preencherSeletorProprios() {
+  const select = document.getElementById("selecionar-proprio");
+  select.replaceChildren();
+  const itens = propriosVisiveis();
+  const padrao = Aponte.el(
+    "option",
+    "",
+    itens.length
+      ? `${itens.length} lugar(es) do Aponte — selecione`
+      : "Nenhum cadastro próprio neste filtro",
+  );
+  padrao.value = "";
+  select.append(padrao);
+  for (const e of itens) {
+    const o = Aponte.el(
+      "option",
+      "",
+      Aponte.iconeProprio(e.dadosProprios) + " " + e.dadosProprios.nome,
+    );
+    o.value = e.id;
+    select.append(o);
+  }
+  select.onchange = () => {
+    const e = proprios.find((e) => String(e.id) === select.value);
+    if (e) {
+      history.replaceState(null, "", Aponte.linkMapa(e));
+      abrirProprio(e);
+    }
+  };
+}
 function renderizarProprios() {
   const lista = document.getElementById("cards-proprios");
-  lista.replaceChildren();
-  const busca = new URLSearchParams(location.search).get("busca");
-  const visiveis = busca
-    ? proprios.filter((e) =>
-        normalizarNome(e.dadosProprios.nome).includes(normalizarNome(busca)),
-      )
-    : proprios;
-  if (!visiveis.length)
+  lista?.replaceChildren();
+  const visiveis = propriosVisiveis();
+  if (lista && !visiveis.length)
     lista.append(
       Aponte.el(
         "p",
@@ -382,7 +449,7 @@ function renderizarProprios() {
         "Nenhum cadastro próprio disponível. Explore os resultados do Google no mapa.",
       ),
     );
-  for (const e of visiveis) {
+  for (const e of lista ? visiveis : []) {
     const col = Aponte.el("div", "col-md-4");
     const card = Aponte.el("article", "card h-100");
     const img = Aponte.el("img", "card-img-top foto-card");
@@ -410,12 +477,6 @@ function renderizarProprios() {
     col.append(card);
     lista.append(col);
   }
-  if (!window.google?.maps)
-    Aponte.aviso(
-      "O mapa Google ainda não está disponível. Consulte os estabelecimentos próprios abaixo.",
-      false,
-      "mapa-status",
-    );
   const id = new URLSearchParams(location.search).get("id");
   const e = proprios.find((e) => String(e.id) === id);
   if (e) abrirProprio(e);
@@ -423,9 +484,13 @@ function renderizarProprios() {
 async function mostrarMarcadoresProprios() {
   await propriosPromise;
   const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
-  for (const e of proprios) {
+  for (const e of propriosVisiveis()) {
     const d = e.dadosProprios;
-    const icone = Aponte.el("div", "icone-comida proprio", "A");
+    const icone = Aponte.el(
+      "div",
+      "icone-comida proprio",
+      Aponte.iconeProprio(d),
+    );
     icone.title = "Cadastro próprio do Aponte";
     const marcador = new AdvancedMarkerElement({
       map,
@@ -445,6 +510,14 @@ function iniciarPainel(ref, nome, origem) {
   favoritado = false;
   document.getElementById("painel-restaurante").classList.add("aberto");
   document.getElementById("painel-restaurante").scrollTop = 0;
+  document
+    .getElementById("painel-restaurante")
+    .setAttribute("aria-busy", "true");
+  document.getElementById("media-google").textContent = "—";
+  document.getElementById("media-aponte").textContent = "—";
+  document.getElementById("resumo-avaliacoes").textContent = "Carregando…";
+  document.getElementById("avaliacao-acesso").replaceChildren();
+  Aponte.galeria(document.getElementById("area-foto"), []);
   document.getElementById("nome-restaurante").textContent = nome;
   document.getElementById("origem-restaurante").textContent = origem;
   Aponte.imagem(document.getElementById("foto-restaurante"), null);
@@ -485,16 +558,21 @@ async function abrirProprio(e) {
   document.getElementById("endereco-restaurante").textContent =
     Aponte.endereco(d);
   document.getElementById("descricao-propria").textContent = d.descricao;
-  document.getElementById("tipo-restaurante").textContent =
-    "Estabelecimento de alimentação";
+  document.getElementById("tipo-restaurante").textContent = (
+    Aponte.categorias[d.categoria] || Aponte.categorias.restaurantes
+  ).nome;
   document.getElementById("telefone-restaurante").textContent =
     "Consulte o estabelecimento";
   document.getElementById("avaliacao-restaurante").textContent =
-    "Este cadastro é administrado pelo Aponte.";
-  Aponte.imagem(document.getElementById("foto-restaurante"), e.fotoUrl);
+    "Sem vínculo com o Google Places";
+  Aponte.galeria(document.getElementById("area-foto"), e.fotos || [e.fotoUrl]);
   rota(d.nome, d.latitude, d.longitude, null);
   if (map) map.panTo({ lat: Number(d.latitude), lng: Number(d.longitude) });
   await carregarInteracoes({ id: e.id }, seq);
+  if (seq === sequenciaPainel)
+    document
+      .getElementById("painel-restaurante")
+      .setAttribute("aria-busy", "false");
 }
 async function abrirPainel(restaurante) {
   const ref = { googlePlaceId: restaurante.id },
@@ -535,17 +613,22 @@ async function abrirPainel(restaurante) {
         document
           .getElementById("horarios-restaurante")
           .append(Aponte.el("li", "", horario));
+      document.getElementById("media-google").textContent =
+        p.rating != null
+          ? Number(p.rating).toLocaleString("pt-BR", {
+              minimumFractionDigits: 1,
+              maximumFractionDigits: 1,
+            })
+          : "—";
       document.getElementById("avaliacao-restaurante").textContent =
         p.rating != null
-          ? `${p.rating}/5 (${p.userRatingCount || 0} avaliações no Google)`
+          ? p.userRatingCount != null
+            ? `${p.userRatingCount} avaliações no Google`
+            : "Quantidade não informada"
           : "Sem avaliações disponíveis no Google";
       document.getElementById("tipo-restaurante").textContent =
-        p.types?.join(", ") || "Não informado";
-      Aponte.fotoGoogle(
-        p,
-        document.getElementById("foto-restaurante"),
-        document.getElementById("creditos-foto"),
-      );
+        Aponte.classificar(p).nome;
+      Aponte.galeria(document.getElementById("area-foto"), p.photos, true);
       if (p.location) {
         map?.panTo(p.location);
         rota(p.displayName, p.location.lat(), p.location.lng(), p.id);
@@ -560,6 +643,10 @@ async function abrirPainel(restaurante) {
     }
   })();
   await Promise.all([detalhes, carregarInteracoes(ref, seq)]);
+  if (seq === sequenciaPainel)
+    document
+      .getElementById("painel-restaurante")
+      .setAttribute("aria-busy", "false");
 }
 async function carregarInteracoes(ref, seq) {
   try {
@@ -593,9 +680,15 @@ async function carregarInteracoes(ref, seq) {
       );
       c.append(bloco);
     }
+    document.getElementById("media-aponte").textContent = resumo.quantidade
+      ? Number(resumo.media).toLocaleString("pt-BR", {
+          minimumFractionDigits: 1,
+          maximumFractionDigits: 1,
+        })
+      : "—";
     document.getElementById("resumo-avaliacoes").textContent = resumo.quantidade
-      ? `${Number(resumo.media).toFixed(1)}/5 — ${resumo.quantidade} avaliação(ões) do Aponte`
-      : "Ainda não há avaliações do Aponte.";
+      ? `${resumo.quantidade} ${resumo.quantidade === 1 ? "avaliação" : "avaliações"} no Aponte`
+      : "Ainda não avaliado no Aponte";
     const n = document.getElementById("lista-avaliacoes");
     n.replaceChildren();
     for (const a of lista) {
@@ -638,7 +731,13 @@ async function carregarInteracoes(ref, seq) {
       acesso.append(a);
     }
   } catch (e) {
-    if (seq === sequenciaPainel) Aponte.aviso(e.message, true, "acao-status");
+    if (seq === sequenciaPainel) {
+      Aponte.aviso(e.message, true, "acao-status");
+      document.getElementById("resumo-avaliacoes").textContent =
+        "Avaliações do Aponte indisponíveis.";
+      document.getElementById("itens-cardapio").textContent =
+        "Não foi possível carregar o cardápio.";
+    }
   }
 }
 document.getElementById("favoritar").addEventListener("click", async () => {
@@ -678,7 +777,7 @@ document
       comentario: document.getElementById("comentario").value,
     };
     const b = e.target.querySelector("button[type=submit]");
-    b.disabled = true;
+    Aponte.ocupado(b, true, "Salvando…");
     try {
       await Aponte.api(
         minhaAvaliacao
@@ -697,7 +796,7 @@ document
       if (seq === sequenciaPainel)
         Aponte.aviso(err.message, true, "acao-status");
     } finally {
-      b.disabled = false;
+      Aponte.ocupado(b, false);
     }
   });
 document
@@ -724,8 +823,34 @@ document.getElementById("fechar-painel").addEventListener("click", () => {
 });
 window.gm_authFailure = () =>
   Aponte.aviso(
-    "Não foi possível carregar o Google Maps. Os cadastros próprios continuam disponíveis abaixo.",
+    "Não foi possível carregar o Google Maps. Use o seletor de lugares do Aponte acima.",
     true,
     "mapa-status",
   );
 window.initMap = initMap;
+
+// Um SDK indisponível não deixa o spinner ativo nem bloqueia os registros próprios.
+document.addEventListener("DOMContentLoaded", () => {
+  const sdk = [...document.scripts].find((s) =>
+    s.src.startsWith("https://maps.googleapis.com/maps/api/js"),
+  );
+  const indisponivel = () => {
+    document.getElementById("mapa-carregando").hidden = true;
+    const aviso = document.querySelector(".mapa-placeholder small");
+    if (aviso)
+      aviso.textContent =
+        "Consulte os cadastros próprios pelo seletor de lugares do Aponte acima.";
+    Aponte.aviso(
+      "Google Maps indisponível. Você pode consultar os lugares do Aponte pelo seletor acima.",
+      true,
+      "mapa-status",
+    );
+  };
+  if (!sdk) indisponivel();
+  else {
+    sdk.addEventListener("error", indisponivel);
+    setTimeout(() => {
+      if (!map) indisponivel();
+    }, 20000);
+  }
+});

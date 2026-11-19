@@ -41,7 +41,8 @@ async function initAutocompleteInicio() {
         "map.html?placeId=" + encodeURIComponent(restaurante.id);
     });
 
-    console.log("Autocomplete da página inicial carregado!");
+    window.atualizarFeedGoogle?.();
+    window.atualizarFotosFavoritos?.();
   } catch (erro) {
     console.error("Erro no Autocomplete:", erro);
   }

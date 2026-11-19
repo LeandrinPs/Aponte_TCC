@@ -30,12 +30,17 @@ const imagem = (n) =>
   const adminSenha = process.env.APONTE_E2E_ADMIN_SENHA;
   const ir = async (p) =>
     page.goto(base + p, { waitUntil: "domcontentloaded" });
+  const sair = async () => {
+    if (await page.locator(".conta-toggle").count())
+      await page.locator(".conta-toggle").click();
+    await page.getByRole("button", { name: "Sair", exact: true }).click();
+  };
   const log = (m) => console.log(m);
   try {
     await ir("/index.html");
     await expect(
       page.getByRole("heading", {
-        name: "Descubra restaurantes perto de você!",
+        name: "Novos sabores. Boas descobertas.",
       }),
     ).toBeVisible();
     await page.screenshot({
@@ -85,12 +90,13 @@ const imagem = (n) =>
       "Prato do navegador",
     );
     log("Manutenção de cardápio OK");
-    await page.getByRole("button", { name: "Sair", exact: true }).click();
+    await sair();
     await page.waitForURL("**/index.html?saiu");
     await ir("/forma.html");
     await page.locator("#nome").fill("Usuária Navegador");
     await page.locator("#email").fill(email);
     await page.locator("#password").fill(senha);
+    await page.locator("#confirmacao-senha").fill(senha);
     await page.getByRole("button", { name: "Cadastrar", exact: true }).click();
     await page.waitForURL("**/entra.html?cadastrado");
     log("Cadastro de usuário OK");
@@ -119,13 +125,13 @@ const imagem = (n) =>
       .locator("#comentario")
       .fill("Muito bom <script>window.injecao=true</script>");
     await page.locator("#avaliacao-form button[type=submit]").click();
-    await expect(page.locator("#resumo-avaliacoes")).toContainText("4.0/5");
+    await expect(page.locator("#media-aponte")).toHaveText("4,0");
     await expect(page.locator("#lista-avaliacoes")).toContainText("<script>");
     expect(await page.evaluate(() => window.injecao)).toBeUndefined();
     await page.locator("#nota").selectOption("5");
     await page.locator("#comentario").fill("Avaliação editada pelo autor");
     await page.locator("#avaliacao-form button[type=submit]").click();
-    await expect(page.locator("#resumo-avaliacoes")).toContainText("5.0/5");
+    await expect(page.locator("#media-aponte")).toHaveText("5,0");
     log("Favorito, avaliação, edição e renderização segura OK");
     await page.screenshot({
       path: path.join(artefatos, "aponte-painel-proprio.png"),
@@ -133,7 +139,7 @@ const imagem = (n) =>
     });
     await ir("/favoritos.html");
     await expect(page.locator("#lista-favoritos")).toContainText(dados.nome);
-    await page.getByRole("button", { name: "Sair", exact: true }).click();
+    await sair();
     await page.waitForURL("**/index.html?saiu");
     await ir("/entra.html");
     await page.locator("#email").fill(email);
@@ -158,7 +164,7 @@ const imagem = (n) =>
       "ainda não tem favoritos",
     );
     log("Autorização e remoção de favorito OK");
-    await page.getByRole("button", { name: "Sair", exact: true }).click();
+    await sair();
     await page.waitForURL("**/index.html?saiu");
     await ir("/entra.html");
     await page.locator("#email").fill(process.env.APONTE_E2E_ADMIN_LOGIN);
@@ -231,7 +237,8 @@ const imagem = (n) =>
         page.evaluate(
           () =>
             document.querySelector("main h1").getBoundingClientRect().top -
-            document.querySelector(".navbar").getBoundingClientRect().bottom,
+            document.querySelector(".admin-sidebar").getBoundingClientRect()
+              .bottom,
         ),
       )
       .toBeGreaterThanOrEqual(0);

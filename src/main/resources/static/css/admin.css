@@ -1,0 +1,277 @@
+.admin-layout {
+  background: #f6f3f5;
+  min-height: 100vh;
+}
+.admin-sidebar {
+  position: fixed;
+  inset: 0 auto 0 0;
+  width: 235px;
+  background: linear-gradient(160deg, #650f23, #370b18);
+  color: white;
+  display: flex;
+  flex-direction: column;
+  padding: 32px 18px;
+  z-index: 1040;
+}
+.admin-sidebar .marca-aponte {
+  color: white;
+  font-size: 1.4rem;
+  gap: 10px;
+  padding: 0 8px;
+}
+.admin-sidebar .marca-aponte img {
+  width: 42px;
+  height: 42px;
+}
+.admin-sidebar .marca-aponte small {
+  display: block;
+  font-size: 0.65rem;
+  letter-spacing: 1px;
+  font-weight: 400;
+  margin-top: 6px;
+}
+.admin-sidebar nav {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 44px;
+}
+.admin-sidebar a,
+.admin-sidebar button {
+  color: #f5e9ed;
+  text-decoration: none;
+  font-size: 0.88rem;
+}
+.admin-sidebar nav > a {
+  padding: 14px;
+  border-radius: 7px;
+  display: flex;
+  gap: 14px;
+  align-items: center;
+}
+.admin-sidebar nav > a:hover,
+.admin-sidebar nav > a.ativo {
+  background: #ffffff18;
+  color: white;
+}
+.admin-sidebar nav i {
+  font-size: 17px;
+}
+.admin-sidebar-base {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 28px 12px 0;
+  border-top: 1px solid #ffffff25;
+}
+.admin-sidebar-base button {
+  border: 0;
+  background: none;
+  padding: 0;
+}
+.admin-sidebar-base form {
+  margin: 0;
+}
+.admin-pagina {
+  margin-left: 235px;
+  padding: 44px clamp(24px, 4vw, 64px);
+  max-width: 1600px;
+}
+.admin-pagina > span {
+  font-size: 0.68rem;
+  letter-spacing: 2px;
+  font-weight: 700;
+}
+.admin-pagina h1 {
+  font-size: 1.85rem;
+  font-weight: 750;
+  margin: 10px 0 16px;
+}
+.admin-pagina h2 {
+  font-size: 1.25rem;
+  font-weight: 700;
+}
+.admin-pagina h3 {
+  font-size: 1.05rem;
+}
+.admin-introducao {
+  color: #7f7380;
+  max-width: 750px;
+  margin-bottom: 30px;
+  font-size: 0.94rem;
+}
+.indicador {
+  background: #fff;
+  border: 1px solid #eee5e9;
+  border-top: 3px solid #b62140;
+  border-radius: 10px;
+  padding: 24px;
+  height: 100%;
+  box-shadow: 0 5px 15px #300a1a05;
+}
+.indicador > span {
+  font-size: 0.85rem;
+  color: #7d6e79;
+}
+.indicador strong {
+  display: block;
+  font-size: 2rem;
+  margin-top: 10px;
+  font-weight: 700;
+}
+.admin-bloco {
+  padding: 28px;
+  background: #fff;
+  border: 1px solid #eee5e9;
+  border-radius: 12px;
+}
+.admin-atalho {
+  display: grid;
+  grid-template-columns: 40px 1fr;
+  gap: 6px 14px;
+  color: #3c2935;
+  text-decoration: none;
+  padding: 18px;
+  background: #faf6f8;
+  border-radius: 10px;
+  height: 100%;
+}
+.admin-atalho i {
+  grid-row: 1/3;
+  font-size: 26px;
+  color: #a41e3a;
+}
+.admin-atalho strong {
+  font-size: 0.95rem;
+}
+.admin-atalho span {
+  font-size: 0.82rem;
+  color: #82717e;
+}
+.admin-pagina .table-responsive {
+  background: white;
+  border: 1px solid #eee5e9;
+  border-radius: 10px;
+  padding: 14px;
+}
+.admin-pagina th {
+  font-size: 0.78rem;
+  color: #87737f;
+  white-space: nowrap;
+}
+.admin-pagina td {
+  font-size: 0.85rem;
+  padding: 14px 8px;
+}
+.admin-pagina .btn {
+  font-size: 0.8rem;
+}
+.admin-pagina form.row {
+  background: #fff;
+  border: 1px solid #eee5e9;
+  border-radius: 12px;
+  padding: 16px;
+  margin-top: 14px;
+}
+.admin-pagina .form-label,
+.admin-pagina .form-control,
+.admin-pagina .form-select {
+  font-size: 0.85rem;
+}
+.foto-posicao {
+  padding: 14px;
+  border: 1px solid #eadfe4;
+  border-radius: 8px;
+  height: 100%;
+}
+.foto-posicao .foto-preview {
+  display: block;
+  width: 100%;
+  height: 130px;
+  object-fit: cover;
+  border-radius: 6px;
+}
+.foto-posicao .form-control {
+  font-size: 0.72rem;
+}
+.icone-preview {
+  font-size: 32px;
+  margin-top: 5px;
+  display: inline-block;
+}
+.barra-origem {
+  display: flex;
+  height: 20px;
+  border-radius: 6px;
+  overflow: hidden;
+  background: #eee9ec;
+  margin: 18px 0;
+}
+.barra-origem span:first-child {
+  background: #9d1837;
+}
+.barra-origem span:last-child {
+  background: #dcc2ce;
+}
+.legenda-origem {
+  display: flex;
+  gap: 28px;
+  flex-wrap: wrap;
+  font-size: 0.85rem;
+  color: #776675;
+}
+.admin-layout[data-area="avaliacoes"] #item-form,
+.admin-layout[data-area="avaliacoes"] #admin-cardapios {
+  display: none;
+}
+@media (max-width: 950px) {
+  .admin-sidebar {
+    position: relative;
+    width: 100%;
+    padding: 18px;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 16px;
+  }
+  .admin-sidebar nav {
+    flex-direction: row;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin: 0;
+  }
+  .admin-sidebar nav > a {
+    padding: 8px;
+    font-size: 0.75rem;
+    gap: 6px;
+  }
+  .admin-sidebar .marca-aponte {
+    font-size: 1.1rem;
+  }
+  .admin-sidebar .marca-aponte img {
+    width: 30px;
+    height: 30px;
+  }
+  .admin-sidebar .marca-aponte small {
+    display: none;
+  }
+  .admin-sidebar-base {
+    margin: 0 0 0 auto;
+    padding: 0;
+    border: 0;
+    flex-direction: row;
+    gap: 20px;
+  }
+  .admin-sidebar-base a,
+  .admin-sidebar-base button {
+    font-size: 0.75rem;
+  }
+  .admin-pagina {
+    margin-left: 0;
+    padding: 28px 18px;
+  }
+  .admin-bloco {
+    padding: 20px;
+  }
+}

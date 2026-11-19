@@ -1,5 +1,7 @@
 # Controllers e integração do Aponte
 
+> Relatório histórico do PR anterior. Para perfil, OAuth2 opcional, galeria, navegação e testes atuais, consulte [MODERNIZACAO.md](MODERNIZACAO.md).
+
 ## A. Arquitetura implementada
 
 A implementação parte da `master` `f00557dccb688258dfea6e2e053322074fb5eac0`, que já incorpora os PRs de persistência e Services e as alterações de front-end do grupo. Não recria a aplicação. O alvo continua Java 17, com Spring Boot 4.1.1.

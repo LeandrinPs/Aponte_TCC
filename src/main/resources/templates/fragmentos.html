@@ -1,29 +1,26 @@
 <!doctype html>
 <html lang="pt-BR" xmlns:th="http://www.thymeleaf.org">
   <body>
-    <nav
+    <header
       th:fragment="cabecalho(busca)"
-      class="navbar bg-body-tertiary navbar-aponte fixed-top border-bottom"
+      class="navbar navbar-aponte fixed-top"
+      aria-label="Navegação principal"
     >
-      <div class="container-fluid navbar-layout">
-        <div class="navbar-left">
-          <a href="/index.html"
-            ><img src="/img/favcon.png" class="logo" alt="Aponte"
-          /></a>
-          <a href="/index.html" class="nav-link">Início</a
-          ><a href="/map.html" class="nav-link">Mapa</a>
-          <a href="/favoritos.html" class="nav-link">Favoritos</a
-          ><a href="/catalo.html" class="nav-link">Categorias</a>
-        </div>
-        <div th:if="${busca}" class="navbar-search">
+      <div class="navbar-layout container-fluid">
+        <a href="/index.html" class="marca-aponte" aria-label="Aponte — início"
+          ><img src="/img/favcon.png" class="logo" alt="" /><span
+            >APONTE</span
+          ></a
+        >
+        <div class="navbar-search">
           <div class="autocomplete-grupo">
             <div id="autocomplete-container" class="autocomplete-container">
               <input
                 id="pesquisa-local"
                 class="form-control border-0"
                 type="search"
-                placeholder="Pesquisar cadastros do Aponte"
-                aria-label="Pesquisar cadastros do Aponte"
+                placeholder="Onde vamos comer hoje?"
+                aria-label="Pesquisar estabelecimento"
               />
             </div>
             <button
@@ -32,16 +29,83 @@
               class="btn-autocomplete"
               aria-label="Pesquisar"
             >
-              <i class="bi bi-search"></i>
+              <i class="bi bi-search" aria-hidden="true"></i>
             </button>
           </div>
         </div>
+        <a href="/map.html" class="atalho-mapa"
+          ><i class="bi bi-map" aria-hidden="true"></i> Mapa</a
+        >
         <div id="sessao-nav" class="navbar-right">
-          <a href="/entra.html" class="link-danger">Entrar</a
-          ><a href="/forma.html" class="btn btn-danger">Cadastrar</a>
+          <a href="/entra.html" class="entrar-link">Entrar</a
+          ><a href="/forma.html" class="btn btn-danger">Criar conta</a>
         </div>
       </div>
-    </nav>
+      <nav class="categorias-nav" aria-label="O que você quer comer?">
+        <a href="/map.html?categoria=pizzarias">🍕 Pizzarias</a>
+        <a href="/map.html?categoria=hamburguerias">🍔 Hamburguerias</a>
+        <a href="/map.html?categoria=cafeterias">☕ Cafeterias</a>
+        <a href="/map.html?categoria=japoneses">🍣 Japoneses</a>
+        <a href="/map.html?categoria=churrascarias">🥩 Churrascarias</a>
+        <div class="dropdown">
+          <button
+            class="dropdown-toggle"
+            type="button"
+            data-bs-toggle="dropdown"
+            aria-expanded="false"
+          >
+            Mais
+          </button>
+          <ul class="dropdown-menu">
+            <li>
+              <a class="dropdown-item" href="/map.html?categoria=brasileira"
+                >🍛 Comida brasileira</a
+              >
+            </li>
+            <li>
+              <a class="dropdown-item" href="/catalo.html"
+                >Todas as categorias</a
+              >
+            </li>
+          </ul>
+        </div>
+      </nav>
+    </header>
+    <aside
+      th:fragment="menuAdmin"
+      class="admin-sidebar"
+      aria-label="Administração"
+    >
+      <a href="/admin" class="marca-aponte"
+        ><img src="/img/favcon.png" alt="" /><span
+          >APONTE<small>Administração</small></span
+        ></a
+      >
+      <nav>
+        <a href="/admin"
+          ><i class="bi bi-grid" aria-hidden="true"></i> Visão geral</a
+        ><a href="/admin/estabelecimentos"
+          ><i class="bi bi-shop" aria-hidden="true"></i> Estabelecimentos</a
+        ><a href="/admin/usuarios"
+          ><i class="bi bi-people" aria-hidden="true"></i> Usuários</a
+        ><a href="/admin/avaliacoes"
+          ><i class="bi bi-star" aria-hidden="true"></i> Avaliações</a
+        ><a href="/admin/cardapios"
+          ><i class="bi bi-journal-text" aria-hidden="true"></i> Cardápios</a
+        >
+      </nav>
+      <div class="admin-sidebar-base">
+        <a href="/index.html"
+          ><i class="bi bi-arrow-up-right" aria-hidden="true"></i> Voltar ao
+          Aponte</a
+        >
+        <form method="post" th:action="@{/logout}">
+          <button type="submit">
+            <i class="bi bi-box-arrow-right" aria-hidden="true"></i> Sair
+          </button>
+        </form>
+      </div>
+    </aside>
     <footer th:fragment="rodape" class="footer-aponte mt-auto">
       <div class="container">
         <a href="/sobre.html">Sobre o Aponte</a> ·
