@@ -367,14 +367,14 @@ function correspondeAProprio(p) {
 }
 function renderizarProprios() {
   const lista = document.getElementById("cards-proprios");
-  lista.replaceChildren();
+  lista?.replaceChildren();
   const busca = new URLSearchParams(location.search).get("busca");
   const visiveis = busca
     ? proprios.filter((e) =>
         normalizarNome(e.dadosProprios.nome).includes(normalizarNome(busca)),
       )
     : proprios;
-  if (!visiveis.length)
+  if (lista && !visiveis.length)
     lista.append(
       Aponte.el(
         "p",
@@ -382,7 +382,7 @@ function renderizarProprios() {
         "Nenhum cadastro próprio disponível. Explore os resultados do Google no mapa.",
       ),
     );
-  for (const e of visiveis) {
+  for (const e of lista ? visiveis : []) {
     const col = Aponte.el("div", "col-md-4");
     const card = Aponte.el("article", "card h-100");
     const img = Aponte.el("img", "card-img-top foto-card");
