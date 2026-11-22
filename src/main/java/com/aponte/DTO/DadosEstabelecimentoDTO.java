@@ -17,19 +17,19 @@ public record DadosEstabelecimentoDTO(
     @NotBlank @DecimalMin("-180") @DecimalMax("180") @Size(max = 50) String longitude,
     @Pattern(
             regexp =
-                "restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira")
+                "restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira|italiana|mexicana|chinesa|vegetariana|frutos-do-mar|docerias")
         String categoria,
-    @Size(max = 7)
+    @Size(max = 13)
         java.util.List<
                 @NotNull
                 @Pattern(
                     regexp =
-                        "restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira")
+                        "restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira|italiana|mexicana|chinesa|vegetariana|frutos-do-mar|docerias")
                 String>
             tags,
     @Pattern(
             regexp =
-                "auto|restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira")
+                "auto|restaurantes|pizzarias|hamburguerias|cafeterias|japoneses|churrascarias|brasileira|italiana|mexicana|chinesa|vegetariana|frutos-do-mar|docerias")
         String icone) {
   public DadosEstabelecimentoDTO(
       String nome,

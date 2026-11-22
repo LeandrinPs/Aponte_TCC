@@ -14,7 +14,10 @@
   <body class="d-flex flex-column pagina-inicio">
     <!--Cabeçalho-->
     <div th:replace="~{fragmentos :: cabecalho(true)}"></div>
-    <section class="hero-aponte">
+    <section
+      class="hero-aponte"
+      th:style="|--hero-imagem: url('${heroImagem}')|"
+    >
       <div class="container">
         <span class="hero-etiqueta">SEU PRÓXIMO LUGAR FAVORITO</span>
         <h1>Novos sabores.<br />Boas descobertas.</h1>

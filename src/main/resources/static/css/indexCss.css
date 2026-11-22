@@ -2,7 +2,7 @@
 .hero-aponte {
   background:
     linear-gradient(90deg, #160d0cd9, #170b0930),
-    url("../img/imagem.jpeg") center/cover no-repeat;
+    var(--hero-imagem, url("../img/imagem.jpeg")) center/cover no-repeat;
   min-height: 620px;
   display: flex;
   align-items: center;
