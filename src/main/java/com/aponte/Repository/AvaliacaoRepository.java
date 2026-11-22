@@ -13,6 +13,14 @@ public interface AvaliacaoRepository extends JpaRepository<Avaliacao, Long> {
           + "order by case when a.criadoEm is null then 1 else 0 end, a.criadoEm desc, a.id desc")
   List<Avaliacao> buscarRecentes(org.springframework.data.domain.Pageable pagina);
 
+  @Query(
+      "select new com.aponte.DTO.ResumoEstabelecimentoDTO(a.estabelecimento.id, count(a),"
+          + " avg(a.nota)) from Avaliacao a where a.estabelecimento.googlePlaceId is null group by"
+          + " a.estabelecimento.id")
+  List<com.aponte.DTO.ResumoEstabelecimentoDTO> resumirProprios();
+
+  long countByUsuario_Id(Long usuarioId);
+
   boolean existsByEstabelecimento_Id(Long estabelecimentoId);
 
   long countByEstabelecimento_Id(Long estabelecimentoId);

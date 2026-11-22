@@ -27,6 +27,43 @@ public class EstabelecimentosService {
   private final AcessoAtual acesso;
   private final ImagensService imagens;
 
+  public List<ResumoEstabelecimentoDTO> resumosProprios() {
+    return avaliacoes.resumirProprios();
+  }
+
+  public EstadoExclusaoDTO verificarExclusao(@NotNull @Positive Long id) {
+    acesso.exigirAdministrador();
+    Estabelecimentos e = exigirExistente(id);
+    if (e.getGooglePlaceId() != null)
+      return new EstadoExclusaoDTO(
+          false,
+          "Esta é uma referência Google. A remoção de cadastros próprios não se aplica a ela.",
+          0,
+          0,
+          0);
+    return estadoExclusao(e.getId());
+  }
+
+  private EstadoExclusaoDTO estadoExclusao(Long id) {
+    long f = favoritos.countByEstabelecimento_Id(id),
+        a = avaliacoes.countByEstabelecimento_Id(id),
+        c = cardapios.countByEstabelecimento_Id(id);
+    var vinculos = new java.util.ArrayList<String>();
+    if (f > 0) vinculos.add(f + (f == 1 ? " favorito" : " favoritos"));
+    if (a > 0) vinculos.add(a + (a == 1 ? " avaliação" : " avaliações"));
+    if (c > 0) vinculos.add(c + (c == 1 ? " item de cardápio" : " itens de cardápio"));
+    return new EstadoExclusaoDTO(
+        vinculos.isEmpty(),
+        vinculos.isEmpty()
+            ? "Cadastro próprio sem vínculos. A exclusão removerá também suas fotografias."
+            : "Não é possível excluir: "
+                + String.join(", ", vinculos)
+                + ". Remova esses vínculos antes de excluir o estabelecimento.",
+        f,
+        a,
+        c);
+  }
+
   public List<EstabelecimentoDTO> listarProprios() {
     return estabelecimentos.findByGooglePlaceIdIsNull().stream()
         .map(EstabelecimentoDTO::de)
@@ -166,12 +203,8 @@ public class EstabelecimentosService {
   public void excluirProprio(@NotNull @Positive Long id) {
     acesso.exigirAdministrador();
     Estabelecimentos entidade = exigirProprio(id);
-    if (favoritos.existsByEstabelecimento_Id(id)
-        || avaliacoes.existsByEstabelecimento_Id(id)
-        || cardapios.existsByEstabelecimento_Id(id)) {
-      throw new ConflitoException(
-          "Estabelecimento possui favoritos, avaliações ou itens de cardápio");
-    }
+    EstadoExclusaoDTO estado = estadoExclusao(id);
+    if (!estado.permitida()) throw new ConflitoException(estado.mensagem());
     Persistencia.executar(
         () -> {
           estabelecimentos.delete(entidade);

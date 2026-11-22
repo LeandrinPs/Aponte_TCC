@@ -93,6 +93,22 @@ public class UsuarioService {
     Persistencia.gravar(() -> usuarios.saveAndFlush(usuario));
   }
 
+  public EstadoExclusaoDTO verificarExclusao(@NotNull @Positive Long id) {
+    acesso.exigirAdministrador();
+    exigirExistente(id);
+    long f = favoritos.countByUsuario_Id(id), a = avaliacoes.countByUsuario_Id(id);
+    return new EstadoExclusaoDTO(
+        true,
+        "A conta, seus "
+            + f
+            + " favoritos e "
+            + a
+            + " avaliações serão removidos. Dados de outras contas serão preservados.",
+        f,
+        a,
+        0);
+  }
+
   @Transactional
   public void excluir(@NotNull @Positive Long id) {
     acesso.exigirAdministrador();
