@@ -177,12 +177,14 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
       page.getByRole("link", { name: "Painel administrativo", exact: true }),
     ).toHaveCount(0);
     await ir("/map.html?categoria=pizzarias");
-    await expect(page.locator("#selecionar-proprio")).toContainText(nome);
+    await expect(page.locator("#lista-resultados")).toContainText(nome);
     await ir("/map.html?categoria=cafeterias");
-    await expect(page.locator("#selecionar-proprio")).not.toContainText(nome);
+    await expect(page.locator("#lista-resultados")).not.toContainText(nome);
     await ir("/map.html?categoria=brasileira");
-    await expect(page.locator("#selecionar-proprio")).toContainText(nome);
-    await page.locator("#selecionar-proprio").selectOption(String(id));
+    await expect(page.locator("#lista-resultados")).toContainText(nome);
+    await page
+      .locator('[data-resultado="aponte:' + id + '"] .resultado-abrir')
+      .click();
     await expect(page.locator("#painel-restaurante")).toHaveClass(/aberto/);
     await expect(page.locator("#tipo-restaurante")).toHaveText("Pizzaria");
     await expect(page.locator("#resumo-avaliacoes")).toHaveText(

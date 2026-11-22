@@ -183,9 +183,7 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
     await page.waitForFunction(
       () =>
         window.initMap &&
-        document.querySelector(
-          '#selecionar-proprio option[value]:not([value=""])',
-        ),
+        document.querySelector("#lista-resultados [data-resultado]"),
     );
     await page.evaluate(() => window.initMap());
     expect(

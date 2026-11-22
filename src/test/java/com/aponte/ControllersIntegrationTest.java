@@ -569,4 +569,19 @@ class ControllersIntegrationTest {
         .contains("Login Google indisponível")
         .doesNotContain("href=\"/oauth2/authorization/google\"");
   }
+
+  @Test
+  void heroRecebeUmaUnicaFotoAntesDaExibicaoSemCarrossel() throws Exception {
+    var html =
+        mvc.perform(get("/index.html"))
+            .andExpect(status().isOk())
+            .andReturn()
+            .getResponse()
+            .getContentAsString();
+    assertThat(html.replace("&#39;", "'"))
+        .containsPattern(
+            "--hero-imagem:"
+                + " url\\('\\/img\\/(imagem\\.jpeg|Asador\\.jpg|lasai\\.jpg|maido\\.jpeg)'\\)");
+    assertThat(html).doesNotContain("Quinto.jpg", "carousel-control", "setInterval");
+  }
 }
