@@ -271,3 +271,31 @@
 #painel-restaurante[aria-busy="true"] .skeleton-detalhes {
   display: block;
 }
+/* A largura pertence à coluna única de exploração/detalhes. */
+#lateral-mapa #painel-restaurante {
+  width: 100%;
+  height: 100%;
+  box-shadow: none;
+  max-width: none;
+}
+#lateral-mapa #fechar-painel.voltar-resultados {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+  font-size: 0.8rem;
+  background: #242426;
+  color: #fff;
+  padding: 12px 18px;
+  border-bottom: 1px solid #4e424c;
+  line-height: 1.5;
+}
+@media (max-width: 760px) {
+  #lateral-mapa #painel-restaurante.aberto {
+    height: auto;
+    max-height: 70svh;
+  }
+}

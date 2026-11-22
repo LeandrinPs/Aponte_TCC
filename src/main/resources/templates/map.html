@@ -17,6 +17,7 @@
     <link rel="stylesheet" href="/css/indexCss.css" />
 
     <link rel="stylesheet" href="/css/integracao.css" />
+    <link rel="stylesheet" href="/css/marcadores.css" />
     <link rel="stylesheet" href="/css/painel.css" />
     <link rel="icon" type="image/png" href="/img/favcon.png" />
   </head>
@@ -24,16 +25,6 @@
   <body class="pagina-mapa">
     <div th:replace="~{fragmentos :: cabecalho(true)}"></div>
     <p id="mapa-status" class="aviso-mapa" role="status"></p>
-    <div class="mapa-ferramentas">
-      <label for="selecionar-proprio"
-        ><i class="bi bi-shop" aria-hidden="true"></i> Lugares do Aponte</label
-      ><select id="selecionar-proprio" class="form-select form-select-sm">
-        <option value="">Selecione um cadastro próprio</option></select
-      ><span id="mapa-carregando" class="loading-local" role="status"
-        ><span class="spinner-border" aria-hidden="true"></span> Carregando
-        mapa…</span
-      >
-    </div>
     <div id="map-container" th:attr="data-map-id=${mapId}">
       <!-- Mapa do Google -->
       <div id="map">
@@ -42,277 +33,346 @@
           <p>Explore os lugares pelo mapa.</p>
           <small
             >O mapa Google está sendo carregado. Os cadastros do Aponte estão
-            disponíveis no seletor acima.</small
+            disponíveis na lista de resultados.</small
           >
         </div>
       </div>
 
-      <!-- Painel lateral -->
-      <aside
-        id="painel-restaurante"
-        aria-label="Detalhes do estabelecimento"
-        tabindex="-1"
-      >
-        <!-- A mesma galeria atende fotos próprias e fotos transitórias do Places. -->
-        <div id="area-foto" class="galeria-restaurante">
-          <img
-            id="foto-restaurante"
-            class="foto-galeria"
-            alt="Foto do estabelecimento"
-          />
-          <button
-            data-anterior
-            type="button"
-            aria-label="Fotografia anterior"
-            hidden
-          >
-            <i class="bi bi-chevron-left" aria-hidden="true"></i>
-          </button>
-          <button
-            data-proxima
-            type="button"
-            aria-label="Próxima fotografia"
-            hidden
-          >
-            <i class="bi bi-chevron-right" aria-hidden="true"></i></button
-          ><span data-contador hidden aria-live="polite"></span>
-          <div id="creditos-foto" class="creditos"></div>
-        </div>
-        <div class="painel-header">
-          <div>
-            <h2 id="nome-restaurante"></h2>
-            <p id="tipo-restaurante"></p>
-            <small id="origem-restaurante"></small>
-          </div>
-          <button id="fechar-painel" type="button" aria-label="Fechar painel">
-            &times;
-          </button>
-        </div>
-        <div class="skeleton-detalhes px-3" aria-hidden="true">
-          <div class="skeleton"></div>
-          <div class="skeleton curto"></div>
-        </div>
-        <div class="painel-notas">
-          <div class="nota-plataforma">
-            <span>Google Maps</span><strong id="media-google">—</strong
-            ><small id="avaliacao-restaurante">Carregando…</small>
-          </div>
-          <div class="nota-plataforma nota-aponte">
-            <span>Aponte</span><strong id="media-aponte">—</strong
-            ><small id="resumo-avaliacoes">Carregando…</small>
-          </div>
-        </div>
-        <div class="painel-acoes">
-          <button id="favoritar" class="btn" type="button">♡ Favoritar</button
-          ><a
-            id="rota-restaurante"
-            class="btn"
-            target="_blank"
-            rel="noopener noreferrer"
-            ><i class="bi bi-sign-turn-right" aria-hidden="true"></i> Rotas</a
-          >
-        </div>
-        <p id="acao-status" role="status" class="small px-3"></p>
-
-        <!-- Navegação das abas -->
-        <ul class="nav" id="pills-tab" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link active"
-              id="pills-home-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-home"
-              type="button"
-              role="tab"
-              aria-controls="pills-home"
-              aria-selected="true"
+      <div id="lateral-mapa">
+        <section id="explorar-resultados" aria-label="Resultados da pesquisa">
+          <div class="resultados-cabecalho">
+            <span class="sobretitulo">EXPLORE O APONTE</span>
+            <h1>Lugares nesta área</h1>
+            <p id="quantidade-resultados" role="status">
+              Carregando resultados…
+            </p>
+            <form
+              id="filtros-mapa"
+              class="filtros-mapa"
+              aria-label="Filtrar resultados"
             >
-              Informações
-            </button>
-          </li>
-
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="pills-profile-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-profile"
-              type="button"
-              role="tab"
-              aria-controls="pills-profile"
-              aria-selected="false"
-            >
-              Cardápio
-            </button>
-          </li>
-
-          <li class="nav-item" role="presentation">
-            <button
-              class="nav-link"
-              id="pills-contact-tab"
-              data-bs-toggle="pill"
-              data-bs-target="#pills-contact"
-              type="button"
-              role="tab"
-              aria-controls="pills-contact"
-              aria-selected="false"
-            >
-              Sobre
-            </button>
-          </li>
-        </ul>
-
-        <div class="tab-content" id="pills-tabContent">
-          <!-- ABA INFORMAÇÕES -->
-          <div
-            class="tab-pane fade show active"
-            id="pills-home"
-            role="tabpanel"
-            aria-labelledby="pills-home-tab"
-            tabindex="0"
-          >
-            <div class="painel-card">
-              <h3>Informações do estabelecimento</h3>
-
-              <!-- Endereço -->
-              <div class="info-item">
-                <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
-
-                <p id="endereco-restaurante">Endereço do estabelecimento</p>
+              <div>
+                <label for="filtro-distancia">Distância máxima</label
+                ><select
+                  id="filtro-distancia"
+                  class="form-select form-select-sm"
+                >
+                  <option value="1000">1 km</option>
+                  <option value="2000" selected>2 km</option>
+                  <option value="5000">5 km</option>
+                  <option value="10000">10 km</option>
+                </select>
               </div>
-
-              <!-- Telefone -->
-              <div class="info-item">
-                <i class="bi bi-telephone-fill" aria-hidden="true"></i>
-                <a id="telefone-restaurante" href="#"> Telefone </a>
+              <div>
+                <label for="filtro-ordem">Ordenar resultados</label
+                ><select id="filtro-ordem" class="form-select form-select-sm">
+                  <option value="proximos">Mais próximos</option>
+                  <option value="notas">Melhor avaliados</option>
+                  <option value="quantidade">Mais avaliados</option>
+                </select>
               </div>
+              <div>
+                <label for="filtro-origem">Origem</label
+                ><select id="filtro-origem" class="form-select form-select-sm">
+                  <option value="todos">Todos</option>
+                  <option value="google">Google</option>
+                  <option value="aponte">Aponte</option>
+                </select>
+              </div>
+            </form>
+            <p class="resultados-explicacao">
+              Distâncias a partir do centro da busca. Notas Google e Aponte são
+              independentes. A ordenação considera somente os resultados
+              encontrados, com até 20 lugares Google por pesquisa.
+            </p>
+            <p
+              id="coordenadas-status"
+              class="small text-secondary"
+              role="status"
+            ></p>
+            <span
+              id="mapa-carregando"
+              class="loading-local"
+              role="status"
+              hidden
+              ><span class="spinner-border" aria-hidden="true"></span> Buscando
+              restaurantes…</span
+            >
+          </div>
+          <div id="lista-resultados" aria-live="polite" aria-busy="true"></div>
+        </section>
+        <!-- Painel lateral -->
 
-              <!-- Site oficial -->
-              <div class="info-item">
-                <i class="bi bi-globe" aria-hidden="true"></i>
+        <aside
+          id="painel-restaurante"
+          aria-label="Detalhes do estabelecimento"
+          tabindex="-1"
+        >
+          <button id="fechar-painel" type="button" class="voltar-resultados">
+            <i class="bi bi-arrow-left" aria-hidden="true"></i> Voltar aos
+            resultados
+          </button>
+          <!-- A mesma galeria atende fotos próprias e fotos transitórias do Places. -->
+          <div id="area-foto" class="galeria-restaurante">
+            <img
+              id="foto-restaurante"
+              class="foto-galeria"
+              alt="Foto do estabelecimento"
+            />
+            <button
+              data-anterior
+              type="button"
+              aria-label="Fotografia anterior"
+              hidden
+            >
+              <i class="bi bi-chevron-left" aria-hidden="true"></i>
+            </button>
+            <button
+              data-proxima
+              type="button"
+              aria-label="Próxima fotografia"
+              hidden
+            >
+              <i class="bi bi-chevron-right" aria-hidden="true"></i></button
+            ><span data-contador hidden aria-live="polite"></span>
+            <div id="creditos-foto" class="creditos"></div>
+          </div>
+          <div class="painel-header">
+            <div>
+              <h2 id="nome-restaurante"></h2>
+              <p id="tipo-restaurante"></p>
+              <small id="origem-restaurante"></small>
+            </div>
+          </div>
+          <div class="skeleton-detalhes px-3" aria-hidden="true">
+            <div class="skeleton"></div>
+            <div class="skeleton curto"></div>
+          </div>
+          <div class="painel-notas">
+            <div class="nota-plataforma">
+              <span>Google Maps</span><strong id="media-google">—</strong
+              ><small id="avaliacao-restaurante">Carregando…</small>
+            </div>
+            <div class="nota-plataforma nota-aponte">
+              <span>Aponte</span><strong id="media-aponte">—</strong
+              ><small id="resumo-avaliacoes">Carregando…</small>
+            </div>
+          </div>
+          <div class="painel-acoes">
+            <button id="favoritar" class="btn" type="button">♡ Favoritar</button
+            ><a
+              id="rota-restaurante"
+              class="btn"
+              target="_blank"
+              rel="noopener noreferrer"
+              ><i class="bi bi-sign-turn-right" aria-hidden="true"></i> Rotas</a
+            >
+          </div>
+          <p id="acao-status" role="status" class="small px-3"></p>
+
+          <!-- Navegação das abas -->
+          <ul class="nav" id="pills-tab" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link active"
+                id="pills-home-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-home"
+                type="button"
+                role="tab"
+                aria-controls="pills-home"
+                aria-selected="true"
+              >
+                Informações
+              </button>
+            </li>
+
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="pills-profile-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-profile"
+                type="button"
+                role="tab"
+                aria-controls="pills-profile"
+                aria-selected="false"
+              >
+                Cardápio
+              </button>
+            </li>
+
+            <li class="nav-item" role="presentation">
+              <button
+                class="nav-link"
+                id="pills-contact-tab"
+                data-bs-toggle="pill"
+                data-bs-target="#pills-contact"
+                type="button"
+                role="tab"
+                aria-controls="pills-contact"
+                aria-selected="false"
+              >
+                Sobre
+              </button>
+            </li>
+          </ul>
+
+          <div class="tab-content" id="pills-tabContent">
+            <!-- ABA INFORMAÇÕES -->
+            <div
+              class="tab-pane fade show active"
+              id="pills-home"
+              role="tabpanel"
+              aria-labelledby="pills-home-tab"
+              tabindex="0"
+            >
+              <div class="painel-card">
+                <h3>Informações do estabelecimento</h3>
+
+                <!-- Endereço -->
+                <div class="info-item">
+                  <i class="bi bi-geo-alt-fill" aria-hidden="true"></i>
+
+                  <p id="endereco-restaurante">Endereço do estabelecimento</p>
+                </div>
+
+                <!-- Telefone -->
+                <div class="info-item">
+                  <i class="bi bi-telephone-fill" aria-hidden="true"></i>
+                  <a id="telefone-restaurante" href="#"> Telefone </a>
+                </div>
+
+                <!-- Site oficial -->
+                <div class="info-item">
+                  <i class="bi bi-globe" aria-hidden="true"></i>
+
+                  <a
+                    class="linkmap"
+                    id="site-restaurante"
+                    href="#"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    hidden
+                  >
+                  </a>
+                </div>
+
+                <!-- Horários -->
+                <div class="horarios-container">
+                  <button
+                    class="info-item horarios-toggle"
+                    type="button"
+                    data-bs-toggle="collapse"
+                    data-bs-target="#collapseHorarios"
+                    aria-expanded="false"
+                    aria-controls="collapseHorarios"
+                  >
+                    <i class="bi bi-clock" aria-hidden="true"></i>
+
+                    <span>Ver horários</span>
+
+                    <i
+                      class="bi bi-chevron-down ms-auto"
+                      aria-hidden="true"
+                    ></i>
+                  </button>
+
+                  <div class="collapse" id="collapseHorarios">
+                    <div class="card card-body border-0">
+                      <ul id="horarios-restaurante"></ul>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- ABA CARDÁPIO -->
+            <div
+              class="tab-pane fade"
+              id="pills-profile"
+              role="tabpanel"
+              aria-labelledby="pills-profile-tab"
+              tabindex="0"
+            >
+              <div class="painel-card">
+                <h3>Cardápio</h3>
+
+                <div id="itens-cardapio" aria-live="polite">
+                  Selecione um estabelecimento.
+                </div>
 
                 <a
-                  class="linkmap"
-                  id="site-restaurante"
+                  id="cardapio-restaurante"
                   href="#"
                   target="_blank"
                   rel="noopener noreferrer"
                   hidden
                 >
+                  <i class="bi bi-book" aria-hidden="true"></i>
+                  Ver cardápio
                 </a>
               </div>
+            </div>
 
-              <!-- Horários -->
-              <div class="horarios-container">
-                <button
-                  class="info-item horarios-toggle"
-                  type="button"
-                  data-bs-toggle="collapse"
-                  data-bs-target="#collapseHorarios"
-                  aria-expanded="false"
-                  aria-controls="collapseHorarios"
-                >
-                  <i class="bi bi-clock" aria-hidden="true"></i>
+            <!-- ABA SOBRE -->
+            <div
+              class="tab-pane fade"
+              id="pills-contact"
+              role="tabpanel"
+              aria-labelledby="pills-contact-tab"
+              tabindex="0"
+            >
+              <div class="painel-card">
+                <h3>Sobre o estabelecimento</h3>
 
-                  <span>Ver horários</span>
+                <div class="info-item">
+                  <i class="bi bi-shop" aria-hidden="true"></i>
 
-                  <i class="bi bi-chevron-down ms-auto" aria-hidden="true"></i>
-                </button>
+                  <div>
+                    <strong>Tipo de estabelecimento</strong>
 
-                <div class="collapse" id="collapseHorarios">
-                  <div class="card card-body border-0">
-                    <ul id="horarios-restaurante"></ul>
+                    <p id="descricao-propria"></p>
                   </div>
                 </div>
               </div>
             </div>
           </div>
-
-          <!-- ABA CARDÁPIO -->
-          <div
-            class="tab-pane fade"
-            id="pills-profile"
-            role="tabpanel"
-            aria-labelledby="pills-profile-tab"
-            tabindex="0"
-          >
-            <div class="painel-card">
-              <h3>Cardápio</h3>
-
-              <div id="itens-cardapio" aria-live="polite">
-                Selecione um estabelecimento.
-              </div>
-
-              <a
-                id="cardapio-restaurante"
-                href="#"
-                target="_blank"
-                rel="noopener noreferrer"
+          <section class="painel-card">
+            <h3>Avaliações do Aponte</h3>
+            <p class="small">
+              As notas e comentários abaixo pertencem exclusivamente ao Aponte.
+            </p>
+            <div id="lista-avaliacoes"></div>
+            <p id="avaliacao-acesso"></p>
+            <form id="avaliacao-form" hidden>
+              <label for="nota">Sua nota</label
+              ><select id="nota" class="form-select" required>
+                <option value="5">5 — Excelente</option>
+                <option value="4">4 — Bom</option>
+                <option value="3">3 — Regular</option>
+                <option value="2">2 — Ruim</option>
+                <option value="1">1 — Muito ruim</option></select
+              ><label for="comentario">Comentário (opcional)</label
+              ><textarea
+                id="comentario"
+                class="form-control"
+                maxlength="1000"
+              ></textarea
+              ><button type="submit" class="btn btn-danger mt-2">
+                Salvar avaliação</button
+              ><button
+                id="excluir-minha-avaliacao"
+                type="button"
+                class="btn btn-outline-danger mt-2"
                 hidden
               >
-                <i class="bi bi-book" aria-hidden="true"></i>
-                Ver cardápio
-              </a>
-            </div>
-          </div>
-
-          <!-- ABA SOBRE -->
-          <div
-            class="tab-pane fade"
-            id="pills-contact"
-            role="tabpanel"
-            aria-labelledby="pills-contact-tab"
-            tabindex="0"
-          >
-            <div class="painel-card">
-              <h3>Sobre o estabelecimento</h3>
-
-              <div class="info-item">
-                <i class="bi bi-shop" aria-hidden="true"></i>
-
-                <div>
-                  <strong>Tipo de estabelecimento</strong>
-
-                  <p id="descricao-propria"></p>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <section class="painel-card">
-          <h3>Avaliações do Aponte</h3>
-          <p class="small">
-            As notas e comentários abaixo pertencem exclusivamente ao Aponte.
-          </p>
-          <div id="lista-avaliacoes"></div>
-          <p id="avaliacao-acesso"></p>
-          <form id="avaliacao-form" hidden>
-            <label for="nota">Sua nota</label
-            ><select id="nota" class="form-select" required>
-              <option value="5">5 — Excelente</option>
-              <option value="4">4 — Bom</option>
-              <option value="3">3 — Regular</option>
-              <option value="2">2 — Ruim</option>
-              <option value="1">1 — Muito ruim</option></select
-            ><label for="comentario">Comentário (opcional)</label
-            ><textarea
-              id="comentario"
-              class="form-control"
-              maxlength="1000"
-            ></textarea
-            ><button type="submit" class="btn btn-danger mt-2">
-              Salvar avaliação</button
-            ><button
-              id="excluir-minha-avaliacao"
-              type="button"
-              class="btn btn-outline-danger mt-2"
-              hidden
-            >
-              Excluir minha avaliação
-            </button>
-          </form>
-        </section>
-      </aside>
+                Excluir minha avaliação
+              </button>
+            </form>
+          </section>
+        </aside>
+      </div>
     </div>
 
     <!-- Bootstrap JavaScript -->
@@ -322,6 +382,7 @@
     <script src="/js/app.js"></script>
     <script src="/js/vendor/bootstrap.bundle.min.js"></script>
 
+    <script src="/js/mapa-exploracao.js"></script>
     <script src="/js/map.js"></script>
     <script
       th:if="${!#strings.isEmpty(mapsKey)}"

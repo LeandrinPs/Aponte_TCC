@@ -1,18 +1,22 @@
+/* Mapa e exploração compartilham uma única coluna esquerda. Detalhes em painel.css. */
 html,
 body {
   margin: 0;
   min-height: 100%;
 }
 .pagina-mapa {
-  overflow-x: hidden;
+  height: 100svh;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
 }
 .pagina-mapa #map-container {
   display: flex;
   flex-direction: row-reverse;
-  margin-top: 0;
+  flex: 1;
+  min-height: 0;
+  margin-top: var(--altura-nav);
   width: 100%;
-  height: calc(100svh - var(--altura-nav) - 56px);
-  min-height: 400px;
 }
 #map {
   flex: 1;
@@ -20,28 +24,126 @@ body {
   height: 100%;
   background: #e9eff0;
 }
-.mapa-ferramentas {
-  margin-top: var(--altura-nav);
-  min-height: 56px;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 10px 24px;
-  border-bottom: 1px solid #e6e1e4;
+#lateral-mapa {
+  width: 410px;
+  max-width: 100%;
+  flex-shrink: 0;
+  min-height: 0;
+  box-shadow: 3px 0 16px #0001;
   background: #fff;
-  font-size: 0.82rem;
 }
-.mapa-ferramentas label {
-  white-space: nowrap;
-  font-weight: 650;
+#explorar-resultados {
+  height: 100%;
+  overflow-y: auto;
+  scrollbar-width: thin;
 }
-.mapa-ferramentas select {
-  max-width: 300px;
+.resultados-cabecalho {
+  padding: 24px 22px 16px;
+  border-bottom: 1px solid var(--borda);
 }
-.mapa-ferramentas .loading-local {
-  margin-left: auto;
-  color: #766770;
+.resultados-cabecalho h1 {
+  font-size: 1.45rem;
+  font-weight: 750;
+  letter-spacing: -0.4px;
+  margin: 9px 0;
+}
+.resultados-cabecalho #quantidade-resultados {
   font-size: 0.8rem;
+  color: #7c6c75;
+}
+.filtros-mapa {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 10px;
+  margin: 18px 0 14px;
+}
+.filtros-mapa > div:last-child {
+  grid-column: 1/3;
+}
+.filtros-mapa label {
+  font-size: 0.7rem;
+  font-weight: 650;
+  display: block;
+  color: #6e606b;
+  margin-bottom: 5px;
+}
+.filtros-mapa .form-select {
+  border-radius: 8px;
+  font-size: 0.8rem;
+  background-color: #fcfafb;
+}
+.resultados-explicacao {
+  font-size: 0.7rem;
+  color: #8c7c87;
+  line-height: 1.6;
+  margin: 0;
+}
+.resultados-cabecalho .loading-local {
+  font-size: 0.78rem;
+  margin-top: 12px;
+}
+.resultado-restaurante {
+  padding: 20px 22px;
+  border-bottom: 1px solid var(--borda);
+}
+.resultado-foto {
+  width: 100%;
+  height: 165px;
+  object-fit: cover;
+  border-radius: 8px;
+}
+.resultado-abrir {
+  display: block;
+  text-align: left;
+  background: none;
+  border: 0;
+  padding: 12px 0 4px;
+  color: #302530;
+  width: 100%;
+}
+.resultado-abrir h2 {
+  font-size: 1.05rem;
+  font-weight: 750;
+  margin: 0;
+  line-height: 1.4;
+}
+.resultado-abrir:hover h2 {
+  color: #b91c35;
+  text-decoration: underline;
+}
+.resultado-categoria {
+  font-size: 0.8rem;
+  color: #84717e;
+  margin: 0 0 8px;
+}
+.resultado-origem {
+  font-size: 0.66rem;
+  display: inline-block;
+  border-radius: 4px;
+  background: #fff1c7;
+  color: #725300;
+  padding: 3px 6px;
+}
+.resultado-origem.aponte {
+  background: #fae6ec;
+  color: #a0223b;
+}
+.resultado-nota {
+  font-size: 0.78rem;
+  margin: 8px 0 5px;
+  color: #65505f;
+}
+.resultado-distancia {
+  font-size: 0.75rem;
+  font-weight: 600;
+  color: #8f7384;
+}
+.resultado-restaurante .creditos {
+  font-size: 0.62rem;
+}
+.resultado-restaurante .google-atribuicao {
+  width: 82px;
+  height: auto;
 }
 .mapa-placeholder {
   height: 100%;
@@ -65,11 +167,12 @@ body {
   padding: 10px 24px;
   background: #fff1cf;
   font-size: 0.85rem;
+  flex-shrink: 0;
 }
 .aviso-mapa:empty {
   display: none;
 }
-.aviso-mapa:not(:empty) + .mapa-ferramentas {
+.aviso-mapa:not(:empty) + #map-container {
   margin-top: 0;
 }
 .marcador-localizacao {
@@ -88,81 +191,56 @@ body {
   border: 2px solid white;
   border-radius: 50%;
 }
-.icone-comida {
-  display: grid;
-  place-items: center;
-  width: 39px;
-  height: 39px;
-  background: #fff;
-  border: 2px solid #d91a30;
-  border-radius: 50%;
-  font-size: 22px;
-  cursor: pointer;
-  box-shadow: 0 3px 9px #0003;
-}
-.icone-comida.proprio {
-  border-color: #721b30;
-  background: #fff5f3;
-}
-.icone-comida:hover,
-.icone-comida.ativo {
-  box-shadow: 0 0 0 5px #d91a302a;
-}
 .custom-map-control-button {
   background: white;
   border: 0;
   border-radius: 6px;
   box-shadow: 0 2px 7px #0003;
-  margin: 10px;
-  padding: 10px 16px;
+  margin: 10px 5px;
+  padding: 10px 14px;
   color: #393138;
-  font-size: 0.85rem;
+  font-size: 0.82rem;
+}
+#lista-resultados > .vazio {
+  margin: 20px;
 }
 @media (max-width: 760px) {
+  .pagina-mapa {
+    height: auto;
+    overflow: visible;
+  }
   .pagina-mapa #map-container {
     flex-direction: column;
     min-height: 70vh;
-    height: auto;
-  }
-  #map {
-    height: 45svh;
-    min-height: 300px;
     flex: auto;
   }
-  .mapa-ferramentas {
-    padding: 10px 16px;
-    gap: 8px;
-    flex-wrap: wrap;
+  #map {
+    height: 42svh;
+    min-height: 280px;
+    flex: auto;
   }
-  .mapa-ferramentas label {
-    font-size: 0.75rem;
+  #lateral-mapa {
+    width: 100%;
+    max-height: none;
   }
-  .mapa-ferramentas select {
-    flex: 1;
-    min-width: 120px;
-  }
-  .mapa-ferramentas .loading-local {
-    font-size: 0.72rem;
-  }
-  .aviso-mapa {
-    padding: 10px 16px;
-  }
-}
-
-@media (min-width: 761px) {
-  .pagina-mapa {
-    height: 100svh;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-  .pagina-mapa #map-container {
+  #explorar-resultados {
     height: auto;
-    min-height: 0;
-    flex: 1;
+    max-height: 70svh;
   }
-  .mapa-ferramentas,
+  .resultados-cabecalho {
+    padding: 22px 18px;
+  }
+  .resultado-restaurante {
+    padding: 18px;
+  }
+  .resultado-foto {
+    height: 185px;
+  }
   .aviso-mapa {
-    flex-shrink: 0;
+    padding: 10px 16px;
+  }
+  .custom-map-control-button {
+    font-size: 0.75rem;
+    padding: 9px 10px;
   }
 }
