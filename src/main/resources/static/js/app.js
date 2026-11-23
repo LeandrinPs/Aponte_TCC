@@ -69,12 +69,75 @@ window.Aponte = (() => {
     n.classList.toggle("mensagem-erro", erro);
     n.classList.toggle("mensagem-sucesso", !erro);
   }
-  function imagem(img, url) {
-    img.onerror = () => {
-      img.onerror = null;
-      img.src = "/img/imagem.jpeg";
+  function ilustracao(categoria) {
+    const chave = Object.hasOwn(categorias, categoria)
+      ? categoria
+      : "restaurantes";
+    return `/img/ilustrativas/${chave}.svg`;
+  }
+  function fotografiaReal(url) {
+    return (
+      typeof url === "string" &&
+      url.trim() !== "" &&
+      !url.split(/[?#]/)[0].endsWith("/img/imagem.jpeg") &&
+      !url.includes("/img/ilustrativas/")
+    );
+  }
+  function fotografiasProprias(e) {
+    const fotos = (e.fotos || []).filter(fotografiaReal);
+    return fotos.length ? fotos : [e.fotoUrl].filter(fotografiaReal);
+  }
+  const carregamentos = new WeakMap();
+  function imagem(img, url, opcoes = {}) {
+    const { categoria, creditos, googleFoto, aoFalhar } = opcoes;
+    const carga = {};
+    carregamentos.set(img, carga);
+    const atual = () => carregamentos.get(img) === carga;
+    function ilustrar() {
+      if (!atual()) return;
+      img.onload = img.onerror = null;
+      img.dataset.imagemTipo = "ilustrativa";
+      const dadosCategoria = Object.hasOwn(categorias, categoria)
+        ? categorias[categoria]
+        : categorias.restaurantes;
+      img.alt = `Imagem ilustrativa — ${dadosCategoria.nome}`;
+      if (creditos) {
+        creditos.replaceChildren(
+          el("span", "imagem-ilustrativa", "Imagem ilustrativa"),
+        );
+      }
+      img.src = ilustracao(categoria);
+    }
+    creditos?.replaceChildren();
+    if (!fotografiaReal(url)) {
+      ilustrar();
+      return;
+    }
+    img.dataset.imagemTipo = "carregando";
+    img.alt = opcoes.alt || "Fotografia do estabelecimento";
+    img.onload = () => {
+      if (!atual()) return;
+      img.dataset.imagemTipo = "fotografia";
+      if (creditos) {
+        if (googleFoto) creditosGoogle(creditos, googleFoto);
+        else
+          creditos.replaceChildren(
+            el("span", "", "Fotografia fornecida ao Aponte"),
+          );
+      }
     };
-    img.src = url || "/img/imagem.jpeg";
+    img.onerror = () => {
+      if (!atual()) return;
+      if (aoFalhar?.() === true) return;
+      ilustrar();
+    };
+    img.src = url;
+  }
+  function fotoPropria(e, img, creditos) {
+    imagem(img, fotografiasProprias(e)[0], {
+      categoria: e.dadosProprios?.categoria,
+      creditos,
+    });
   }
   function referencia(e) {
     return e.googlePlaceId ? { googlePlaceId: e.googlePlaceId } : { id: e.id };
@@ -117,63 +180,91 @@ window.Aponte = (() => {
       creditos.append(n, " ");
     }
   }
+  // Somente URIs de fotos desta sessão visual; nada é gravado no cadastro.
+  const urisGoogle = new WeakMap();
+  function uriGoogle(foto) {
+    if (!foto) return null;
+    if (!urisGoogle.has(foto)) {
+      const url = foto.getURI({ maxWidth: 1000, maxHeight: 700 });
+      if (fotografiaReal(url)) urisGoogle.set(foto, url);
+      return url;
+    }
+    return urisGoogle.get(foto);
+  }
   function fotoGoogle(place, img, creditos) {
     const foto = place.photos?.[0];
-    creditosGoogle(creditos, foto);
+    let url;
     try {
-      imagem(
-        img,
-        foto ? foto.getURI({ maxWidth: 1000, maxHeight: 700 }) : null,
-      );
-    } catch {
-      imagem(img, null);
-    }
+      url = uriGoogle(foto);
+    } catch {}
+    imagem(img, url, {
+      categoria: classificar(place).chave,
+      creditos,
+      googleFoto: foto,
+    });
   }
-  function galeria(alvo, itens, googleOrigem = false) {
+  function galeria(
+    alvo,
+    itens,
+    googleOrigem = false,
+    categoria = "restaurantes",
+  ) {
     let indice = 0;
-    const fotos = (itens || []).filter(Boolean).slice(0, 3);
+    const fotos = (itens || [])
+      .filter(googleOrigem ? Boolean : fotografiaReal)
+      .slice(0, 3);
+    const falhas = new Set();
     const img = alvo.querySelector("img.foto-galeria"),
-      creditos = alvo.querySelector(".creditos");
-    const anterior = alvo.querySelector("[data-anterior]"),
+      creditos = alvo.querySelector(".creditos"),
+      anterior = alvo.querySelector("[data-anterior]"),
       proxima = alvo.querySelector("[data-proxima]"),
       contador = alvo.querySelector("[data-contador]");
+    const disponiveis = () =>
+      fotos.map((_, i) => i).filter((i) => !falhas.has(i));
     function render() {
-      const f = fotos[indice];
-      if (googleOrigem) creditosGoogle(creditos, f);
-      else {
-        creditos.replaceChildren();
-        if (f)
-          creditos.append(el("span", "", "Fotografia fornecida ao Aponte"));
-      }
-      let url = null;
-      try {
-        url = googleOrigem ? f?.getURI({ maxWidth: 1000, maxHeight: 700 }) : f;
-      } catch {}
-      imagem(img, url);
-      img.onerror = () => {
-        img.onerror = null;
-        img.src = "/img/imagem.jpeg";
-        creditos.append(
-          el("span", "foto-falha", " Fotografia indisponível no momento."),
-        );
-      };
-      img.alt = f
-        ? `Fotografia ${indice + 1} do estabelecimento`
-        : "Fotografia ilustrativa — estabelecimento sem imagem disponível";
+      const indices = disponiveis();
+      if (!indices.includes(indice)) indice = indices[0] ?? 0;
+      const f = indices.length ? fotos[indice] : null;
+      anterior.hidden = proxima.hidden = indices.length < 2;
       if (contador) {
-        contador.textContent = `${indice + 1} / ${fotos.length}`;
-        contador.hidden = fotos.length < 2;
+        contador.textContent = `${indices.indexOf(indice) + 1} / ${indices.length}`;
+        contador.hidden = indices.length < 2;
       }
-      anterior.hidden = proxima.hidden = fotos.length < 2;
+      function falhou() {
+        falhas.add(indice);
+        render();
+        return true;
+      }
+      let url;
+      try {
+        url = googleOrigem ? uriGoogle(f) : f;
+      } catch {
+        falhou();
+        return;
+      }
+      if (f && !fotografiaReal(url)) {
+        falhou();
+        return;
+      }
+      imagem(img, url, {
+        categoria,
+        creditos,
+        googleFoto: googleOrigem ? f : null,
+        aoFalhar: falhou,
+        alt: `Fotografia ${indices.indexOf(indice) + 1} do estabelecimento`,
+      });
     }
-    anterior.onclick = () => {
-      indice = (indice - 1 + fotos.length) % fotos.length;
+    function mover(passo) {
+      const indices = disponiveis();
+      if (indices.length < 2) return;
+      indice =
+        indices[
+          (indices.indexOf(indice) + passo + indices.length) % indices.length
+        ];
       render();
-    };
-    proxima.onclick = () => {
-      indice = (indice + 1) % fotos.length;
-      render();
-    };
+    }
+    anterior.onclick = () => mover(-1);
+    proxima.onclick = () => mover(1);
     render();
   }
   const categorias = {
@@ -371,7 +462,7 @@ window.Aponte = (() => {
         "primaryTypeDisplayName",
       ],
     });
-    
+
     return p;
   }
   const sessao = api("/api/sessao");
@@ -448,7 +539,8 @@ window.Aponte = (() => {
       const card = el("article", "card h-100");
       const img = el("img", "card-img-top foto-card");
       img.alt = e.dadosProprios.nome;
-      imagem(img, e.fotoUrl);
+      const creditos = el("div", "creditos px-3");
+      fotoPropria(e, img, creditos);
       const body = el("div", "card-body");
       body.append(
         el("h3", "h5", e.dadosProprios.nome),
@@ -457,7 +549,7 @@ window.Aponte = (() => {
       const a = el("a", "btn btn-outline-danger", "Ver no mapa");
       a.href = linkMapa(e);
       body.append(a);
-      card.append(img, body);
+      card.append(img, creditos, body);
       col.append(card);
       container.append(col);
     }
@@ -502,6 +594,9 @@ window.Aponte = (() => {
     api,
     aviso,
     imagem,
+    ilustracao,
+    fotografiasProprias,
+    fotoPropria,
     referencia,
     consulta,
     endereco,

@@ -70,6 +70,7 @@ const imagem = (n) =>
     };
     for (const [k, v] of Object.entries(dados))
       await page.locator("#" + k).fill(v);
+    await page.locator("#adicionar-fotografias").check();
     await page.locator("#foto").setInputFiles(imagem("Asador.jpg"));
     await page.getByRole("button", { name: "Salvar estabelecimento" }).click();
     await page.waitForURL("**/admin/estabelecimentos?id=*");
@@ -198,7 +199,7 @@ const imagem = (n) =>
     await expect(page.locator("#remover-foto")).toBeHidden();
     await expect(page.locator("#foto-preview")).toHaveAttribute(
       "src",
-      "/img/imagem.jpeg",
+      "/img/ilustrativas/restaurantes.svg",
     );
     log("Moderação e remoção de fotografia OK");
     await ir("/admin/usuarios");

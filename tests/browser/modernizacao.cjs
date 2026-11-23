@@ -110,6 +110,7 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
     await expect(page.locator("#icone-preview")).toHaveText("☕");
     await page.locator("#icone").selectOption("auto");
     await expect(page.locator("#icone-preview")).toHaveText("🍕");
+    await page.locator("#adicionar-fotografias").check();
     for (const [sel, n] of [
       ["#foto", "Asador.jpg"],
       ["#foto-2", "lasai.jpg"],

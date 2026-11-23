@@ -504,6 +504,95 @@ class ControllersIntegrationTest {
   }
 
   @Test
+  void removerTodasFotosPreservaCadastroFavoritoEAvaliacao() throws Exception {
+    long id = criarProprio();
+    for (int p = 1; p <= 3; p++)
+      mvc.perform(
+              multipart("/api/admin/estabelecimentos/" + id + "/fotos/" + p)
+                  .file(imagemTeste())
+                  .session(admin)
+                  .with(csrf()))
+          .andExpect(status().isOk());
+    mvc.perform(
+            post("/api/me/favoritos")
+                .session(usuario)
+                .with(csrf())
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("{\"id\":" + id + "}"))
+        .andExpect(status().isCreated());
+    var avaliacao =
+        mvc.perform(
+                post("/api/me/avaliacoes")
+                    .session(usuario)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content(
+                        "{\"referencia\":{\"id\":"
+                            + id
+                            + "},\"dados\":{\"nota\":4,\"comentario\":\"Preservar\"}}"))
+            .andExpect(status().isCreated())
+            .andReturn();
+    long avaliacaoId =
+        json.readTree(avaliacao.getResponse().getContentAsString()).get("id").asLong();
+    mvc.perform(delete("/api/admin/estabelecimentos/" + id + "/fotos").session(admin).with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(id))
+        .andExpect(jsonPath("$.googlePlaceId").isEmpty())
+        .andExpect(jsonPath("$.fotos[0]").isEmpty())
+        .andExpect(jsonPath("$.fotos[1]").isEmpty())
+        .andExpect(jsonPath("$.fotos[2]").isEmpty());
+    mvc.perform(get("/api/estabelecimentos/" + id))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.dadosProprios.nome").value("Restaurante HTTP"));
+    mvc.perform(get("/api/me/favoritos").session(usuario))
+        .andExpect(jsonPath("$[0].estabelecimento.id").value(id));
+    mvc.perform(get("/api/me/avaliacoes").session(usuario))
+        .andExpect(jsonPath("$[0].id").value(avaliacaoId))
+        .andExpect(jsonPath("$[0].estabelecimento.id").value(id))
+        .andExpect(jsonPath("$[0].comentario").value("Preservar"));
+    mvc.perform(get("/api/avaliacoes/resumo").param("id", String.valueOf(id)))
+        .andExpect(jsonPath("$.media").value(4.0))
+        .andExpect(jsonPath("$.quantidade").value(1));
+    // Repetir a remoção é seguro e não recria o estabelecimento.
+    mvc.perform(delete("/api/admin/estabelecimentos/" + id + "/fotos").session(admin).with(csrf()))
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.id").value(id));
+  }
+
+  @Test
+  void remocaoEmLoteExigeAdministradorCsrfECadastroProprioExistente() throws Exception {
+    long id = criarProprio();
+    mvc.perform(
+            delete("/api/admin/estabelecimentos/" + id + "/fotos").session(usuario).with(csrf()))
+        .andExpect(status().isForbidden());
+    mvc.perform(delete("/api/admin/estabelecimentos/" + id + "/fotos").session(admin))
+        .andExpect(status().isForbidden());
+    mvc.perform(delete("/api/admin/estabelecimentos/999999999/fotos").session(admin).with(csrf()))
+        .andExpect(status().isNotFound());
+    var favorito =
+        mvc.perform(
+                post("/api/me/favoritos")
+                    .session(usuario)
+                    .with(csrf())
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .content("{\"googlePlaceId\":\"Place-Sem-Foto\"}"))
+            .andExpect(status().isCreated())
+            .andReturn();
+    long googleId =
+        json.readTree(favorito.getResponse().getContentAsString())
+            .get("estabelecimento")
+            .get("id")
+            .asLong();
+    mvc.perform(
+            delete("/api/admin/estabelecimentos/" + googleId + "/fotos")
+                .session(admin)
+                .with(csrf()))
+        .andExpect(status().isConflict());
+    mvc.perform(get("/api/estabelecimentos/" + googleId))
+        .andExpect(jsonPath("$.googlePlaceId").value("Place-Sem-Foto"));
+  }
+
+  @Test
   void fotoDePerfilSemprePertenceAoUsuarioDaSessao() throws Exception {
     var r =
         mvc.perform(multipart("/api/me/foto").file(imagemTeste()).session(usuario).with(csrf()))

@@ -425,3 +425,10 @@ a {
     height: 190px;
   }
 }
+
+.imagem-ilustrativa {
+  display: inline-block;
+  padding: 4px 0;
+  font-size: 0.75rem;
+  font-weight: 400;
+}

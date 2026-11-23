@@ -318,7 +318,7 @@ if (!process.env.APONTE_E2E_ADMIN_LOGIN || !process.env.APONTE_E2E_ADMIN_SENHA)
     );
     await expect(page.locator("#foto-restaurante")).toHaveAttribute(
       "src",
-      "/img/imagem.jpeg",
+      "/img/ilustrativas/restaurantes.svg",
     );
     await expect(page.locator("[data-proxima]")).toBeHidden();
     await ir("/favoritos.html");

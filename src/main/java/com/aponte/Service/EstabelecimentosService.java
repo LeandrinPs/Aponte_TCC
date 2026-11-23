@@ -121,6 +121,21 @@ public class EstabelecimentosService {
   }
 
   @Transactional
+  public EstabelecimentoDTO removerTodasFotos(@NotNull @Positive Long id) {
+    acesso.exigirAdministrador();
+    Estabelecimentos e = exigirProprio(id);
+    var antigas = java.util.Arrays.asList(e.getFotoPrincipal(), e.getFoto2(), e.getFoto3());
+    e.setFotoPrincipal(null);
+    e.setFoto2(null);
+    e.setFoto3(null);
+    var resultado =
+        EstabelecimentoDTO.de(Persistencia.gravar(() -> estabelecimentos.saveAndFlush(e)));
+    // Os arquivos só são excluídos depois da confirmação da transação.
+    antigas.forEach(imagens::removerAposConfirmacao);
+    return resultado;
+  }
+
+  @Transactional
   public EstabelecimentoDTO tornarPrincipal(
       @NotNull @Positive Long id, @Min(1) @Max(3) int posicao) {
     acesso.exigirAdministrador();

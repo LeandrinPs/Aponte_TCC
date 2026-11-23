@@ -249,8 +249,7 @@ let resumoProprios = new Map(),
   googleChave = null,
   scrollResultados = 0;
 const cacheBuscas = new Map(),
-  cardsResultados = new Map(),
-  fotosResultados = new WeakMap();
+  cardsResultados = new Map();
 const utilMapa = ExploracaoMapa;
 const normalizarNome = utilMapa.normalizar;
 const propriosPromise = Promise.all([
@@ -334,28 +333,6 @@ function dadosResultados() {
 function resultadosVisiveis() {
   return utilMapa.elegiveis(dadosResultados(), estadoBusca);
 }
-function fotoResultado(p, img, creditos) {
-  const foto = p.photos?.[0];
-  // Reutilizar o URI somente nesta visualização evita regenerá-lo em cada ordenação.
-  if (foto && fotosResultados.has(foto))
-    Aponte.fotoGoogle(
-      {
-        ...p,
-        photos: [
-          {
-            getURI: () => fotosResultados.get(foto),
-            authorAttributions: foto.authorAttributions,
-          },
-        ],
-      },
-      img,
-      creditos,
-    );
-  else {
-    Aponte.fotoGoogle(p, img, creditos);
-    if (foto) fotosResultados.set(foto, img.src);
-  }
-}
 function cardResultado(e) {
   let card = cardsResultados.get(e.chave);
   if (!card || card._dado !== e.dado) {
@@ -382,8 +359,8 @@ function cardResultado(e) {
     const categoria = Aponte.el("p", "resultado-categoria", e.categoria),
       nota = Aponte.el("p", "resultado-nota"),
       distancia = Aponte.el("span", "resultado-distancia");
-    if (e.origem === "google") fotoResultado(e.dado, foto, creditos);
-    else Aponte.imagem(foto, e.dado.fotoUrl);
+    if (e.origem === "google") Aponte.fotoGoogle(e.dado, foto, creditos);
+    else Aponte.fotoPropria(e.dado, foto, creditos);
     card.append(foto, creditos, abrir, categoria, origem, nota, distancia);
     cardsResultados.set(e.chave, card);
   }
@@ -630,7 +607,7 @@ function prepararFiltros() {
   });
 }
 prepararFiltros();
-function iniciarPainel(ref, nome, origem) {
+function iniciarPainel(ref, nome, origem, categoria) {
   const seq = ++sequenciaPainel;
   if (marcadorPesquisa) {
     marcadorPesquisa.map = null;
@@ -652,11 +629,9 @@ function iniciarPainel(ref, nome, origem) {
   document.getElementById("media-aponte").textContent = "—";
   document.getElementById("resumo-avaliacoes").textContent = "Carregando…";
   document.getElementById("avaliacao-acesso").replaceChildren();
-  Aponte.galeria(document.getElementById("area-foto"), []);
+  Aponte.galeria(document.getElementById("area-foto"), [], false, categoria);
   document.getElementById("nome-restaurante").textContent = nome;
   document.getElementById("origem-restaurante").textContent = origem;
-  Aponte.imagem(document.getElementById("foto-restaurante"), null);
-  document.getElementById("creditos-foto").replaceChildren();
   for (const id of [
     "endereco-restaurante",
     "telefone-restaurante",
@@ -689,7 +664,12 @@ function rota(nome, lat, lng, placeId) {
 }
 async function abrirProprio(e) {
   const d = e.dadosProprios,
-    seq = iniciarPainel({ id: e.id }, d.nome, "Cadastro próprio do Aponte");
+    seq = iniciarPainel(
+      { id: e.id },
+      d.nome,
+      "Cadastro próprio do Aponte",
+      d.categoria,
+    );
   document.getElementById("endereco-restaurante").textContent =
     Aponte.endereco(d);
   document.getElementById("descricao-propria").textContent = d.descricao;
@@ -700,7 +680,12 @@ async function abrirProprio(e) {
     "Consulte o estabelecimento";
   document.getElementById("avaliacao-restaurante").textContent =
     "Sem vínculo com o Google Places";
-  Aponte.galeria(document.getElementById("area-foto"), e.fotos || [e.fotoUrl]);
+  Aponte.galeria(
+    document.getElementById("area-foto"),
+    Aponte.fotografiasProprias(e),
+    false,
+    d.categoria,
+  );
   rota(d.nome, d.latitude, d.longitude, null);
   if (map) map.panTo({ lat: Number(d.latitude), lng: Number(d.longitude) });
   await carregarInteracoes({ id: e.id }, seq);
@@ -715,6 +700,7 @@ async function abrirPainel(restaurante) {
       ref,
       restaurante.displayName || "Estabelecimento Google",
       "Google Places",
+      Aponte.classificar(restaurante).chave,
     );
   rota(
     restaurante.displayName || "Estabelecimento",
@@ -763,7 +749,12 @@ async function abrirPainel(restaurante) {
           : "Sem avaliações disponíveis no Google";
       document.getElementById("tipo-restaurante").textContent =
         Aponte.classificar(p).nome;
-      Aponte.galeria(document.getElementById("area-foto"), p.photos, true);
+      Aponte.galeria(
+        document.getElementById("area-foto"),
+        p.photos,
+        true,
+        Aponte.classificar(p).chave,
+      );
       if (p.location) {
         if (
           map &&

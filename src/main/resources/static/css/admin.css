@@ -326,3 +326,27 @@
     width: 100%;
   }
 }
+
+.foto-vazia {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 130px;
+  padding: 16px;
+  margin: 0;
+  border: 1px dashed #d5c8cd;
+  border-radius: 6px;
+  background: #faf7f8;
+  color: #665b62;
+  font-size: 0.85rem;
+  text-align: center;
+}
+.foto-vazia .bi {
+  font-size: 1.5rem;
+}
+#sem-fotografia-aviso {
+  min-height: 72px;
+  justify-content: flex-start;
+  text-align: left;
+}

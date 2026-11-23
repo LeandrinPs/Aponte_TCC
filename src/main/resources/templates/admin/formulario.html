@@ -151,95 +151,145 @@
           </p>
           <div id="tags-opcoes" class="d-flex flex-wrap gap-3"></div>
         </fieldset>
-        <div class="col-12">
-          <h2 class="h5 mt-3">Fotografias do estabelecimento</h2>
+        <fieldset class="col-12 mt-4">
+          <legend class="h5">Fotografias do estabelecimento</legend>
+          <div class="d-flex flex-wrap gap-4">
+            <label class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="modoFotografias"
+                id="sem-fotografia"
+                value="sem"
+                checked
+              />
+              Sem fotografia
+            </label>
+            <label class="form-check">
+              <input
+                class="form-check-input"
+                type="radio"
+                name="modoFotografias"
+                id="adicionar-fotografias"
+                value="adicionar"
+              />
+              Adicionar fotografias
+            </label>
+          </div>
+          <p id="sem-fotografia-aviso" class="foto-vazia mt-2" role="status">
+            <i class="bi bi-image" aria-hidden="true"></i>
+            Sem fotografias cadastradas. O site exibirá uma imagem ilustrativa
+            da categoria.
+          </p>
+        </fieldset>
+        <div id="campos-fotografias" class="col-12" hidden>
           <p class="form-text">
             Até três imagens JPEG ou PNG de 5 MB cada. A posição 1 é a
             fotografia principal.
           </p>
-        </div>
-        <div class="col-md-4">
-          <section class="foto-posicao" data-posicao="1">
-            <label for="foto" class="form-label">Principal</label
-            ><img
-              id="foto-preview"
-              src="/img/imagem.jpeg"
-              class="foto-preview"
-              alt="Prévia da fotografia 1"
-            /><input
-              type="file"
-              id="foto"
-              accept="image/jpeg,image/png"
-              class="form-control mt-2"
-            /><button
-              id="remover-foto"
-              type="button"
-              class="btn btn-outline-danger btn-sm mt-2"
-              hidden
-            >
-              Remover fotografia
-            </button>
-          </section>
-        </div>
-        <div class="col-md-4">
-          <section class="foto-posicao" data-posicao="2">
-            <label for="foto-2" class="form-label">Fotografia 2</label
-            ><img
-              id="foto-preview-2"
-              src="/img/imagem.jpeg"
-              class="foto-preview"
-              alt="Prévia da fotografia 2"
-            /><input
-              type="file"
-              id="foto-2"
-              accept="image/jpeg,image/png"
-              class="form-control mt-2"
-            /><button
-              id="remover-foto-2"
-              type="button"
-              class="btn btn-outline-danger btn-sm mt-2"
-              hidden
-            >
-              Remover fotografia</button
-            ><button
-              id="principal-2"
-              type="button"
-              class="btn btn-outline-secondary btn-sm mt-2"
-              hidden
-            >
-              Tornar principal
-            </button>
-          </section>
-        </div>
-        <div class="col-md-4">
-          <section class="foto-posicao" data-posicao="3">
-            <label for="foto-3" class="form-label">Fotografia 3</label
-            ><img
-              id="foto-preview-3"
-              src="/img/imagem.jpeg"
-              class="foto-preview"
-              alt="Prévia da fotografia 3"
-            /><input
-              type="file"
-              id="foto-3"
-              accept="image/jpeg,image/png"
-              class="form-control mt-2"
-            /><button
-              id="remover-foto-3"
-              type="button"
-              class="btn btn-outline-danger btn-sm mt-2"
-              hidden
-            >
-              Remover fotografia</button
-            ><button
-              id="principal-3"
-              type="button"
-              class="btn btn-outline-secondary btn-sm mt-2"
-              hidden
-            >
-              Tornar principal
-            </button>
-          </section>
+          <div class="row g-3">
+            <div class="col-md-4">
+              <section class="foto-posicao" data-posicao="1">
+                <label for="foto" class="form-label">Principal</label
+                ><img
+                  id="foto-preview"
+                  class="foto-preview"
+                  alt="Prévia da fotografia 1"
+                  hidden
+                />
+                <p id="foto-vazia" class="foto-vazia">
+                  <i class="bi bi-image" aria-hidden="true"></i> Sem fotografia
+                  nesta posição
+                </p>
+                <input
+                  type="file"
+                  id="foto"
+                  disabled
+                  accept="image/jpeg,image/png"
+                  class="form-control mt-2"
+                /><button
+                  id="remover-foto"
+                  type="button"
+                  class="btn btn-outline-danger btn-sm mt-2"
+                  hidden
+                >
+                  Remover fotografia
+                </button>
+              </section>
+            </div>
+            <div class="col-md-4">
+              <section class="foto-posicao" data-posicao="2">
+                <label for="foto-2" class="form-label">Fotografia 2</label
+                ><img
+                  id="foto-preview-2"
+                  class="foto-preview"
+                  alt="Prévia da fotografia 2"
+                  hidden
+                />
+                <p id="foto-vazia-2" class="foto-vazia">
+                  <i class="bi bi-image" aria-hidden="true"></i> Sem fotografia
+                  nesta posição
+                </p>
+                <input
+                  type="file"
+                  id="foto-2"
+                  disabled
+                  accept="image/jpeg,image/png"
+                  class="form-control mt-2"
+                /><button
+                  id="remover-foto-2"
+                  type="button"
+                  class="btn btn-outline-danger btn-sm mt-2"
+                  hidden
+                >
+                  Remover fotografia</button
+                ><button
+                  id="principal-2"
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm mt-2"
+                  hidden
+                >
+                  Tornar principal
+                </button>
+              </section>
+            </div>
+            <div class="col-md-4">
+              <section class="foto-posicao" data-posicao="3">
+                <label for="foto-3" class="form-label">Fotografia 3</label
+                ><img
+                  id="foto-preview-3"
+                  class="foto-preview"
+                  alt="Prévia da fotografia 3"
+                  hidden
+                />
+                <p id="foto-vazia-3" class="foto-vazia">
+                  <i class="bi bi-image" aria-hidden="true"></i> Sem fotografia
+                  nesta posição
+                </p>
+                <input
+                  type="file"
+                  id="foto-3"
+                  disabled
+                  accept="image/jpeg,image/png"
+                  class="form-control mt-2"
+                /><button
+                  id="remover-foto-3"
+                  type="button"
+                  class="btn btn-outline-danger btn-sm mt-2"
+                  hidden
+                >
+                  Remover fotografia</button
+                ><button
+                  id="principal-3"
+                  type="button"
+                  class="btn btn-outline-secondary btn-sm mt-2"
+                  hidden
+                >
+                  Tornar principal
+                </button>
+              </section>
+            </div>
+          </div>
         </div>
         <div class="col-12">
           <button class="btn btn-danger" id="salvar-estabelecimento">
