@@ -72,6 +72,7 @@ const path = require("path");
       "aria-busy",
       "false",
     );
+    await page.locator("#adicionar-fotografias").check();
     for (const sel of ["#foto", "#foto-2", "#foto-3"])
       await page
         .locator(sel)
