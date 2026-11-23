@@ -5,8 +5,11 @@
     "test": "node fluxo.cjs",
     "test:mapa": "node mapa-simulado.cjs",
     "test:modernizacao": "node modernizacao.cjs",
-    "test:all": "node fluxo.cjs && node modernizacao.cjs && node mapa-simulado.cjs",
-    "test:google": "node google-real.cjs"
+    "test:all": "node fluxo.cjs && node modernizacao.cjs && node mapa-simulado.cjs && node exploracao.cjs && node desfazer.cjs",
+    "test:google": "node google-real.cjs",
+    "test:frontend": "node --test ../frontend/*.test.cjs",
+    "test:exploracao": "node exploracao.cjs",
+    "test:desfazer": "node desfazer.cjs"
   },
   "devDependencies": {
     "playwright": "1.62.1"

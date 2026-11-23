@@ -33,7 +33,12 @@ public class PaginasController {
   }
 
   @GetMapping({"/", "/index.html"})
-  String inicio() {
+  String inicio(Model model) {
+    String[] imagens = {"imagem.jpeg", "Asador.jpg", "lasai.jpg", "maido.jpeg"};
+    model.addAttribute(
+        "heroImagem",
+        "/img/"
+            + imagens[java.util.concurrent.ThreadLocalRandom.current().nextInt(imagens.length)]);
     return "index";
   }
 

@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 @RequiredArgsConstructor
 public class AdministradorController {
   private final AdministradorService admin;
+  private final UsuarioService usuariosService;
   private final EstabelecimentosService estabelecimentos;
   private final CardapioService cardapios;
 
@@ -36,6 +37,16 @@ public class AdministradorController {
   public UsuarioDTO atualizarUsuario(
       @PathVariable Long id, @Valid @RequestBody UsuarioAtualizacaoDTO dados) {
     return admin.atualizarUsuario(id, dados);
+  }
+
+  @GetMapping("/usuarios/{id}/exclusao")
+  public EstadoExclusaoDTO verificarUsuario(@PathVariable Long id) {
+    return usuariosService.verificarExclusao(id);
+  }
+
+  @GetMapping("/estabelecimentos/{id}/exclusao")
+  public EstadoExclusaoDTO verificarEstabelecimento(@PathVariable Long id) {
+    return estabelecimentos.verificarExclusao(id);
   }
 
   @DeleteMapping("/usuarios/{id}")

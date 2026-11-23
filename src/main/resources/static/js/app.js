@@ -177,29 +177,121 @@ window.Aponte = (() => {
     render();
   }
   const categorias = {
-    restaurantes: { nome: "Restaurante", icone: "🍽️" },
-    pizzarias: { nome: "Pizzaria", icone: "🍕" },
-    hamburguerias: { nome: "Hamburgueria", icone: "🍔" },
-    cafeterias: { nome: "Cafeteria", icone: "☕" },
-    japoneses: { nome: "Restaurante japonês", icone: "🍣" },
-    churrascarias: { nome: "Churrascaria", icone: "🥩" },
-    brasileira: { nome: "Comida brasileira", icone: "🍛" },
+    restaurantes: {
+      nome: "Restaurante",
+      icone: "🍽️",
+      tipos: ["restaurant"],
+    },
+    pizzarias: {
+      nome: "Pizzaria",
+      icone: "🍕",
+      tipos: ["pizza_restaurant"],
+    },
+    hamburguerias: {
+      nome: "Hamburgueria",
+      icone: "🍔",
+      tipos: ["hamburger_restaurant"],
+    },
+    cafeterias: {
+      nome: "Cafeteria",
+      icone: "☕",
+      tipos: ["cafe", "coffee_shop"],
+    },
+    japoneses: {
+      nome: "Restaurante japonês",
+      icone: "🍣",
+      tipos: ["japanese_restaurant", "sushi_restaurant"],
+    },
+    churrascarias: {
+      nome: "Churrascaria",
+      icone: "🥩",
+      tipos: ["barbecue_restaurant", "steak_house"],
+    },
+    brasileira: {
+      nome: "Comida brasileira",
+      icone: "🍛",
+      tipos: ["brazilian_restaurant"],
+    },
+    italiana: {
+      nome: "Italiana",
+      icone: "🍝",
+      tipos: ["italian_restaurant"],
+    },
+    mexicana: {
+      nome: "Mexicana",
+      icone: "🌮",
+      tipos: ["mexican_restaurant"],
+    },
+    chinesa: {
+      nome: "Chinesa",
+      icone: "🥡",
+      tipos: ["chinese_restaurant"],
+    },
+    vegetariana: {
+      nome: "Vegetariana",
+      icone: "🥗",
+      tipos: ["vegetarian_restaurant"],
+    },
+    "frutos-do-mar": {
+      nome: "Frutos do mar",
+      icone: "🦐",
+      tipos: ["seafood_restaurant"],
+    },
+    docerias: {
+      nome: "Doceria",
+      icone: "🍰",
+      tipos: [
+        "dessert_shop",
+        "dessert_restaurant",
+        "confectionery",
+        "candy_store",
+        "chocolate_shop",
+        "ice_cream_shop",
+        "pastry_shop",
+        "cake_shop",
+        "donut_shop",
+      ],
+    },
   };
-  const tipos = {
-    pizza_restaurant: "pizzarias",
-    hamburger_restaurant: "hamburguerias",
-    cafe: "cafeterias",
-    coffee_shop: "cafeterias",
-    japanese_restaurant: "japoneses",
-    sushi_restaurant: "japoneses",
-    barbecue_restaurant: "churrascarias",
-    steak_house: "churrascarias",
-    brazilian_restaurant: "brasileira",
-  };
+  const tipos = Object.fromEntries(
+    Object.entries(categorias).flatMap(([chave, d]) =>
+      d.tipos.map((t) => [t, chave]),
+    ),
+  );
+  function pin(simbolo, origem = "google") {
+    const n = el(
+      "div",
+      "icone-comida " + (origem === "aponte" ? "proprio" : "google"),
+    );
+    const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+    svg.setAttribute("viewBox", "0 0 44 54");
+    svg.setAttribute("aria-hidden", "true");
+    const path = document.createElementNS(svg.namespaceURI, "path");
+    path.setAttribute(
+      "d",
+      "M22 53C17 44 2 35 2 22A20 20 0 1 1 42 22C42 35 27 44 22 53Z",
+    );
+    path.setAttribute("fill", "currentColor");
+    path.setAttribute("stroke", "white");
+    path.setAttribute("stroke-width", "2");
+    const centro = document.createElementNS(svg.namespaceURI, "circle");
+    centro.setAttribute("cx", "22");
+    centro.setAttribute("cy", "22");
+    centro.setAttribute("r", "14");
+    centro.setAttribute("fill", "white");
+    svg.append(path, centro);
+    const texto = el("span", "simbolo-marcador", simbolo);
+    texto.setAttribute("aria-hidden", "true");
+    n.append(svg, texto);
+    return n;
+  }
   function classificar(place) {
     const chave =
-      tipos[place.primaryType] ||
-      (place.types || []).map((t) => tipos[t]).find(Boolean) ||
+      (tipos[place.primaryType] !== "restaurantes" &&
+        tipos[place.primaryType]) ||
+      (place.types || [])
+        .map((t) => tipos[t])
+        .find((t) => t && t !== "restaurantes") ||
       "restaurantes";
     const conhecido = categorias[chave];
     return {
@@ -417,6 +509,7 @@ window.Aponte = (() => {
     galeria,
     categorias,
     classificar,
+    pin,
     iconeProprio,
     correspondeFiltro,
     skeleton,

@@ -219,7 +219,7 @@ const imagem = (n) =>
     await linhaUsuario
       .getByRole("button", { name: "Excluir", exact: true })
       .click();
-    await expect(linhaUsuario).toHaveCount(0);
+    await expect(linhaUsuario).toHaveCount(0, { timeout: 12000 });
     log("Exclusão administrativa de usuário pela interface OK");
     await page.screenshot({
       path: path.join(artefatos, "aponte-admin.png"),

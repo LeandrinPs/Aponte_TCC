@@ -68,10 +68,9 @@ function iconeAtual() {
     icone: icone.value,
   });
   if (marcadorCadastro) {
-    const n = Aponte.el(
-      "div",
-      "icone-comida",
+    const n = Aponte.pin(
       Aponte.iconeProprio({ categoria: categoria.value, icone: icone.value }),
+      "aponte",
     );
     marcadorCadastro.replaceChildren(n);
   }
@@ -95,8 +94,9 @@ function fotoAtual(e) {
 }
 (async () => {
   if (!registroId) return;
-  form.setAttribute("aria-busy","true");
-  const campos=[...form.querySelectorAll("input,select,button")];campos.forEach(n=>n.disabled=true);
+  form.setAttribute("aria-busy", "true");
+  const campos = [...form.querySelectorAll("input,select,button")];
+  campos.forEach((n) => (n.disabled = true));
   Aponte.aviso("Carregando cadastro…");
   try {
     const e = await Aponte.api("/api/admin/estabelecimentos/" + registroId);
@@ -113,12 +113,12 @@ function fotoAtual(e) {
     fotoAtual(e);
     posicionar();
     iconeAtual();
-    campos.forEach(n=>n.disabled=false);
-    form.setAttribute("aria-busy","false");
+    campos.forEach((n) => (n.disabled = false));
+    form.setAttribute("aria-busy", "false");
     Aponte.aviso("");
   } catch (e) {
     Aponte.aviso(e.message, true);
-    form.setAttribute("aria-busy","false");
+    form.setAttribute("aria-busy", "false");
     document.getElementById("salvar-estabelecimento").disabled = true;
   }
 })();
@@ -219,6 +219,7 @@ form.addEventListener("submit", async (evento) => {
       input.value = "";
       fotoAtual(e);
     }
+    AdminAvisos.aoRetornar("Estabelecimento salvo com sucesso.");
     location.href = "/admin/estabelecimentos?id=" + registroId;
   } catch (e) {
     Aponte.aviso(

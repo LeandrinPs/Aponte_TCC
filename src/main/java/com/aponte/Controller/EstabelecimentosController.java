@@ -17,6 +17,11 @@ public class EstabelecimentosController {
     return service.listarProprios();
   }
 
+  @GetMapping("/avaliacoes")
+  public List<ResumoEstabelecimentoDTO> resumos() {
+    return service.resumosProprios();
+  }
+
   @GetMapping("/{id}")
   public EstabelecimentoDTO buscar(@PathVariable Long id) {
     return service.buscarPorId(id);

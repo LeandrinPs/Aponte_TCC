@@ -275,3 +275,54 @@
     padding: 20px;
   }
 }
+/* Toasts e linhas pendentes existem somente na administração. */
+#admin-toasts {
+  z-index: 1090;
+  max-width: 100vw;
+}
+.admin-toast {
+  position: relative;
+  border: 1px solid #e2cdd6;
+  border-left: 4px solid #8f2140;
+  background: #fff;
+  box-shadow: 0 6px 30px #32122524;
+  color: #453140;
+}
+.admin-toast .toast-body {
+  padding: 18px 36px 18px 18px;
+  font-size: 0.85rem;
+}
+.admin-toast.toast-erro {
+  border-left-color: #c92b40;
+}
+.admin-toast-fechar {
+  position: absolute;
+  right: 12px;
+  top: 12px;
+}
+.exclusao-pendente {
+  background: #fff7e7 !important;
+}
+.exclusao-pendente td {
+  background: transparent !important;
+}
+.exclusao-pendente a[aria-disabled="true"] {
+  pointer-events: none;
+  opacity: 0.5;
+}
+.exclusao-estado {
+  display: block;
+  color: #8c6415;
+  font-weight: 600;
+  margin-top: 6px;
+}
+@media (max-width: 580px) {
+  #admin-toasts {
+    padding: 12px !important;
+    width: 100%;
+  }
+  .admin-toast {
+    max-width: 100%;
+    width: 100%;
+  }
+}

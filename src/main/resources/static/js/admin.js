@@ -3,12 +3,17 @@ const { api, el, aviso } = Aponte;
 let usuarioEditado = null,
   selecionado = null,
   itemEditado = null;
+let sequenciaUsuarios = 0,
+  sequenciaEstabelecimentos = 0;
 async function usuarios() {
+  const seq = ++sequenciaUsuarios;
   const lista = await api("/api/admin/usuarios");
+  if (seq !== sequenciaUsuarios) return;
   const tabela = document.getElementById("tabela-usuarios");
   tabela.replaceChildren();
   for (const u of lista) {
     const tr = el("tr");
+    tr.dataset.exclusao = "usuario:" + u.id;
     tr.append(el("td", "", u.nome), el("td", "", u.email));
     const a = el("td", "acao-linha");
     const editar = el("button", "btn btn-outline-danger", "Editar");
@@ -21,27 +26,33 @@ async function usuarios() {
       f.scrollIntoView({ behavior: "smooth" });
     };
     const excluir = el("button", "btn btn-outline-secondary", "Excluir");
-    excluir.onclick = async () => {
-      if (!confirm("Excluir esta conta e suas avaliações e favoritos?")) return;
-      try {
-        await api("/api/admin/usuarios/" + u.id, { method: "DELETE" });
-        await usuarios();
-        aviso("Usuário excluído.");
-      } catch (e) {
-        aviso(e.message, true);
-      }
-    };
+    excluir.onclick = () =>
+      AdminAvisos.agendar({
+        chave: "usuario:" + u.id,
+        descricao: "Usuário " + u.nome,
+        verificar: () => api(`/api/admin/usuarios/${u.id}/exclusao`),
+        executar: () =>
+          api(`/api/admin/usuarios/${u.id}`, { method: "DELETE" }),
+        atualizar: usuarios,
+        confirmacao: "Excluir este usuário e seus favoritos e avaliações?",
+      });
     a.append(editar, excluir);
     tr.append(a);
     tabela.append(tr);
   }
+  AdminAvisos.aplicar();
 }
 async function estabelecimentos() {
+  const seq = ++sequenciaEstabelecimentos;
   const lista = await api("/api/admin/estabelecimentos");
+  if (seq !== sequenciaEstabelecimentos) return;
   const tabela = document.getElementById("tabela-estabelecimentos");
+  const referencias = document.getElementById("tabela-referencias-google");
   tabela.replaceChildren();
+  referencias.replaceChildren();
   for (const e of lista) {
     const tr = el("tr");
+    if (!e.googlePlaceId) tr.dataset.exclusao = "estabelecimento:" + e.id;
     tr.append(
       el("td", "", e.dadosProprios?.nome || e.googlePlaceId),
       el("td", "", e.googlePlaceId ? "Referência Google" : "Cadastro próprio"),
@@ -55,24 +66,22 @@ async function estabelecimentos() {
       editar.href = "/admin/estabelecimentos/" + e.id;
       a.append(editar);
       const excluir = el("button", "btn btn-outline-secondary", "Excluir");
-      excluir.onclick = async () => {
-        if (
-          !confirm(
-            "Excluir este cadastro próprio? Vínculos existentes impedem a exclusão.",
-          )
-        )
-          return;
-        try {
-          await api("/api/admin/estabelecimentos/" + e.id, {
-            method: "DELETE",
-          });
-          document.getElementById("manutencao").hidden = true;
-          await estabelecimentos();
-          aviso("Estabelecimento excluído.");
-        } catch (err) {
-          aviso(err.message, true);
-        }
-      };
+      excluir.onclick = () =>
+        AdminAvisos.agendar({
+          chave: "estabelecimento:" + e.id,
+          descricao: "Estabelecimento " + e.dadosProprios.nome,
+          verificar: () => api(`/api/admin/estabelecimentos/${e.id}/exclusao`),
+          executar: () =>
+            api(`/api/admin/estabelecimentos/${e.id}`, { method: "DELETE" }),
+          atualizar: async () => {
+            if (selecionado?.id === e.id) {
+              selecionado = null;
+              document.getElementById("manutencao").hidden = true;
+            }
+            await estabelecimentos();
+          },
+          confirmacao: "Excluir este cadastro próprio e suas fotografias?",
+        });
       a.append(excluir);
     }
     const manter = el("button", "btn btn-danger", "Cardápio e avaliações");
@@ -80,8 +89,20 @@ async function estabelecimentos() {
       manutencao(e).catch((err) => aviso(err.message, true));
     a.append(manter);
     tr.append(a);
-    tabela.append(tr);
+    (e.googlePlaceId ? referencias : tabela).append(tr);
   }
+  for (const [alvo, texto] of [
+    [tabela, "Nenhum cadastro próprio."],
+    [referencias, "Nenhuma referência Google associada."],
+  ])
+    if (!alvo.children.length) {
+      const tr = el("tr"),
+        td = el("td", "text-secondary", texto);
+      td.colSpan = 3;
+      tr.append(td);
+      alvo.append(tr);
+    }
+  AdminAvisos.aplicar();
   const id = new URLSearchParams(location.search).get("id");
   if (id && !selecionado) {
     const e = lista.find((e) => String(e.id) === id);
@@ -99,6 +120,7 @@ async function manutencao(e) {
     api("/api/cardapios?id=" + e.id),
     api("/api/avaliacoes?id=" + e.id),
   ]);
+  if (selecionado?.id !== e.id) return;
   const c = document.getElementById("admin-cardapios");
   c.replaceChildren();
   if (!itens.length) c.append(el("p", "", "Nenhum item cadastrado."));

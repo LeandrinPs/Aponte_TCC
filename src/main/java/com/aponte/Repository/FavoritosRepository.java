@@ -7,7 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.transaction.annotation.Transactional;
 
 public interface FavoritosRepository extends JpaRepository<Favoritos, Long> {
+  long countByEstabelecimento_Id(Long id);
+
   boolean existsByEstabelecimento_Id(Long estabelecimentoId);
+
+  long countByUsuario_Id(Long id);
 
   void deleteByUsuario_Id(Long usuarioId);
 

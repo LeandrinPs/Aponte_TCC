@@ -5,7 +5,7 @@ Aplicação Java 17 / Spring Boot 4.1.1 com páginas Thymeleaf, APIs de sessão,
 ## Executar
 
 1. Disponibilize MySQL 8 e um banco próprio para o Aponte.
-2. Para um banco **novo e vazio**, revise e execute manualmente `docs/SCHEMA_NOVO.sql`. Para banco existente, faça backup e confira as migrações em `docs/MIGRACAO_SERVICE.sql` e `docs/MIGRACAO_CONTROLLERS.sql` e `docs/MIGRACAO_MODERNIZACAO.sql`; não execute o esquema inicial sobre dados existentes. O Hibernate usa `validate`, sem executar migrações.
+2. Para um banco **novo e vazio**, revise e execute manualmente `docs/SCHEMA_NOVO.sql`. Para banco existente, faça backup e confira as migrações em `docs/MIGRACAO_SERVICE.sql` e `docs/MIGRACAO_CONTROLLERS.sql` e `docs/MIGRACAO_MODERNIZACAO.sql`; não execute o esquema inicial sobre dados existentes. Esta fase não acrescenta colunas. A configuração atual da master usa `DDL_AUTO=update` por padrão; para validar um esquema preparado manualmente, defina `DDL_AUTO=validate`.
 3. Configure o ambiente (exemplo Bash; os valores de senha devem ser definidos por você):
 
 ```bash
@@ -59,14 +59,15 @@ export APONTE_E2E_BANCO_ISOLADO=SIM
 export APONTE_E2E_ADMIN_LOGIN='admin:gestor'
 read -r -s -p 'Senha administrativa do ambiente de testes: ' APONTE_E2E_ADMIN_SENHA
 export APONTE_E2E_ADMIN_SENHA; echo
-npm test
-npm run test:mapa
-npm run test:modernizacao
+npm run test:frontend
+npm run test:all
 # Diagnóstico externo opcional, sem simulação e com TLS verificado:
 npm run test:google
 ```
 
 `npm test` usa o site real e suas APIs. `test:mapa` substitui explicitamente o SDK Google para verificar o contrato do mapa híbrido; não comprova acesso à API Google real. Os testes criam registros próprios e contas temporárias; mantenha o banco separado de dados reais. Os artefatos locais ficam em `tests/browser/artifacts`, ignorados pelo Git. Opcionalmente indique `CHROMIUM_EXECUTABLE_PATH` para um Chromium instalado.
+
+**[Relatório da exploração do mapa, categorias, exclusões e Desfazer](docs/EXPLORACAO.md)**.
 
 **[Relatório da modernização, migração, OAuth2 e testes atuais](docs/MODERNIZACAO.md)**.
 
