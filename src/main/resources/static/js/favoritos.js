@@ -10,6 +10,8 @@ async function atualizarFotosFavoritos() {
         "displayName",
         "formattedAddress",
         "photos",
+        "types",
+        "primaryType",
       ]);
       card.querySelector("h2").textContent =
         p.displayName || "Estabelecimento Google";
@@ -46,7 +48,6 @@ async function carregarFavoritos() {
       if (e.googlePlaceId) card.dataset.googlePlaceId = e.googlePlaceId;
       const img = Aponte.el("img", "card-img-top foto-card");
       img.alt = "Fotografia do estabelecimento";
-      Aponte.imagem(img, e.fotoUrl);
       const body = Aponte.el("div", "card-body");
       const titulo = Aponte.el(
         "h2",
@@ -61,6 +62,7 @@ async function carregarFavoritos() {
           : "Carregue os detalhes no mapa",
       );
       const creditos = Aponte.el("div", "creditos small");
+      Aponte.fotoPropria(e, img, creditos);
       const link = Aponte.el("a", "btn btn-outline-danger me-2", "Ver no mapa");
       link.href = Aponte.linkMapa(e);
       const remover = Aponte.el(

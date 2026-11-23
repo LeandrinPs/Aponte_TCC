@@ -10,6 +10,8 @@ window.atualizarFeedGoogle = async () => {
         const p = await Aponte.place(card.dataset.feedPlace, [
           "displayName",
           "photos",
+          "types",
+          "primaryType",
         ]);
         card.querySelector("h3").textContent =
           p.displayName || "Estabelecimento Google";
@@ -19,7 +21,8 @@ window.atualizarFeedGoogle = async () => {
           card.querySelector(".creditos"),
         );
       } catch {
-        card.querySelector(".creditos").textContent =
+        // A ilustração e seu rótulo permanecem quando os detalhes não carregam.
+        card.querySelector("h3").title =
           "Detalhes do Google indisponíveis no momento.";
       }
     }
@@ -85,13 +88,13 @@ window.atualizarFeedGoogle = async () => {
       );
       const img = Aponte.el("img", "foto-card w-100 rounded");
       img.alt = "Fotografia do estabelecimento";
-      Aponte.imagem(img, e.fotoUrl);
       const creditos = Aponte.el("div", "creditos"),
         link = Aponte.el(
           "a",
           "d-inline-block mt-3 fw-semibold",
           "Ver no mapa →",
         );
+      Aponte.fotoPropria(e, img, creditos);
       link.href = Aponte.linkMapa(e);
       body.append(img, creditos, link);
       card.append(body);
