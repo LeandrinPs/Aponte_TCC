@@ -87,17 +87,57 @@ icone.addEventListener("change", iconeAtual);
 function idFoto(base, p) {
   return base + (p === 1 ? "" : "-" + p);
 }
-function fotoAtual(e) {
-  for (let p = 1; p <= 3; p++) {
-    const url = e.fotos?.[p - 1] || (p === 1 ? e.fotoUrl : null);
-    if (!document.getElementById(idFoto("foto", p)).files.length)
-      Aponte.imagem(document.getElementById(idFoto("foto-preview", p)), url);
-    document.getElementById(idFoto("remover-foto", p)).hidden =
-      !url?.startsWith("/imagens/");
-    if (p > 1)
-      document.getElementById("principal-" + p).hidden =
-        !url?.startsWith("/imagens/");
+let fotosSalvas = {};
+const semFotografia = document.getElementById("sem-fotografia");
+function atualizarModoFotografias() {
+  const sem = semFotografia.checked;
+  document.getElementById("campos-fotografias").hidden = sem;
+  const aviso = document.getElementById("sem-fotografia-aviso");
+  aviso.hidden = !sem;
+  aviso.replaceChildren(
+    Aponte.el("i", "bi bi-image"),
+    " ",
+    Aponte.fotografiasProprias(fotosSalvas).length
+      ? "As fotografias cadastradas serão removidas após sua confirmação ao salvar. O site exibirá uma imagem ilustrativa da categoria."
+      : "Sem fotografias cadastradas. O site exibirá uma imagem ilustrativa da categoria.",
+  );
+  for (let p = 1; p <= 3; p++)
+    document.getElementById(idFoto("foto", p)).disabled = sem;
+}
+for (const radio of form.querySelectorAll('[name="modoFotografias"]'))
+  radio.addEventListener("change", atualizarModoFotografias);
+function previa(p, url) {
+  const img = document.getElementById(idFoto("foto-preview", p)),
+    vazio = document.getElementById(idFoto("foto-vazia", p));
+  img.onload = img.onerror = null;
+  img.hidden = !url;
+  vazio.hidden = !!url;
+  vazio.lastChild.textContent = " Sem fotografia nesta posição";
+  if (!url) {
+    img.removeAttribute("src");
+    return;
   }
+  img.onerror = () => {
+    img.onerror = null;
+    img.hidden = true;
+    vazio.hidden = false;
+    vazio.lastChild.textContent =
+      " Prévia indisponível. Você pode substituir ou remover a fotografia.";
+    img.removeAttribute("src");
+  };
+  img.src = url;
+}
+function fotoAtual(e) {
+  fotosSalvas = e;
+  for (let p = 1; p <= 3; p++) {
+    const candidata = e.fotos?.[p - 1] || (p === 1 ? e.fotoUrl : null),
+      url = candidata?.startsWith("/imagens/") ? candidata : null;
+    if (!document.getElementById(idFoto("foto", p)).files.length)
+      previa(p, url);
+    document.getElementById(idFoto("remover-foto", p)).hidden = !url;
+    if (p > 1) document.getElementById("principal-" + p).hidden = !url;
+  }
+  atualizarModoFotografias();
 }
 (async () => {
   if (!registroId) return;
@@ -117,10 +157,14 @@ function fotoAtual(e) {
     }
     for (const c of form.querySelectorAll("[name=tag]"))
       c.checked = e.dadosProprios.tags?.includes(c.value) || false;
+    semFotografia.checked = !Aponte.fotografiasProprias(e).length;
+    document.getElementById("adicionar-fotografias").checked =
+      !semFotografia.checked;
     fotoAtual(e);
     posicionar();
     iconeAtual();
     campos.forEach((n) => (n.disabled = false));
+    atualizarModoFotografias();
     form.setAttribute("aria-busy", "false");
     Aponte.aviso("");
   } catch (e) {
@@ -138,7 +182,10 @@ for (let p = 1; p <= 3; p++) {
     if (f) {
       const url = URL.createObjectURL(f);
       urls.set(p, url);
-      document.getElementById(idFoto("foto-preview", p)).src = url;
+      previa(p, url);
+    } else {
+      urls.delete(p);
+      fotoAtual(fotosSalvas);
     }
   });
   document
@@ -186,12 +233,23 @@ for (let p = 1; p <= 3; p++) {
 }
 form.addEventListener("submit", async (evento) => {
   evento.preventDefault();
+  const sem = semFotografia.checked;
+  const confirmarRemocao = () =>
+    window.confirm(
+      "Remover todas as fotografias deste estabelecimento ao salvar? O cadastro, seus favoritos e suas avaliações serão preservados.",
+    );
+  let remocaoConfirmada = false;
+  if (sem && Aponte.fotografiasProprias(fotosSalvas).length) {
+    remocaoConfirmada = confirmarRemocao();
+    if (!remocaoConfirmada) return;
+  }
   const b = document.getElementById("salvar-estabelecimento");
   Aponte.ocupado(b, true, "Salvando…");
   let salvo = false,
-    posicao = 0;
+    posicao = 0,
+    removendoFotos = false;
   try {
-    for (let p = 1; p <= 3; p++) {
+    for (let p = 1; !sem && p <= 3; p++) {
       const f = document.getElementById(idFoto("foto", p)).files[0];
       if (
         f &&
@@ -202,6 +260,7 @@ form.addEventListener("submit", async (evento) => {
     }
     const dados = Object.fromEntries(new FormData(form));
     delete dados.tag;
+    delete dados.modoFotografias;
     dados.tags = [...form.querySelectorAll("[name=tag]:checked")].map(
       (c) => c.value,
     );
@@ -212,7 +271,23 @@ form.addEventListener("submit", async (evento) => {
     registroId = e.id;
     salvo = true;
     history.replaceState(null, "", "/admin/estabelecimentos/" + registroId);
-    for (let p = 1; p <= 3; p++) {
+    if (sem && Aponte.fotografiasProprias(e).length) {
+      // Uma foto pode ter sido adicionada por outro administrador desde a abertura.
+      if (!remocaoConfirmada && !confirmarRemocao()) {
+        fotoAtual(e);
+        Aponte.aviso(
+          "Cadastro salvo. Remoção cancelada; fotografias preservadas.",
+        );
+        return;
+      }
+      removendoFotos = true;
+      e = await Aponte.api(`/api/admin/estabelecimentos/${registroId}/fotos`, {
+        method: "DELETE",
+      });
+      removendoFotos = false;
+    }
+    fotoAtual(e);
+    for (let p = 1; !sem && p <= 3; p++) {
       const input = document.getElementById(idFoto("foto", p));
       const arquivo = input.files[0];
       if (!arquivo) continue;
@@ -231,7 +306,9 @@ form.addEventListener("submit", async (evento) => {
   } catch (e) {
     Aponte.aviso(
       (salvo
-        ? `Cadastro salvo. Verifique a fotografia ${posicao || "selecionada"}: `
+        ? removendoFotos
+          ? "Cadastro salvo, mas não foi possível remover as fotografias: "
+          : `Cadastro salvo. Verifique a fotografia ${posicao || "selecionada"}: `
         : "") + e.message,
       true,
     );
@@ -239,3 +316,8 @@ form.addEventListener("submit", async (evento) => {
     Aponte.ocupado(b, false);
   }
 });
+
+window.addEventListener("pagehide", () => {
+  for (const url of urls.values()) URL.revokeObjectURL(url);
+});
+atualizarModoFotografias();

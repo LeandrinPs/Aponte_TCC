@@ -106,6 +106,11 @@ public class AdministradorController {
     estabelecimentos.removerFoto(id, posicao);
   }
 
+  @DeleteMapping("/estabelecimentos/{id}/fotos")
+  public EstabelecimentoDTO removerTodasFotos(@PathVariable Long id) {
+    return estabelecimentos.removerTodasFotos(id);
+  }
+
   @PutMapping("/estabelecimentos/{id}/fotos/{posicao}/principal")
   public EstabelecimentoDTO principal(@PathVariable Long id, @PathVariable int posicao) {
     return estabelecimentos.tornarPrincipal(id, posicao);
