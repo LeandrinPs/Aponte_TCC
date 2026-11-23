@@ -299,3 +299,100 @@
     max-height: 70svh;
   }
 }
+
+
+
+
+#painel-restaurante {
+    background: #ffffff;
+    color: #272727;
+    scrollbar-color: #c5c5c5 #ffffff;
+}
+
+
+#painel-restaurante .painel-header h2,
+#painel-restaurante .painel-card h3 {
+    color: #272727;
+}
+
+#painel-restaurante .painel-header p,
+#painel-restaurante .painel-card p,
+#painel-restaurante .horarios-toggle {
+    color: #484848;
+}
+
+#painel-restaurante .painel-header small,
+#painel-restaurante .nota-plataforma span,
+#painel-restaurante .nota-plataforma small {
+    color: #666666;
+}
+
+
+#painel-restaurante .nota-plataforma {
+    background: #fafafa;
+    border: 1px solid #dddddd;
+}
+
+
+#painel-restaurante .painel-card,
+#painel-restaurante #pills-tab {
+    border-color: #e5e5e5;
+}
+
+#painel-restaurante .painel-card a,
+#painel-restaurante .info-item i {
+    color: #c52238;
+}
+
+
+#painel-restaurante #pills-tab .nav-link {
+    color: #666666;
+}
+
+#painel-restaurante #pills-tab .nav-link.active {
+    color: #c52238;
+    border-bottom-color: #c52238;
+}
+
+
+#painel-restaurante .painel-card .form-control,
+#painel-restaurante .painel-card .form-select {
+    background: #ffffff;
+    border-color: #dddddd;
+    color: #272727;
+}
+
+
+#painel-restaurante .horarios-container .card {
+    background: #f8f8f8;
+    color: #272727;
+}
+
+
+#painel-restaurante .galeria-restaurante {
+    background: #f8f8f8;
+}
+
+#painel-restaurante .galeria-restaurante .creditos,
+#painel-restaurante .galeria-restaurante .creditos a {
+    color: #555555;
+}
+
+#lateral-mapa #fechar-painel.voltar-resultados {
+    background: #ffffff;
+    color: #272727;
+    border-bottom: 1px solid #e5e5e5;
+}
+
+#lateral-mapa #fechar-painel.voltar-resultados:hover {
+    background: #f5f5f5;
+}
+
+
+#painel-restaurante .mensagem-sucesso {
+    color: #198754;
+}
+
+#painel-restaurante .mensagem-erro {
+    color: #c52238;
+}

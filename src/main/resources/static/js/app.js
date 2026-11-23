@@ -371,6 +371,7 @@ window.Aponte = (() => {
         "primaryTypeDisplayName",
       ],
     });
+    
     return p;
   }
   const sessao = api("/api/sessao");

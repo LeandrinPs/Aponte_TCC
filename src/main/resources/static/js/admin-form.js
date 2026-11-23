@@ -12,8 +12,13 @@ function coordenadas() {
 }
 function posicionar() {
   const p = coordenadas();
+
   if (!mapaCadastro || !p) return;
-  marcadorCadastro.position = p;
+
+  if (marcadorCadastro) {
+    marcadorCadastro.position = p;
+  }
+
   mapaCadastro.panTo(p);
 }
 window.initMapaCadastro = async () => {
@@ -31,6 +36,8 @@ window.initMapaCadastro = async () => {
       map: mapaCadastro,
       position: coordenadas() || mapaCadastro.getCenter(),
     });
+
+    posicionar();
     iconeAtual();
     mapaCadastro.addListener("click", (e) => {
       form.elements.latitude.value = e.latLng.lat().toFixed(6);
